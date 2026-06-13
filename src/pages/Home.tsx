@@ -55,7 +55,7 @@ export default function Home() {
               <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/15 transition">
                 <ShoppingBag className="w-8 h-8 md:w-10 md:h-10 text-primary" />
               </div>
-              <h3 className="text-xl font-bold font-serif text-foreground mb-2">Cek Ready Stock</h3>
+              <h3 className="text-xl font-bold font-serif text-foreground mb-2">Cek Katalog</h3>
               <p className="text-[14px] text-muted-foreground leading-relaxed">
                 Lihat koleksi rajut premium, pilih varian, langsung checkout via WhatsApp.
               </p>

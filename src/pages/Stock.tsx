@@ -46,7 +46,7 @@ export default function Stock() {
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between mb-8">
           <div>
             <p className="text-[12px] uppercase tracking-[0.2em] text-primary font-semibold mb-2">Koleksi Terbaru</p>
-            <h1 className="text-3xl md:text-4xl font-bold font-serif text-foreground tracking-tight">Ready Stock</h1>
+            <h1 className="text-3xl md:text-4xl font-bold font-serif text-foreground tracking-tight">Katalog</h1>
             <p className="text-muted-foreground mt-2 text-[14px]">Pilih varian favoritmu, langsung checkout ke WhatsApp.</p>
           </div>
           <div className="relative w-full md:w-72">

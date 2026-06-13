@@ -48,7 +48,7 @@ export default function Checkout() {
             to="/stock"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-[15px] font-bold text-white shadow-md transition hover:bg-primary/90"
           >
-            Lihat Ready Stock
+            Lihat Katalog
           </Link>
         </div>
       </div>
