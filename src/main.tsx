@@ -9,6 +9,7 @@ import Stock from "./pages/Stock";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Visit from "./pages/Visit";
+import Contact from "./pages/Contact";
 import Admin from "./pages/admin/Admin";
 import "./styles.css";
 
@@ -24,6 +25,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/visit" element={<Visit />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="/admin/*" element={<Admin />} />
             </Routes>
           </CartProvider>

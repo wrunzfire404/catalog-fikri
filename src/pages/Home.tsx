@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ShoppingBag, UserCog, MapPin, MessageCircle, Sparkles } from "lucide-react";
+import { ShoppingBag, MessageCircle, MapPin, Sparkles } from "lucide-react";
 import { waCsLink } from "@/lib/products";
 import { useStore } from "@/context/StoreContext";
 
@@ -62,20 +62,18 @@ export default function Home() {
             </button>
 
             {/* Hubungi Admin / CS */}
-            <a
-              href={waCsLink(settings)}
-              target="_blank"
-              rel="noreferrer"
+            <button
+              onClick={() => navigate("/contact")}
               className="group flex flex-col items-center text-center p-8 md:p-10 rounded-2xl bg-white shadow-card hover:shadow-elegant transition-all duration-300 border border-border/40 hover:-translate-y-1"
             >
               <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/15 transition">
-                <UserCog className="w-8 h-8 md:w-10 md:h-10 text-primary" />
+                <MessageCircle className="w-8 h-8 md:w-10 md:h-10 text-primary" />
               </div>
               <h3 className="text-xl font-bold font-serif text-foreground mb-2">Hubungi Admin / CS</h3>
               <p className="text-[14px] text-muted-foreground leading-relaxed">
-                Chat langsung via WhatsApp untuk info stok, harga grosir, dan pemesanan dalam jumlah besar.
+                Info stok, harga grosir, pengiriman — tim kami siap membantu via WhatsApp.
               </p>
-            </a>
+            </button>
 
             {/* Visit / Lokasi */}
             <button
