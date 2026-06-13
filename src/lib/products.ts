@@ -56,6 +56,12 @@ export function formatRupiah(n: number) {
   return "Rp " + n.toLocaleString("id-ID");
 }
 
+export type CartItem = {
+  product: Product;
+  variant: ProductVariant | null;
+  quantity: number;
+};
+
 export function getProductGallery(product: Product) {
   if (product.variants?.length) {
     return product.variants;
@@ -70,10 +76,25 @@ export function getProductGallery(product: Product) {
   ];
 }
 
-export function waLink(product?: Product, variant?: ProductVariant | null) {
-  const variantLine = variant ? `\nWarna ${variant.color}` : "";
-  const text = product
-    ? `Halo PGRB, saya tertarik dengan produk:\n\n*${product.code}. ${product.name}*${variantLine}\nLD ${product.ld} • PJ ${product.pj}\nHarga ${formatRupiah(product.price)}\n\nApakah masih ready?`
-    : `Halo PGRB, saya mau tanya katalog rajutnya 🙏`;
+export function waLink(cart: CartItem[]) {
+  if (cart.length === 0) {
+    return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(`Halo PGRB, saya mau tanya katalog rajutnya 🙏`)}`;
+  }
+
+  let text = `Halo PGRB, saya ingin memesan:\n\n`;
+  let total = 0;
+
+  cart.forEach((item, index) => {
+    const variantText = item.variant && item.variant.color !== item.product.name ? ` - Warna ${item.variant.color}` : "";
+    const subtotal = item.product.price * item.quantity;
+    total += subtotal;
+    
+    text += `${index + 1}. *${item.product.code}. ${item.product.name}*${variantText}\n`;
+    text += `   Jumlah: ${item.quantity} x ${formatRupiah(item.product.price)}\n`;
+    text += `   Subtotal: ${formatRupiah(subtotal)}\n\n`;
+  });
+
+  text += `*Total Pesanan: ${formatRupiah(total)}*\n\nApakah stoknya masih ready?`;
+
   return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
 }
