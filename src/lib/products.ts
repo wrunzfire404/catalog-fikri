@@ -51,6 +51,8 @@ export const products: Product[] = [
 export const WA_NUMBER = "6283131261552";
 export const SHOP_NAME = "PGRB";
 export const SHOP_TAGLINE = "Pusat Grosir Rajut Bandung";
+export const SHOP_ADDRESS = "Jl. Caringin No. 123, Babakan Ciparay, Bandung, Jawa Barat 40223";
+export const SHOP_MAPS = "https://maps.google.com/?q=PGRB+Pusat+Grosir+Rajut+Bandung+Caringin+Babakan+Ciparay";
 
 export function formatRupiah(n: number) {
   return "Rp " + n.toLocaleString("id-ID");
@@ -60,6 +62,15 @@ export type CartItem = {
   product: Product;
   variant: ProductVariant | null;
   quantity: number;
+};
+
+export type CustomerInfo = {
+  nama: string;
+  provinsi: string;
+  kabupaten: string;
+  kecamatan: string;
+  noWa: string;
+  catatan: string;
 };
 
 export function getProductGallery(product: Product) {
@@ -76,25 +87,36 @@ export function getProductGallery(product: Product) {
   ];
 }
 
-export function waLink(cart: CartItem[]) {
-  if (cart.length === 0) {
-    return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(`Halo PGRB, saya mau tanya katalog rajutnya 🙏`)}`;
-  }
+export function waCheckoutLink(cart: CartItem[], customer: CustomerInfo) {
+  const total = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
 
-  let text = `Halo PGRB, saya ingin memesan:\n\n`;
-  let total = 0;
+  let text = `🛍️ *ORDER BARU — PGRB*\n\n`;
 
+  text += `📦 *Detail Pesanan:*\n`;
+  text += `──────────────────\n`;
   cart.forEach((item, index) => {
-    const variantText = item.variant && item.variant.color !== item.product.name ? ` - Warna ${item.variant.color}` : "";
+    const variantText = item.variant && item.variant.color !== item.product.name
+      ? ` — Warna *${item.variant.color}*`
+      : "";
     const subtotal = item.product.price * item.quantity;
-    total += subtotal;
-    
-    text += `${index + 1}. *${item.product.code}. ${item.product.name}*${variantText}\n`;
-    text += `   Jumlah: ${item.quantity} x ${formatRupiah(item.product.price)}\n`;
-    text += `   Subtotal: ${formatRupiah(subtotal)}\n\n`;
+    text += `${index + 1}. ${item.product.code}. *${item.product.name}*${variantText}\n`;
+    text += `   ${item.quantity} x ${formatRupiah(item.product.price)} = ${formatRupiah(subtotal)}\n`;
   });
+  text += `──────────────────\n`;
+  text += `💰 *Total: ${formatRupiah(total)}*\n\n`;
 
-  text += `*Total Pesanan: ${formatRupiah(total)}*\n\nApakah stoknya masih ready?`;
+  text += `👤 *Data Customer:*\n`;
+  text += `Nama        : ${customer.nama}\n`;
+  text += `No WA       : ${customer.noWa}\n`;
+  text += `Alamat      : ${customer.kecamatan}, ${customer.kabupaten}, ${customer.provinsi}\n`;
+  if (customer.catatan) {
+    text += `Catatan     : ${customer.catatan}\n`;
+  }
+  text += `\nMohon dikonfirmasi ketersediaan stok & ongkir ya, Kak 🙏`;
 
   return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
+}
+
+export function waCsLink() {
+  return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Halo PGRB, saya mau tanya katalog rajutnya 🙏")}`;
 }
