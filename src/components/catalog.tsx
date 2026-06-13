@@ -1,32 +1,11 @@
 import { useRef, useState } from "react";
-import {
-  ShoppingCart,
-  X,
-  Plus,
-  Minus,
-  Trash2,
-  ArrowRight,
-  ChevronLeft,
-  CheckCircle2,
-} from "lucide-react";
+import { ShoppingCart, X, Plus, Minus } from "lucide-react";
 import {
   formatRupiah,
   getProductGallery,
-  waCheckoutLink,
   type Product,
   type ProductVariant,
-  type CartItem,
-  type CustomerInfo,
 } from "@/lib/products";
-
-const EMPTY_CUSTOMER: CustomerInfo = {
-  nama: "",
-  provinsi: "",
-  kabupaten: "",
-  kecamatan: "",
-  noWa: "",
-  catatan: "",
-};
 
 export function ProductCard({ product, onSelect }: { product: Product; onSelect: () => void }) {
   const gallery = getProductGallery(product);
@@ -238,5 +217,3 @@ export function PlaceholderArt({ name }: { name: string }) {
     </div>
   );
 }
-
-export { EMPTY_CUSTOMER };

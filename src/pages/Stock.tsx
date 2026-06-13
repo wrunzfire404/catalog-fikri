@@ -1,54 +1,16 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Search, ShoppingCart, ShoppingBag, ArrowLeft } from "lucide-react";
-import {
-  products,
-  SHOP_NAME,
-  type Product,
-  type ProductVariant,
-  type CartItem,
-} from "@/lib/products";
+import { products, SHOP_NAME, type Product } from "@/lib/products";
 import { ProductCard, ProductModal } from "@/components/catalog";
 import { CartDrawer } from "@/components/cart";
+import { useCart } from "@/context/CartContext";
 
 export default function Stock() {
+  const { cart, totalItems, addToCart, updateQty, removeItem } = useCart();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isCheckout, setIsCheckout] = useState(false);
   const [query, setQuery] = useState("");
-
-  const cartItemsCount = cart.reduce((acc, item) => acc + item.quantity, 0);
-
-  const addToCart = (product: Product, variant: ProductVariant | null, quantity: number) => {
-    setCart((prev) => {
-      const existingItemIndex = prev.findIndex(
-        (item) => item.product.slug === product.slug && item.variant?.slug === variant?.slug
-      );
-      if (existingItemIndex >= 0) {
-        const newCart = [...prev];
-        newCart[existingItemIndex].quantity += quantity;
-        return newCart;
-      }
-      return [...prev, { product, variant, quantity }];
-    });
-  };
-
-  const updateCartItemQty = (index: number, newQty: number) => {
-    if (newQty <= 0) {
-      setCart((prev) => prev.filter((_, i) => i !== index));
-      return;
-    }
-    setCart((prev) => {
-      const newCart = [...prev];
-      newCart[index].quantity = newQty;
-      return newCart;
-    });
-  };
-
-  const removeCartItem = (index: number) => {
-    setCart((prev) => prev.filter((_, i) => i !== index));
-  };
 
   const filtered = products.filter((p) =>
     `${p.code} ${p.name}`.toLowerCase().includes(query.toLowerCase().trim())
@@ -64,17 +26,14 @@ export default function Stock() {
           </Link>
 
           <button
-            onClick={() => {
-              setIsCheckout(false);
-              setIsCartOpen(true);
-            }}
+            onClick={() => setIsCartOpen(true)}
             className="relative p-2 text-foreground hover:bg-secondary rounded-full transition"
             aria-label="Keranjang"
           >
             <ShoppingCart className="w-6 h-6 text-primary" />
-            {cartItemsCount > 0 && (
+            {totalItems > 0 && (
               <span className="absolute top-0 right-0 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white border-2 border-white">
-                {cartItemsCount}
+                {totalItems}
               </span>
             )}
           </button>
@@ -120,7 +79,6 @@ export default function Stock() {
           onAddToCart={(variant, qty) => {
             addToCart(selectedProduct, variant, qty);
             setSelectedProduct(null);
-            setIsCheckout(false);
             setIsCartOpen(true);
           }}
         />
@@ -129,32 +87,21 @@ export default function Stock() {
       {isCartOpen && (
         <CartDrawer
           cart={cart}
-          isCheckout={isCheckout}
           onClose={() => setIsCartOpen(false)}
-          onUpdateQty={updateCartItemQty}
-          onRemoveItem={removeCartItem}
-          onGoCheckout={() => setIsCheckout(true)}
-          onBackToCart={() => setIsCheckout(false)}
-          onOrdered={() => {
-            setCart([]);
-            setIsCheckout(false);
-            setIsCartOpen(false);
-          }}
+          onUpdateQty={updateQty}
+          onRemoveItem={removeItem}
         />
       )}
 
-      {cartItemsCount > 0 && !isCartOpen && !selectedProduct && (
+      {totalItems > 0 && !isCartOpen && !selectedProduct && (
         <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.05)] md:hidden z-20 animate-in slide-in-from-bottom-full">
           <button
-            onClick={() => {
-              setIsCheckout(false);
-              setIsCartOpen(true);
-            }}
+            onClick={() => setIsCartOpen(true)}
             className="w-full flex items-center justify-between rounded-xl bg-primary px-5 py-3.5 text-white shadow-lg"
           >
             <div className="flex items-center gap-3">
               <ShoppingCart className="w-5 h-5" />
-              <span className="font-semibold text-[15px]">{cartItemsCount} Item</span>
+              <span className="font-semibold text-[15px]">{totalItems} Item</span>
             </div>
             <span className="font-bold text-[15px]">Lihat Keranjang</span>
           </button>
