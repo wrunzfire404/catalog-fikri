@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { ShoppingBag, MessageCircle, MapPin, Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
+import { ShoppingBag, MessageCircle, MapPin, Sparkles, ShieldCheck } from "lucide-react";
 import { waCsLink } from "@/lib/products";
 import { useStore } from "@/context/StoreContext";
 
@@ -34,67 +34,62 @@ export default function Home() {
       </header>
 
       <main className="flex-1 flex flex-col">
-        {/* Hero Slideshow */}
-        <section className="relative text-white">
-          {/* Banner images — aspect-[3/4] mobile, aspect-[21/9] desktop */}
-          <div className="relative aspect-[3/4] md:aspect-[21/9] overflow-hidden">
+        {/* Hero Slideshow — compact, text overlaid */}
+        <section className="relative text-white bg-primary">
+          <div className="relative aspect-[4/3] sm:aspect-[2/1] md:aspect-[2.5/1] lg:aspect-[3/1] overflow-hidden">
             {BANNERS.map((banner, i) => (
               <img
                 key={banner.src}
                 src={banner.src}
                 alt={banner.alt}
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out ${
                   i === bannerIndex ? "opacity-100" : "opacity-0"
                 }`}
               />
             ))}
-            {/* Darker overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/40" />
+            <div className="absolute inset-0 bg-black/35" />
           </div>
 
-          {/* Text + CTAs — outside the image so it doesn't overlap */}
-          <div className="bg-[#0F1E17] -mt-1 relative z-10 px-4 py-12 md:py-14 text-center">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/10 px-5 py-2 text-[12px] font-semibold backdrop-blur-md mb-6">
-              <Sparkles className="w-3.5 h-3.5" />
-              {settings.tagline}
-            </span>
+          {/* Text overlay on image */}
+          <div className="absolute inset-0 flex items-center justify-center px-4 pointer-events-none">
+            <div className="text-center max-w-lg pointer-events-auto">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 border border-white/15 px-4 py-1.5 text-[11px] font-semibold backdrop-blur-sm mb-4">
+                <Sparkles className="w-3 h-3" />
+                {settings.tagline}
+              </span>
 
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold font-serif leading-[1.05] mb-5">
-              Rajut Premium,
-              <br />
-              <span className="text-white/90">Harga Grosir.</span>
-            </h1>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-serif leading-[1.08] mb-3">
+                Rajut Premium, Harga Grosir.
+              </h1>
 
-            <p className="text-white/65 text-[14px] md:text-base leading-relaxed mb-8 max-w-md mx-auto">
-              Koleksi rajut terkini langsung dari pusat grosir Bandung. Kualitas terjamin, harga langsung pabrik, siap kirim ke seluruh Indonesia.
-            </p>
+              <p className="text-white/75 text-sm sm:text-[15px] leading-relaxed mb-6 max-w-sm mx-auto hidden sm:block">
+                Koleksi terkini dari pusat grosir Bandung — kualitas terjamin, siap kirim ke seluruh Indonesia.
+              </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <a
                 href={waCsLink(settings)}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3.5 text-[15px] font-bold text-white shadow-[0_8px_30px_rgba(37,211,102,0.35)] transition hover:bg-[#20bd5a] btn-press w-full sm:w-auto"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-2.5 sm:px-6 sm:py-3 text-[14px] sm:text-[15px] font-bold text-white shadow-[0_6px_20px_rgba(37,211,102,0.3)] transition hover:bg-[#20bd5a] btn-press"
               >
-                <MessageCircle className="w-5 h-5" />
+                <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                 Chat CS Sekarang
-                <ArrowRight className="w-4 h-4" />
               </a>
             </div>
+          </div>
 
-            {/* Dots */}
-            <div className="flex items-center justify-center gap-2 mt-6">
-              {BANNERS.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setBannerIndex(i)}
-                  className={`rounded-full transition-all duration-300 ${
-                    i === bannerIndex ? "w-6 h-2 bg-white" : "w-2 h-2 bg-white/30 hover:bg-white/60"
-                  }`}
-                  aria-label={`Slide ${i + 1}`}
-                />
-              ))}
-            </div>
+          {/* Dots */}
+          <div className="absolute bottom-4 inset-x-0 flex items-center justify-center gap-2 z-10">
+            {BANNERS.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setBannerIndex(i)}
+                className={`rounded-full transition-all duration-300 ${
+                  i === bannerIndex ? "w-5 h-1.5 bg-white" : "w-1.5 h-1.5 bg-white/40 hover:bg-white/70"
+                }`}
+                aria-label={`Slide ${i + 1}`}
+              />
+            ))}
           </div>
         </section>
 
