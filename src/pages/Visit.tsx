@@ -7,7 +7,7 @@ export default function Visit() {
   const { settings } = useStore();
   return (
     <div className="min-h-screen bg-background text-foreground font-sans">
-      <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-border">
+      <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-border/60">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-center gap-2 text-foreground hover:text-primary transition">
             <ArrowLeft className="w-5 h-5" />
