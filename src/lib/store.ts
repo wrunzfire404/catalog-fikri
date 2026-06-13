@@ -1,3 +1,4 @@
+import { supabase } from "./supabase";
 import {
   defaultProducts,
   defaultSettings,
@@ -5,66 +6,98 @@ import {
   type Settings,
 } from "./products";
 
-// ---- Storage Keys ----
-const KEY_PRODUCTS = "pgrb-products";
-const KEY_SETTINGS = "pgrb-settings";
-const KEY_AUTH_SESSION = "pgrb-auth-session";
-const KEY_CREDS = "pgrb-admin-creds";
-
 // ---- Products ----
-export function getAllProducts(): Product[] {
-  try {
-    const raw = window.localStorage.getItem(KEY_PRODUCTS);
-    if (raw) {
-      const stored: Product[] = JSON.parse(raw);
-      if (stored.length > 0) return stored;
-    }
-  } catch { /* ignore */ }
-  return defaultProducts;
+export async function getAllProducts(): Promise<Product[]> {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .order("created_at", { ascending: true });
+
+  if (error || !data || data.length === 0) return defaultProducts;
+
+  return data.map((row: Record<string, unknown>) => ({
+    slug: row.slug as string,
+    code: row.code as string,
+    name: row.name as string,
+    ld: (row.ld as string) || "",
+    pj: (row.pj as string) || "",
+    price: row.price as number,
+    note: (row.note as string) || undefined,
+    image: (row.image as string) || undefined,
+    variants: Array.isArray(row.variants) ? (row.variants as Product["variants"]) : undefined,
+  }));
 }
 
-export function saveProduct(product: Product) {
-  const all = getAllProducts();
-  const idx = all.findIndex((p) => p.slug === product.slug);
-  if (idx >= 0) {
-    all[idx] = product;
-  } else {
-    all.push(product);
+export async function saveProduct(product: Product) {
+  const existing = await supabase.from("products").select("id").eq("slug", product.slug).single();
+
+  const payload = {
+    slug: product.slug,
+    code: product.code,
+    name: product.name,
+    ld: product.ld,
+    pj: product.pj,
+    price: product.price,
+    note: product.note || null,
+    image: product.image || null,
+    variants: product.variants || [],
+  };
+
+  if (existing.data) {
+    return supabase.from("products").update(payload).eq("slug", product.slug);
   }
-  window.localStorage.setItem(KEY_PRODUCTS, JSON.stringify(all));
+  return supabase.from("products").insert(payload);
 }
 
-export function deleteProduct(slug: string) {
-  const all = getAllProducts().filter((p) => p.slug !== slug);
-  window.localStorage.setItem(KEY_PRODUCTS, JSON.stringify(all));
+export async function deleteProduct(slug: string) {
+  return supabase.from("products").delete().eq("slug", slug);
 }
 
-export function resetProductsToDefault() {
-  window.localStorage.removeItem(KEY_PRODUCTS);
+export async function resetProductsToDefault() {
+  // Delete all, then re-insert defaults
+  await supabase.from("products").delete().neq("slug", "");
+  for (const p of defaultProducts) {
+    await saveProduct(p);
+  }
 }
 
 // ---- Settings ----
-export function getSettings(): Settings {
-  try {
-    const raw = window.localStorage.getItem(KEY_SETTINGS);
-    if (raw) {
-      const stored = JSON.parse(raw) as Partial<Settings>;
-      return { ...defaultSettings, ...stored };
-    }
-  } catch { /* ignore */ }
-  return defaultSettings;
+export async function getSettings(): Promise<Settings> {
+  const { data, error } = await supabase
+    .from("settings")
+    .select("*")
+    .eq("id", 1)
+    .single();
+
+  if (error || !data) return defaultSettings;
+
+  return {
+    shopName: (data.shop_name as string) || defaultSettings.shopName,
+    tagline: (data.tagline as string) || defaultSettings.tagline,
+    waNumber: (data.wa_number as string) || defaultSettings.waNumber,
+    address: (data.address as string) || defaultSettings.address,
+    mapsUrl: (data.maps_url as string) || defaultSettings.mapsUrl,
+  };
 }
 
-export function saveSettings(s: Settings) {
-  window.localStorage.setItem(KEY_SETTINGS, JSON.stringify(s));
+export async function saveSettings(s: Settings) {
+  return supabase.from("settings").upsert({
+    id: 1,
+    shop_name: s.shopName,
+    tagline: s.tagline,
+    wa_number: s.waNumber,
+    address: s.address,
+    maps_url: s.mapsUrl,
+  });
 }
 
-export function resetSettingsToDefault() {
-  window.localStorage.removeItem(KEY_SETTINGS);
+export async function resetSettingsToDefault() {
+  await saveSettings(defaultSettings);
 }
 
 // ---- Auth ----
 export function getAdminCreds(): { user: string; pass: string } {
+  const KEY_CREDS = "pgrb-admin-creds";
   try {
     const raw = window.localStorage.getItem(KEY_CREDS);
     if (raw) {
@@ -76,22 +109,29 @@ export function getAdminCreds(): { user: string; pass: string } {
 }
 
 export function saveAdminCreds(user: string, pass: string) {
-  window.localStorage.setItem(KEY_CREDS, JSON.stringify({ user, pass }));
+  window.localStorage.setItem("pgrb-admin-creds", JSON.stringify({ user, pass }));
 }
 
 export function isAdminLoggedIn(): boolean {
-  return window.localStorage.getItem(KEY_AUTH_SESSION) === "1";
+  return window.localStorage.getItem("pgrb-auth-session") === "1";
 }
 
-export function adminLogin(user: string, pass: string): boolean {
+export async function adminLogin(user: string, pass: string): Promise<boolean> {
   const creds = getAdminCreds();
   if (user === creds.user && pass === creds.pass) {
-    window.localStorage.setItem(KEY_AUTH_SESSION, "1");
+    // Try Supabase auth login, but don't block on it
+    try {
+      await supabase.auth.signInWithPassword({ email: `${user}@pgrb.local`, password: pass });
+    } catch {
+      // Fallback: auth mungkin belum di-setup di Supabase
+    }
+    window.localStorage.setItem("pgrb-auth-session", "1");
     return true;
   }
   return false;
 }
 
 export function adminLogout() {
-  window.localStorage.removeItem(KEY_AUTH_SESSION);
+  window.localStorage.removeItem("pgrb-auth-session");
+  supabase.auth.signOut().catch(() => {});
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { X, Plus, Trash2, Upload, ImageIcon } from "lucide-react";
+import { X, Plus, Trash2, Upload, ImageIcon, Loader2 } from "lucide-react";
 import { useStore } from "@/context/StoreContext";
+import { supabase } from "@/lib/supabase";
 import { slugify, type Product, type ProductVariant } from "@/lib/products";
 
 type Draft = {
@@ -32,35 +33,26 @@ function toDraft(product: Product | null): Draft {
   };
 }
 
-// Compress image to data URL (max width 800px) to keep localStorage small
-function fileToDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const img = new Image();
-      img.onload = () => {
-        const maxW = 800;
-        const scale = Math.min(1, maxW / img.width);
-        const canvas = document.createElement("canvas");
-        canvas.width = img.width * scale;
-        canvas.height = img.height * scale;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return resolve(reader.result as string);
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        resolve(canvas.toDataURL("image/jpeg", 0.8));
-      };
-      img.onerror = reject;
-      img.src = reader.result as string;
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
+// Upload file to Supabase Storage
+async function uploadImage(file: File): Promise<string> {
+  const ext = file.name.split(".").pop() || "jpg";
+  const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const { error } = await supabase.storage
+    .from("product-images")
+    .upload(filename, file, { upsert: true, contentType: file.type });
+
+  if (error) throw error;
+
+  const { data } = supabase.storage.from("product-images").getPublicUrl(filename);
+  return data.publicUrl;
 }
 
 export default function ProductEditor({ product, onClose }: { product: Product | null; onClose: () => void }) {
   const { products, saveProduct } = useStore();
   const [draft, setDraft] = useState<Draft>(() => toDraft(product));
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState<string | null>(null); // "main" or "variant-{idx}"
   const isEdit = Boolean(product);
 
   const set = <K extends keyof Draft>(key: K, value: Draft[K]) => {
@@ -69,10 +61,13 @@ export default function ProductEditor({ product, onClose }: { product: Product |
 
   const handleMainImage = async (file: File) => {
     try {
-      const url = await fileToDataUrl(file);
+      setUploading("main");
+      const url = await uploadImage(file);
       set("image", url);
     } catch {
-      setError("Gagal memuat gambar.");
+      setError("Gagal upload gambar ke storage.");
+    } finally {
+      setUploading(null);
     }
   };
 
@@ -93,10 +88,13 @@ export default function ProductEditor({ product, onClose }: { product: Product |
 
   const handleVariantImage = async (index: number, file: File) => {
     try {
-      const url = await fileToDataUrl(file);
+      setUploading(`variant-${index}`);
+      const url = await uploadImage(file);
       updateVariant(index, { image: url });
     } catch {
-      setError("Gagal memuat gambar varian.");
+      setError("Gagal upload gambar varian ke storage.");
+    } finally {
+      setUploading(null);
     }
   };
 
@@ -104,7 +102,7 @@ export default function ProductEditor({ product, onClose }: { product: Product |
     setDraft((prev) => ({ ...prev, variants: prev.variants.filter((_, i) => i !== index) }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setError("");
     if (!draft.name.trim()) return setError("Nama produk wajib diisi.");
     if (!draft.code.trim()) return setError("Kode produk wajib diisi.");
@@ -113,7 +111,6 @@ export default function ProductEditor({ product, onClose }: { product: Product |
 
     const slug = draft.slug || slugify(draft.name);
 
-    // prevent duplicate slug when creating new
     if (!isEdit && products.some((p) => p.slug === slug)) {
       return setError("Sudah ada produk dengan nama serupa. Ubah nama produk.");
     }
@@ -138,8 +135,15 @@ export default function ProductEditor({ product, onClose }: { product: Product |
       variants: cleanVariants.length ? cleanVariants : undefined,
     };
 
-    saveProduct(finalProduct);
-    onClose();
+    setSaving(true);
+    try {
+      await saveProduct(finalProduct);
+      onClose();
+    } catch {
+      setError("Gagal menyimpan produk. Cek koneksi internet.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -168,8 +172,12 @@ export default function ProductEditor({ product, onClose }: { product: Product |
                 )}
               </div>
               <label className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-[13px] font-medium text-foreground cursor-pointer hover:bg-secondary transition">
-                <Upload className="w-4 h-4" />
-                Upload Foto
+                {uploading === "main" ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Upload className="w-4 h-4" />
+                )}
+                {uploading === "main" ? "Uploading..." : "Upload Foto"}
                 <input
                   type="file"
                   accept="image/*"
@@ -267,8 +275,10 @@ export default function ProductEditor({ product, onClose }: { product: Product |
           </button>
           <button
             onClick={handleSave}
-            className="flex-1 rounded-xl bg-primary px-4 py-3 text-[14px] font-bold text-white shadow-md transition hover:bg-primary/90 active:scale-[0.98]"
+            disabled={saving}
+            className="flex-1 rounded-xl bg-primary px-4 py-3 text-[14px] font-bold text-white shadow-md transition hover:bg-primary/90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
           >
+            {saving && <Loader2 className="w-4 h-4 animate-spin" />}
             {isEdit ? "Simpan Perubahan" : "Tambah Produk"}
           </button>
         </div>

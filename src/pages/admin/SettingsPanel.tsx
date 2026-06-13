@@ -18,18 +18,18 @@ export default function SettingsPanel() {
     setSaved(false);
   };
 
-  const handleSave = () => {
-    saveSettings(draft);
+  const handleSave = async () => {
+    await saveSettings(draft);
     saveAdminCreds(creds.user, creds.pass);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
 
-  const handleResetAll = () => {
+  const handleResetAll = async () => {
     if (window.confirm("Reset semua data ke pengaturan awal? Produk, settings, dan kredensial akan kembali ke default. Tindakan ini tidak bisa dibatalkan.")) {
-      resetProductsToDefault();
-      resetSettingsToDefault();
-      refresh();
+      await resetProductsToDefault();
+      await resetSettingsToDefault();
+      await refresh();
       window.location.reload();
     }
   };

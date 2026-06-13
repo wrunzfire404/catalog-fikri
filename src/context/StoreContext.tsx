@@ -13,62 +13,61 @@ import {
   getSettings as readSettings,
   saveSettings as writeSettings,
 } from "@/lib/store";
-import type { Product, Settings } from "@/lib/products";
+import { defaultProducts, defaultSettings, type Product, type Settings } from "@/lib/products";
 
 type StoreValue = {
   products: Product[];
   settings: Settings;
+  loading: boolean;
   refresh: () => void;
-  saveProduct: (p: Product) => void;
-  deleteProduct: (slug: string) => void;
-  saveSettings: (s: Settings) => void;
+  saveProduct: (p: Product) => Promise<void>;
+  deleteProduct: (slug: string) => Promise<void>;
+  saveSettings: (s: Settings) => Promise<void>;
 };
 
 const StoreContext = createContext<StoreValue | null>(null);
 
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [products, setProducts] = useState<Product[]>(() => readProducts());
-  const [settings, setSettings] = useState<Settings>(() => readSettings());
+  const [products, setProducts] = useState<Product[]>(defaultProducts);
+  const [settings, setSettings] = useState<Settings>(defaultSettings);
+  const [loading, setLoading] = useState(true);
 
-  const refresh = useCallback(() => {
-    setProducts(readProducts());
-    setSettings(readSettings());
+  const refresh = useCallback(async () => {
+    const [prods, sets] = await Promise.all([readProducts(), readSettings()]);
+    setProducts(prods);
+    setSettings(sets);
   }, []);
 
+  useEffect(() => {
+    refresh().finally(() => setLoading(false));
+  }, [refresh]);
+
   const saveProduct = useCallback(
-    (p: Product) => {
-      writeProduct(p);
-      setProducts(readProducts());
+    async (p: Product) => {
+      await writeProduct(p);
+      await refresh();
     },
-    []
+    [refresh]
   );
 
   const deleteProduct = useCallback(
-    (slug: string) => {
-      removeProduct(slug);
-      setProducts(readProducts());
+    async (slug: string) => {
+      await removeProduct(slug);
+      await refresh();
     },
-    []
+    [refresh]
   );
 
   const saveSettings = useCallback(
-    (s: Settings) => {
-      writeSettings(s);
-      setSettings(readSettings());
+    async (s: Settings) => {
+      await writeSettings(s);
+      await refresh();
     },
-    []
+    [refresh]
   );
 
-  useEffect(() => {
-    const onStorage = (e: StorageEvent) => {
-      if (e.key?.startsWith("pgrb-")) refresh();
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, [refresh]);
-
   return (
-    <StoreContext.Provider value={{ products, settings, refresh, saveProduct, deleteProduct, saveSettings }}>
+    <StoreContext.Provider value={{ products, settings, loading, refresh, saveProduct, deleteProduct, saveSettings }}>
       {children}
     </StoreContext.Provider>
   );
