@@ -11,7 +11,7 @@ export default function Cart() {
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans pb-24 md:pb-0">
-      <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-border">
+      <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-border/60">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <Link to="/stock" className="flex items-center gap-2 text-foreground hover:text-primary transition">
             <ArrowLeft className="w-5 h-5" />
@@ -26,20 +26,20 @@ export default function Cart() {
 
       <main className="mx-auto max-w-3xl px-4 py-8 md:py-12">
         {cart.length === 0 ? (
-          <div className="text-center py-20 space-y-5">
+          <div className="text-center py-20 space-y-5 animate-fade-in-up">
             <ShoppingCart className="w-20 h-20 mx-auto text-muted-foreground opacity-30" />
             <h2 className="text-xl font-bold font-serif text-foreground">Keranjang Kosong</h2>
             <p className="text-muted-foreground text-sm">Yuk, pilih produk favoritmu dari katalog.</p>
             <Link
               to="/stock"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-[15px] font-bold text-white shadow-md transition hover:bg-primary/90"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-[15px] font-bold text-white shadow-button transition hover:bg-primary/90 btn-press"
             >
               Lihat Katalog
             </Link>
           </div>
         ) : (
           <>
-            <div className="space-y-4 mb-8">
+            <div className="space-y-4 mb-8 stagger-children">
               {cart.map((item, index) => (
                 <div
                   key={`${item.product.slug}-${item.variant?.slug}-${index}`}
