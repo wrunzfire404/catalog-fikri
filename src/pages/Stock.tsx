@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Search, ShoppingCart, ShoppingBag, ArrowLeft, Sparkles, Loader2 } from "lucide-react";
+import { Search, ShoppingCart, ShoppingBag, ArrowLeft } from "lucide-react";
 import { type Product } from "@/lib/products";
 import { ProductCard, ProductModal } from "@/components/catalog";
 import { CartDrawer } from "@/components/cart";
@@ -17,32 +17,40 @@ export default function Stock() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [query, setQuery] = useState("");
 
-  // Direct Supabase fetch untuk featured (bypass context)
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
-  useEffect(() => {
+  // Fetch featured products for popup
+  const fetchFeatured = () =>
     supabase
       .from("products")
       .select("*")
       .eq("featured", true)
       .then(({ data, error }) => {
         if (!error && data) {
-          setFeaturedProducts(
-            data.map((row: Record<string, unknown>) => ({
-              slug: row.slug as string,
-              code: row.code as string,
-              name: row.name as string,
-              ld: (row.ld as string) || "",
-              pj: (row.pj as string) || "",
-              price: row.price as number,
-              note: (row.note as string) || undefined,
-              image: (row.image as string) || undefined,
-              variants: Array.isArray(row.variants) ? (row.variants as Product["variants"]) : undefined,
-              featured: (row.featured as boolean) || false,
-            }))
-          );
+          return data.map((row: Record<string, unknown>) => ({
+            slug: row.slug as string,
+            code: row.code as string,
+            name: row.name as string,
+            ld: (row.ld as string) || "",
+            pj: (row.pj as string) || "",
+            price: row.price as number,
+            note: (row.note as string) || undefined,
+            image: (row.image as string) || undefined,
+            variants: Array.isArray(row.variants) ? (row.variants as Product["variants"]) : undefined,
+            featured: (row.featured as boolean) || false,
+          })) as Product[];
         }
+        return [] as Product[];
       });
-  }, []);
+
+  // Listen for product selection from popup
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const slug = (e as CustomEvent<string>).detail;
+      const product = storeProducts.find((p) => p.slug === slug);
+      if (product) setSelectedProduct(product);
+    };
+    window.addEventListener("select-product", handler);
+    return () => window.removeEventListener("select-product", handler);
+  }, [storeProducts]);
 
   const filtered = storeProducts.filter((p) =>
     `${p.code} ${p.name}`.toLowerCase().includes(query.toLowerCase().trim())
@@ -90,38 +98,18 @@ export default function Stock() {
           </div>
         </div>
 
-        {/* Featured / Rekomendasi */}
-        {featuredProducts.length > 0 && (
-          <section className="mb-12">
-            <div className="flex items-center gap-2 mb-5">
-              <Sparkles className="w-5 h-5 text-primary" />
-              <h2 className="text-xl font-bold font-serif text-foreground">Produk Rekomendasi</h2>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-              {featuredProducts.map((product) => (
-                <ProductCard key={product.slug} product={product} onSelect={() => setSelectedProduct(product)} />
-              ))}
-            </div>
-          </section>
+        {filtered.length === 0 ? (
+          <div className="py-20 text-center text-muted-foreground">
+            <ShoppingBag className="w-12 h-12 mx-auto mb-3 opacity-40" />
+            <p>Produk "{query}" tidak ditemukan.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {filtered.map((product) => (
+              <ProductCard key={product.slug} product={product} onSelect={() => setSelectedProduct(product)} />
+            ))}
+          </div>
         )}
-
-        <section>
-          {featuredProducts.length > 0 && (
-            <h2 className="text-xl font-bold font-serif text-foreground mb-5">Semua Produk</h2>
-          )}
-          {filtered.length === 0 ? (
-            <div className="py-20 text-center text-muted-foreground">
-              <ShoppingBag className="w-12 h-12 mx-auto mb-3 opacity-40" />
-              <p>Produk "{query}" tidak ditemukan.</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-              {filtered.map((product) => (
-                <ProductCard key={product.slug} product={product} onSelect={() => setSelectedProduct(product)} />
-              ))}
-            </div>
-          )}
-        </section>
       </main>
 
       {selectedProduct && (
@@ -132,13 +120,16 @@ export default function Stock() {
             addToCart(selectedProduct, variant, qty);
             const name = selectedProduct.name;
             setSelectedProduct(null);
-            showPopup(
-              `${name} berhasil ditambahkan (${qty} pcs)`,
-              {
+            // Fetch featured & show popup with rekomendasi
+            fetchFeatured().then((featuredProducts) => {
+              // Exclude product yg barusan ditambahin
+              const recs = featuredProducts.filter((p) => p.slug !== selectedProduct.slug);
+              showPopup(`${name} berhasil ditambahkan (${qty} pcs)`, {
                 action: { label: "Lihat Keranjang", onClick: () => setIsCartOpen(true) },
                 secondary: { label: "Lanjut Belanja", onClick: () => {} },
-              }
-            );
+                featured: recs,
+              });
+            });
           }}
         />
       )}
