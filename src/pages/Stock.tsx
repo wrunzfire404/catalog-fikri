@@ -6,12 +6,12 @@ import { ProductCard, ProductModal } from "@/components/catalog";
 import { CartDrawer } from "@/components/cart";
 import { useCart } from "@/context/CartContext";
 import { useStore } from "@/context/StoreContext";
-import { useToast } from "@/context/ToastContext";
+import { usePopup } from "@/context/ToastContext";
 
 export default function Stock() {
   const { cart, totalItems, addToCart, updateQty, removeItem } = useCart();
   const { products, settings } = useStore();
-  const { show: showToast } = useToast();
+  const { showPopup } = usePopup();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -106,7 +106,7 @@ export default function Stock() {
             addToCart(selectedProduct, variant, qty);
             const name = selectedProduct.name;
             setSelectedProduct(null);
-            showToast(
+            showPopup(
               `${name} berhasil ditambahkan (${qty} pcs)`,
               {
                 action: { label: "Lihat Keranjang", onClick: () => setIsCartOpen(true) },

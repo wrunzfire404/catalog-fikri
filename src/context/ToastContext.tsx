@@ -1,76 +1,93 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
-import { CheckCircle2, X, ShoppingCart } from "lucide-react";
+import { CheckCircle2, X } from "lucide-react";
 
-type Toast = {
-  id: number;
+type PopupData = {
   message: string;
   action?: { label: string; onClick: () => void };
   secondary?: { label: string; onClick: () => void };
 };
 
 type ToastContextValue = {
-  show: (message: string, opts?: { action?: { label: string; onClick: () => void }; secondary?: { label: string; onClick: () => void } }) => void;
+  showPopup: (message: string, opts?: { action?: { label: string; onClick: () => void }; secondary?: { label: string; onClick: () => void } }) => void;
 };
 
 const ToastContext = createContext<ToastContextValue | null>(null);
 
-let nextId = 1;
-
 export function ToastProvider({ children }: { children: ReactNode }) {
-  const [toasts, setToasts] = useState<Toast[]>([]);
+  const [popup, setPopup] = useState<PopupData | null>(null);
 
-  const show = useCallback(
+  const showPopup = useCallback(
     (message: string, opts?: { action?: { label: string; onClick: () => void }; secondary?: { label: string; onClick: () => void } }) => {
-      const id = nextId++;
-      setToasts((prev) => [...prev, { id, message, ...opts }]);
-      setTimeout(() => {
-        setToasts((prev) => prev.filter((t) => t.id !== id));
-      }, 5000);
+      setPopup({ message, ...opts });
     },
     []
   );
 
-  const dismiss = (id: number) => setToasts((prev) => prev.filter((t) => t.id !== id));
+  const dismiss = () => setPopup(null);
 
   return (
-    <ToastContext.Provider value={{ show }}>
+    <ToastContext.Provider value={{ showPopup }}>
       {children}
-      <div className="fixed bottom-20 md:bottom-6 right-4 left-4 md:left-auto md:right-6 z-[100] flex flex-col gap-2 pointer-events-none">
-        {toasts.map((toast) => (
+
+      {/* Popup Modal */}
+      {popup && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+          onClick={dismiss}
+        >
           <div
-            key={toast.id}
-            className="pointer-events-auto animate-in slide-in-from-bottom-4 fade-in duration-300 flex items-start gap-3 rounded-xl bg-white shadow-elegant border border-border/60 p-4 max-w-sm w-full md:w-auto"
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-sm rounded-2xl bg-white shadow-2xl p-6 animate-in zoom-in-95 duration-300"
           >
-            <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-            <div className="flex-1 min-w-0">
-              <p className="text-[14px] font-medium text-foreground">{toast.message}</p>
-              {(toast.action || toast.secondary) && (
-                <div className="flex gap-2 mt-2">
-                  {toast.action && (
-                    <button onClick={toast.action.onClick} className="text-[13px] font-semibold text-primary hover:underline">
-                      {toast.action.label}
-                    </button>
-                  )}
-                  {toast.secondary && (
-                    <button onClick={toast.secondary.onClick} className="text-[13px] text-muted-foreground hover:text-foreground hover:underline">
-                      {toast.secondary.label}
-                    </button>
-                  )}
-                </div>
+            <div className="flex items-start gap-3 mb-5">
+              <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+                <CheckCircle2 className="w-6 h-6 text-green-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold font-serif text-foreground text-[16px]">Berhasil!</h3>
+                <p className="text-[14px] text-muted-foreground mt-0.5">{popup.message}</p>
+              </div>
+              <button
+                onClick={dismiss}
+                className="grid h-8 w-8 place-items-center rounded-full bg-secondary text-muted-foreground hover:text-foreground hover:bg-neutral-200 transition shrink-0"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              {popup.action && (
+                <button
+                  onClick={() => {
+                    popup.action?.onClick();
+                    dismiss();
+                  }}
+                  className="w-full rounded-xl bg-primary px-4 py-3 text-[15px] font-bold text-white shadow-md transition hover:bg-primary/90 active:scale-[0.98]"
+                >
+                  {popup.action.label}
+                </button>
+              )}
+              {popup.secondary && (
+                <button
+                  onClick={() => {
+                    popup.secondary?.onClick();
+                    dismiss();
+                  }}
+                  className="w-full rounded-xl border border-border px-4 py-3 text-[14px] font-semibold text-foreground hover:bg-secondary transition"
+                >
+                  {popup.secondary.label}
+                </button>
               )}
             </div>
-            <button onClick={() => dismiss(toast.id)} className="text-muted-foreground hover:text-foreground shrink-0">
-              <X className="w-4 h-4" />
-            </button>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
     </ToastContext.Provider>
   );
 }
 
-export function useToast() {
+export function usePopup() {
   const ctx = useContext(ToastContext);
-  if (!ctx) throw new Error("useToast must be used within a ToastProvider");
+  if (!ctx) throw new Error("usePopup must be used within a ToastProvider");
   return ctx;
 }
