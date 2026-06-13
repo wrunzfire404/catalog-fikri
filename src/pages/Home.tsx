@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { ShoppingBag, MessageCircle, MapPin, Sparkles, ShieldCheck } from "lucide-react";
+import { ShoppingBag, MessageCircle, MapPin, Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
 import { waCsLink } from "@/lib/products";
 import { useStore } from "@/context/StoreContext";
 
