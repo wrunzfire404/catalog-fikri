@@ -57,8 +57,8 @@ export default function Stock() {
   );
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans pb-24 md:pb-0">
-      <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-border">
+    <div className="min-h-screen bg-background text-foreground pb-24 md:pb-0">
+      <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-border/60">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-center gap-2 text-foreground hover:text-primary transition">
             <ArrowLeft className="w-5 h-5" />
@@ -72,7 +72,7 @@ export default function Stock() {
           >
             <ShoppingCart className="w-6 h-6 text-primary" />
             {totalItems > 0 && (
-              <span className="absolute top-0 right-0 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white border-2 border-white">
+              <span className="absolute top-0 right-0 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white border-2 border-white badge-pulse">
                 {totalItems}
               </span>
             )}
@@ -81,19 +81,19 @@ export default function Stock() {
       </header>
 
       <main className="mx-auto max-w-6xl px-4 py-10 md:py-14">
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between mb-8">
-          <div>
-            <p className="text-[12px] uppercase tracking-[0.2em] text-primary font-semibold mb-2">Koleksi Terbaru</p>
-            <h1 className="text-3xl md:text-4xl font-bold font-serif text-foreground tracking-tight">Katalog</h1>
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between mb-10">
+          <div className="animate-fade-in-up">
+            <p className="text-[11px] uppercase tracking-[0.25em] text-primary font-semibold mb-2">Koleksi</p>
+            <h1 className="text-3xl md:text-4xl font-bold font-serif text-foreground">Katalog</h1>
             <p className="text-muted-foreground mt-2 text-[14px]">Pilih varian favoritmu, langsung checkout ke WhatsApp.</p>
           </div>
-          <div className="relative w-full md:w-72">
+          <div className="relative w-full md:w-72 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-muted-foreground" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Cari produk..."
-              className="w-full rounded-full border border-border bg-white pl-10 pr-4 py-2.5 text-[14px] outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+              className="w-full rounded-full border border-border/60 bg-white pl-10 pr-4 py-2.5 text-[14px] outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/5"
             />
           </div>
         </div>
@@ -104,7 +104,7 @@ export default function Stock() {
             <p>Produk "{query}" tidak ditemukan.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 stagger-children">
             {filtered.map((product) => (
               <ProductCard key={product.slug} product={product} onSelect={() => setSelectedProduct(product)} />
             ))}
