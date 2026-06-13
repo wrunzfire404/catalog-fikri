@@ -29,7 +29,11 @@ export async function getAllProducts(): Promise<Product[]> {
 }
 
 export async function saveProduct(product: Product) {
-  const existing = await supabase.from("products").select("id").eq("slug", product.slug).single();
+  const { data: existing, error: findError } = await supabase
+    .from("products")
+    .select("id")
+    .eq("slug", product.slug)
+    .maybeSingle();
 
   const payload = {
     slug: product.slug,
@@ -43,7 +47,7 @@ export async function saveProduct(product: Product) {
     variants: product.variants || [],
   };
 
-  if (existing.data) {
+  if (existing) {
     return supabase.from("products").update(payload).eq("slug", product.slug);
   }
   return supabase.from("products").insert(payload);
