@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, ShoppingCart, ShoppingBag, ArrowLeft } from "lucide-react";
+import { Search, ShoppingCart, ShoppingBag, ArrowLeft, Sparkles } from "lucide-react";
 import { type Product } from "@/lib/products";
 import { ProductCard, ProductModal } from "@/components/catalog";
 import { CartDrawer } from "@/components/cart";
 import { useCart } from "@/context/CartContext";
 import { useStore } from "@/context/StoreContext";
+import { useToast } from "@/context/ToastContext";
 
 export default function Stock() {
   const { cart, totalItems, addToCart, updateQty, removeItem } = useCart();
   const { products, settings } = useStore();
+  const { show: showToast } = useToast();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -17,6 +19,8 @@ export default function Stock() {
   const filtered = products.filter((p) =>
     `${p.code} ${p.name}`.toLowerCase().includes(query.toLowerCase().trim())
   );
+
+  const featured = products.filter((p) => (p as Product & { featured?: boolean }).featured);
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans pb-24 md:pb-0">
@@ -27,8 +31,8 @@ export default function Stock() {
             <img src="/images/pgrb-logo.png" alt={settings.shopName} className="h-9 object-contain" />
           </Link>
 
-          <button
-            onClick={() => setIsCartOpen(true)}
+          <Link
+            to="/cart"
             className="relative p-2 text-foreground hover:bg-secondary rounded-full transition"
             aria-label="Keranjang"
           >
@@ -38,7 +42,7 @@ export default function Stock() {
                 {totalItems}
               </span>
             )}
-          </button>
+          </Link>
         </div>
       </header>
 
@@ -60,18 +64,38 @@ export default function Stock() {
           </div>
         </div>
 
-        {filtered.length === 0 ? (
-          <div className="py-20 text-center text-muted-foreground">
-            <ShoppingBag className="w-12 h-12 mx-auto mb-3 opacity-40" />
-            <p>Produk "{query}" tidak ditemukan.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {filtered.map((product) => (
-              <ProductCard key={product.slug} product={product} onSelect={() => setSelectedProduct(product)} />
-            ))}
-          </div>
+        {/* Featured / Rekomendasi */}
+        {featured.length > 0 && (
+          <section className="mb-12">
+            <div className="flex items-center gap-2 mb-5">
+              <Sparkles className="w-5 h-5 text-primary" />
+              <h2 className="text-xl font-bold font-serif text-foreground">Produk Rekomendasi</h2>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+              {featured.map((product) => (
+                <ProductCard key={product.slug} product={product} onSelect={() => setSelectedProduct(product)} />
+              ))}
+            </div>
+          </section>
         )}
+
+        <section>
+          {featured.length > 0 && (
+            <h2 className="text-xl font-bold font-serif text-foreground mb-5">Semua Produk</h2>
+          )}
+          {filtered.length === 0 ? (
+            <div className="py-20 text-center text-muted-foreground">
+              <ShoppingBag className="w-12 h-12 mx-auto mb-3 opacity-40" />
+              <p>Produk "{query}" tidak ditemukan.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+              {filtered.map((product) => (
+                <ProductCard key={product.slug} product={product} onSelect={() => setSelectedProduct(product)} />
+              ))}
+            </div>
+          )}
+        </section>
       </main>
 
       {selectedProduct && (
@@ -80,8 +104,15 @@ export default function Stock() {
           onClose={() => setSelectedProduct(null)}
           onAddToCart={(variant, qty) => {
             addToCart(selectedProduct, variant, qty);
+            const name = selectedProduct.name;
             setSelectedProduct(null);
-            setIsCartOpen(true);
+            showToast(
+              `${name} berhasil ditambahkan (${qty} pcs)`,
+              {
+                action: { label: "Lihat Keranjang", onClick: () => setIsCartOpen(true) },
+                secondary: { label: "Lanjut Belanja", onClick: () => {} },
+              }
+            );
           }}
         />
       )}
@@ -97,8 +128,8 @@ export default function Stock() {
 
       {totalItems > 0 && !isCartOpen && !selectedProduct && (
         <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.05)] md:hidden z-20 animate-in slide-in-from-bottom-full">
-          <button
-            onClick={() => setIsCartOpen(true)}
+          <Link
+            to="/cart"
             className="w-full flex items-center justify-between rounded-xl bg-primary px-5 py-3.5 text-white shadow-lg"
           >
             <div className="flex items-center gap-3">
@@ -106,7 +137,7 @@ export default function Stock() {
               <span className="font-semibold text-[15px]">{totalItems} Item</span>
             </div>
             <span className="font-bold text-[15px]">Lihat Keranjang</span>
-          </button>
+          </Link>
         </div>
       )}
     </div>

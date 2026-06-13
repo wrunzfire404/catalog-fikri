@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ShoppingCart, X, Plus, Minus, Trash2, ArrowRight } from "lucide-react";
+import { ShoppingCart, X, Plus, Minus, Trash2, ArrowRight, ArrowLeft } from "lucide-react";
 import { formatRupiah, type CartItem } from "@/lib/products";
 import { PlaceholderArt } from "./catalog";
 
@@ -33,9 +33,12 @@ export function CartDrawer({
           </h2>
           <button
             onClick={onClose}
-            className="grid h-8 w-8 place-items-center rounded-full bg-secondary text-muted-foreground transition hover:bg-neutral-200 hover:text-foreground"
+            className="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-[13px] font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition"
           >
-            <X className="h-5 w-5" />
+            <ArrowLeft className="w-4 h-4 md:hidden" />
+            <X className="w-4 h-4 hidden md:block" />
+            <span className="hidden md:inline">Tutup</span>
+            <span className="md:hidden">Kembali</span>
           </button>
         </div>
 
@@ -100,7 +103,18 @@ export function CartDrawer({
                         >
                           <Minus className="w-3.5 h-3.5" />
                         </button>
-                        <span className="w-8 text-center font-semibold text-[13px]">{item.quantity}</span>
+                        <input
+                          type="number"
+                          inputMode="numeric"
+                          min={1}
+                          value={item.quantity}
+                          onChange={(e) => {
+                            const v = parseInt(e.target.value, 10);
+                            if (!isNaN(v) && v >= 1) onUpdateQty(index, v);
+                            else if (e.target.value === "") onUpdateQty(index, 1);
+                          }}
+                          className="w-10 text-center font-semibold text-[13px] bg-transparent outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        />
                         <button
                           onClick={() => onUpdateQty(index, item.quantity + 1)}
                           className="grid h-7 w-7 place-items-center rounded-md text-foreground hover:bg-white hover:shadow-sm transition"

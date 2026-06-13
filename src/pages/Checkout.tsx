@@ -175,7 +175,18 @@ export default function Checkout() {
                           >
                             <Minus className="w-3.5 h-3.5" />
                           </button>
-                          <span className="w-7 text-center text-[13px] font-semibold">{item.quantity}</span>
+                          <input
+                            type="number"
+                            inputMode="numeric"
+                            min={1}
+                            value={item.quantity}
+                            onChange={(e) => {
+                              const v = parseInt(e.target.value, 10);
+                              if (!isNaN(v) && v >= 1) updateQty(index, v);
+                              else if (e.target.value === "") updateQty(index, 1);
+                            }}
+                            className="w-10 text-center text-[13px] font-semibold bg-transparent outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          />
                           <button
                             onClick={() => updateQty(index, item.quantity + 1)}
                             className="grid h-7 w-7 place-items-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition"

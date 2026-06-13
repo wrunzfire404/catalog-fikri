@@ -25,6 +25,7 @@ export async function getAllProducts(): Promise<Product[]> {
     note: (row.note as string) || undefined,
     image: (row.image as string) || undefined,
     variants: Array.isArray(row.variants) ? (row.variants as Product["variants"]) : undefined,
+    featured: (row.featured as boolean) || false,
   }));
 }
 
@@ -45,6 +46,7 @@ export async function saveProduct(product: Product) {
     note: product.note || null,
     image: product.image || null,
     variants: product.variants || [],
+    featured: (product as Product & { featured?: boolean }).featured || false,
   };
 
   if (existing) {

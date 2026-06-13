@@ -164,7 +164,7 @@ export function ProductModal({
 
           <div className="mb-6">
             <p className="text-sm font-semibold text-foreground mb-3">Atur Jumlah</p>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <div className="flex items-center rounded-lg border border-border p-1 bg-secondary/30">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -173,7 +173,18 @@ export function ProductModal({
                 >
                   <Minus className="w-4 h-4" />
                 </button>
-                <span className="w-10 text-center font-semibold text-[15px]">{quantity}</span>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  min={1}
+                  value={quantity}
+                  onChange={(e) => {
+                    const v = parseInt(e.target.value, 10);
+                    if (!isNaN(v) && v >= 1) setQuantity(v);
+                    else if (e.target.value === "") setQuantity(1);
+                  }}
+                  className="w-16 text-center font-semibold text-[15px] bg-transparent outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
                 <button
                   onClick={() => setQuantity(quantity + 1)}
                   className="grid h-8 w-8 place-items-center rounded-md text-foreground hover:bg-white hover:shadow-sm transition"
