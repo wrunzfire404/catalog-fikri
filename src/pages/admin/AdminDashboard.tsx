@@ -24,6 +24,7 @@ export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [tab, setTab] = useState<Tab>("products");
   const [editing, setEditing] = useState<Product | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [toggling, setToggling] = useState<string | null>(null); // slug yg lagi di-toggle
 
   const handleLogout = () => {
     adminLogout();
@@ -132,16 +133,27 @@ export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   <div className="flex items-center gap-1">
                     <button
                       onClick={async () => {
-                        const toggled = { ...product, featured: !product.featured };
-                        await saveProduct(toggled);
+                        setToggling(product.slug);
+                        try {
+                          const toggled = { ...product, featured: !product.featured };
+                          const result = await saveProduct(toggled);
+                          if (result && (result as { error?: { message: string } }).error) {
+                            alert("Gagal update: " + ((result as { error: { message: string } }).error.message || "Unknown error"));
+                          }
+                        } catch (e) {
+                          alert("Error: " + (e instanceof Error ? e.message : "Gagal menyimpan"));
+                        } finally {
+                          setToggling(null);
+                        }
                       }}
-                      className={`grid h-9 w-9 place-items-center rounded-lg transition ${
+                      disabled={toggling === product.slug}
+                      className={`grid h-9 w-9 place-items-center rounded-lg transition disabled:opacity-40 ${
                         product.featured
                           ? "text-amber-500 bg-amber-50 hover:bg-amber-100"
                           : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                       }`}
                       aria-label="Toggle Rekomendasi"
-                      title="Tandai Rekomendasi"
+                      title={product.featured ? "Hapus dari rekomendasi" : "Tandai rekomendasi"}
                     >
                       <Star className="w-[18px] h-[18px]" fill={product.featured ? "currentColor" : "none"} />
                     </button>
