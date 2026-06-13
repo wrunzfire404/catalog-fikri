@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Search, ShoppingCart, ShoppingBag, ArrowLeft, Sparkles } from "lucide-react";
 import { type Product } from "@/lib/products";
@@ -10,11 +10,13 @@ import { usePopup } from "@/context/ToastContext";
 
 export default function Stock() {
   const { cart, totalItems, addToCart, updateQty, removeItem } = useCart();
-  const { products, settings } = useStore();
+  const { products, settings, refresh } = useStore();
   const { showPopup } = usePopup();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [query, setQuery] = useState("");
+
+  useEffect(() => { refresh(); }, [refresh]); // force refresh tiap buka page
 
   const filtered = products.filter((p) =>
     `${p.code} ${p.name}`.toLowerCase().includes(query.toLowerCase().trim())
