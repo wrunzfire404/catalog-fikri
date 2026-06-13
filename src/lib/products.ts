@@ -1,10 +1,3 @@
-import rereHitamAsset from "@/assets/rere-hitam.png.asset.json";
-import rereBwAsset from "@/assets/rere-bw.png.asset.json";
-import rereMaroonAsset from "@/assets/rere-maroon.png.asset.json";
-import rereCoklatTuaAsset from "@/assets/rere-coklat-tua.png.asset.json";
-import rerePinkAsset from "@/assets/rere-pink.png.asset.json";
-import rereCreamAsset from "@/assets/rere-cream.png.asset.json";
-
 export type ProductVariant = {
   slug: string;
   color: string;
@@ -24,12 +17,12 @@ export type Product = {
 };
 
 const rereVariants: ProductVariant[] = [
-  { slug: "maroon", color: "Maroon", image: rereMaroonAsset.url },
-  { slug: "hitam", color: "Hitam", image: rereHitamAsset.url },
-  { slug: "bw", color: "BW", image: rereBwAsset.url },
-  { slug: "coklat-tua", color: "Coklat Tua", image: rereCoklatTuaAsset.url },
-  { slug: "pink", color: "Pink", image: rerePinkAsset.url },
-  { slug: "cream", color: "Cream", image: rereCreamAsset.url },
+  { slug: "maroon", color: "Maroon", image: "/images/rere-maroon.png" },
+  { slug: "hitam", color: "Hitam", image: "/images/rere-hitam.png" },
+  { slug: "bw", color: "BW", image: "/images/rere-bw.png" },
+  { slug: "coklat-tua", color: "Coklat Tua", image: "/images/rere-coklat-tua.png" },
+  { slug: "pink", color: "Pink", image: "/images/rere-pink.png" },
+  { slug: "cream", color: "Cream", image: "/images/rere-cream.png" },
 ];
 
 export const products: Product[] = [
@@ -44,15 +37,15 @@ export const products: Product[] = [
     image: rereVariants[0]?.image,
     variants: rereVariants,
   },
-  { slug: "dz-sultan", code: "C", name: "DZ Sultan", ld: "100", pj: "55", price: 54000 },
-  { slug: "dz-warna", code: "C", name: "DZ Warna", ld: "100", pj: "55", price: 54000 },
-  { slug: "dz-oca", code: "C", name: "DZ OCA", ld: "100", pj: "55", price: 54000, note: "Bahan rajut murce" },
-  { slug: "salur-sultan", code: "A", name: "Salur Sultan", ld: "110-120", pj: "55-57", price: 59000 },
-  { slug: "sailor-isabela", code: "A", name: "SAILOR ISABELA", ld: "110-120", pj: "57", price: 64000 },
-  { slug: "kerah-alina", code: "B", name: "Kerah Alina", ld: "110-120", pj: "60", price: 64000 },
-  { slug: "kriwil", code: "B", name: "KRIWIL", ld: "80-100", pj: "55", price: 50000 },
-  { slug: "clarys-stripe", code: "A", name: "CLARYS STRIPE", ld: "110-120", pj: "58", price: 64000 },
-  { slug: "stripe-mila", code: "C", name: "STRIPE MILA", ld: "100-110", pj: "55", price: 45000 },
+  { slug: "dz-sultan", code: "C", name: "DZ Sultan", ld: "100", pj: "55", price: 54000, image: "/images/dz-sultan.png" },
+  { slug: "dz-warna", code: "C", name: "DZ Warna", ld: "100", pj: "55", price: 54000, image: "/images/dz-warna.png" },
+  { slug: "dz-oca", code: "C", name: "DZ OCA", ld: "100", pj: "55", price: 54000, note: "Bahan rajut murce", image: "/images/dz-oca.png" },
+  { slug: "salur-sultan", code: "A", name: "Salur Sultan", ld: "110-120", pj: "55-57", price: 59000, image: "/images/salur-sultan.png" },
+  { slug: "sailor-isabela", code: "A", name: "SAILOR ISABELA", ld: "110-120", pj: "57", price: 64000, image: "/images/sailor-isabela.png" },
+  { slug: "kerah-alina", code: "B", name: "Kerah Alina", ld: "110-120", pj: "60", price: 64000, image: "/images/kerah-alina.png" },
+  { slug: "kriwil", code: "B", name: "KRIWIL", ld: "80-100", pj: "55", price: 50000, image: "/images/kriwil.png" },
+  { slug: "clarys-stripe", code: "A", name: "CLARYS STRIPE", ld: "110-120", pj: "58", price: 64000, image: "/images/clarys-stripe.png" },
+  { slug: "stripe-mila", code: "C", name: "STRIPE MILA", ld: "100-110", pj: "55", price: 45000, image: "/images/stripe-mila.png" },
 ];
 
 export const WA_NUMBER = "6283131261552";

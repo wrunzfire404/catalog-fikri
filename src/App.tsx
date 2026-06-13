@@ -10,7 +10,7 @@ import {
   type Product,
   type ProductVariant,
 } from "@/lib/products";
-import logoAsset from "@/assets/pgrb-logo.png.asset.json";
+
 
 export default function App() {
   const [selected, setSelected] = useState<Product | null>(null);
@@ -20,7 +20,7 @@ export default function App() {
       <header className="sticky top-0 z-30 bg-[#075E54] text-white shadow-md">
         <div className="mx-auto flex max-w-2xl items-center gap-3 px-4 py-3">
           <div className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-white/95">
-            <img src={logoAsset.url} alt="PGRB" className="h-10 w-10 object-contain" />
+            <img src="/images/pgrb-logo.png" alt="PGRB" className="h-10 w-10 object-contain" />
           </div>
           <div className="min-w-0 flex-1">
             <h1 className="truncate font-sans text-base font-semibold leading-tight">{SHOP_NAME}</h1>
