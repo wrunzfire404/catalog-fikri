@@ -14,6 +14,7 @@ export type Product = {
   note?: string;
   image?: string;
   variants?: ProductVariant[];
+  featured?: boolean;
 };
 
 export type Settings = {

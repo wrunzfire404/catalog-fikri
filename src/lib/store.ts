@@ -46,7 +46,7 @@ export async function saveProduct(product: Product) {
     note: product.note || null,
     image: product.image || null,
     variants: product.variants || [],
-    featured: (product as Product & { featured?: boolean }).featured || false,
+    featured: product.featured || false,
   };
 
   if (existing) {

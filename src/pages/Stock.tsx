@@ -20,7 +20,7 @@ export default function Stock() {
     `${p.code} ${p.name}`.toLowerCase().includes(query.toLowerCase().trim())
   );
 
-  const featured = products.filter((p) => (p as Product & { featured?: boolean }).featured);
+  const featured = products.filter((p) => p.featured);
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans pb-24 md:pb-0">

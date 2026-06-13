@@ -126,24 +126,24 @@ export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     <p className="text-[13px] text-muted-foreground mt-0.5">
                       {formatRupiah(product.price)}
                       {product.variants?.length ? ` · ${product.variants.length} varian` : ""}
-                      {(product as Product & { featured?: boolean }).featured && " · ⭐ Rekomendasi"}
+                      {product.featured && " · ⭐ Rekomendasi"}
                     </p>
                   </div>
                   <div className="flex items-center gap-1">
                     <button
                       onClick={async () => {
-                        const p = { ...product, featured: !(product as Product & { featured?: boolean }).featured } as Product & { featured?: boolean };
-                        await saveProduct(p as Product);
+                        const toggled = { ...product, featured: !product.featured };
+                        await saveProduct(toggled);
                       }}
                       className={`grid h-9 w-9 place-items-center rounded-lg transition ${
-                        (product as Product & { featured?: boolean }).featured
+                        product.featured
                           ? "text-amber-500 bg-amber-50 hover:bg-amber-100"
                           : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                       }`}
                       aria-label="Toggle Rekomendasi"
                       title="Tandai Rekomendasi"
                     >
-                      <Star className="w-[18px] h-[18px]" fill={(product as Product & { featured?: boolean }).featured ? "currentColor" : "none"} />
+                      <Star className="w-[18px] h-[18px]" fill={product.featured ? "currentColor" : "none"} />
                     </button>
                     <button
                       onClick={() => setEditing(product)}
