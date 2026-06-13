@@ -21,6 +21,7 @@ type StoreValue = {
   loading: boolean;
   refresh: () => void;
   saveProduct: (p: Product) => Promise<void>;
+  toggleFeatured: (slug: string) => Promise<void>;
   deleteProduct: (slug: string) => Promise<void>;
   saveSettings: (s: Settings) => Promise<void>;
 };
@@ -45,9 +46,27 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const saveProduct = useCallback(
     async (p: Product) => {
       await writeProduct(p);
+      // Only full refresh on saveProduct (add/edit via modal)
       await refresh();
     },
     [refresh]
+  );
+
+  const toggleFeatured = useCallback(
+    async (slug: string) => {
+      // Optimistic UI update
+      setProducts((prev) =>
+        prev.map((p) =>
+          p.slug === slug ? { ...p, featured: !p.featured } : p
+        )
+      );
+      // Save in background without reordering
+      const product = products.find((p) => p.slug === slug);
+      if (product) {
+        await writeProduct({ ...product, featured: !product.featured });
+      }
+    },
+    [products]
   );
 
   const deleteProduct = useCallback(
@@ -67,7 +86,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <StoreContext.Provider value={{ products, settings, loading, refresh, saveProduct, deleteProduct, saveSettings }}>
+    <StoreContext.Provider value={{ products, settings, loading, refresh, saveProduct, toggleFeatured, deleteProduct, saveSettings }}>
       {children}
     </StoreContext.Provider>
   );

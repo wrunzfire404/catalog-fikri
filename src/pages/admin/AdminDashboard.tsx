@@ -20,7 +20,7 @@ import SettingsPanel from "./SettingsPanel";
 type Tab = "products" | "settings";
 
 export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
-  const { products, settings, saveProduct, deleteProduct } = useStore();
+  const { products, settings, toggleFeatured, deleteProduct } = useStore();
   const [tab, setTab] = useState<Tab>("products");
   const [editing, setEditing] = useState<Product | null>(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -135,11 +135,7 @@ export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                       onClick={async () => {
                         setToggling(product.slug);
                         try {
-                          const toggled = { ...product, featured: !product.featured };
-                          const result = await saveProduct(toggled);
-                          if (result && (result as { error?: { message: string } }).error) {
-                            alert("Gagal update: " + ((result as { error: { message: string } }).error.message || "Unknown error"));
-                          }
+                          await toggleFeatured(product.slug);
                         } catch (e) {
                           alert("Error: " + (e instanceof Error ? e.message : "Gagal menyimpan"));
                         } finally {
