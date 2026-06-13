@@ -20,7 +20,7 @@ import SettingsPanel from "./SettingsPanel";
 type Tab = "products" | "settings";
 
 export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
-  const { products, settings, deleteProduct } = useStore();
+  const { products, settings, saveProduct, deleteProduct } = useStore();
   const [tab, setTab] = useState<Tab>("products");
   const [editing, setEditing] = useState<Product | null>(null);
   const [isCreating, setIsCreating] = useState(false);
