@@ -1,15 +1,17 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft, MapPin, MessageCircle, Clock, Navigation } from "lucide-react";
-import { SHOP_NAME, SHOP_TAGLINE, SHOP_ADDRESS, SHOP_MAPS, waCsLink } from "@/lib/products";
+import { waCsLink } from "@/lib/products";
+import { useStore } from "@/context/StoreContext";
 
 export default function Visit() {
+  const { settings } = useStore();
   return (
     <div className="min-h-screen bg-background text-foreground font-sans">
       <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-border">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-center gap-2 text-foreground hover:text-primary transition">
             <ArrowLeft className="w-5 h-5" />
-            <img src="/images/pgrb-logo.png" alt={SHOP_NAME} className="h-9 object-contain" />
+            <img src="/images/pgrb-logo.png" alt={settings.shopName} className="h-9 object-contain" />
           </Link>
         </div>
       </header>
@@ -32,7 +34,7 @@ export default function Visit() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-foreground text-[15px] mb-1">Alamat Toko</h3>
-                  <p className="text-[14px] text-muted-foreground leading-relaxed">{SHOP_ADDRESS}</p>
+                  <p className="text-[14px] text-muted-foreground leading-relaxed">{settings.address}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -48,7 +50,7 @@ export default function Visit() {
 
             <div className="flex flex-col gap-3">
               <a
-                href={SHOP_MAPS}
+                href={settings.mapsUrl}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3.5 text-[15px] font-bold text-white shadow-md transition hover:bg-primary/90 active:scale-[0.98]"
@@ -57,7 +59,7 @@ export default function Visit() {
                 Petunjuk Arah (Google Maps)
               </a>
               <a
-                href={waCsLink()}
+                href={waCsLink(settings)}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-5 py-3.5 text-[15px] font-bold text-white shadow-md transition hover:bg-[#20bd5a] active:scale-[0.98]"
@@ -69,7 +71,7 @@ export default function Visit() {
           </div>
 
           <a
-            href={SHOP_MAPS}
+            href={settings.mapsUrl}
             target="_blank"
             rel="noreferrer"
             className="rounded-2xl overflow-hidden border border-border shadow-card min-h-[280px] md:min-h-0 group"
@@ -77,7 +79,7 @@ export default function Visit() {
             <div className="h-full w-full flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-secondary to-background group-hover:from-secondary/80 transition p-6 text-center">
               <MapPin className="w-14 h-14 text-primary/40" />
               <span className="text-[15px] font-bold text-primary">Buka di Google Maps</span>
-              <span className="text-[13px] text-muted-foreground">{SHOP_TAGLINE}</span>
+              <span className="text-[13px] text-muted-foreground">{settings.tagline}</span>
             </div>
           </a>
         </div>

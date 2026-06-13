@@ -13,10 +13,10 @@ import {
 import {
   formatRupiah,
   waCheckoutLink,
-  SHOP_NAME,
   type CustomerInfo,
 } from "@/lib/products";
 import { useCart } from "@/context/CartContext";
+import { useStore } from "@/context/StoreContext";
 import { PlaceholderArt } from "@/components/catalog";
 
 const EMPTY_CUSTOMER: CustomerInfo = {
@@ -31,6 +31,7 @@ const EMPTY_CUSTOMER: CustomerInfo = {
 export default function Checkout() {
   const navigate = useNavigate();
   const { cart, totalItems, totalPrice, updateQty, removeItem, clearCart } = useCart();
+  const { settings } = useStore();
   const [customer, setCustomer] = useState<CustomerInfo>(EMPTY_CUSTOMER);
   const [errors, setErrors] = useState<Partial<Record<keyof CustomerInfo, string>>>({});
   const [submitted, setSubmitted] = useState(false);
@@ -73,7 +74,7 @@ export default function Checkout() {
 
   const handleOrder = () => {
     if (!validate()) return;
-    window.open(waCheckoutLink(cart, customer), "_blank", "noreferrer");
+    window.open(waCheckoutLink(cart, customer, settings), "_blank", "noreferrer");
     setSubmitted(true);
     clearCart();
   };
@@ -116,7 +117,7 @@ export default function Checkout() {
             className="flex items-center gap-2 text-foreground hover:text-primary transition"
           >
             <ArrowLeft className="w-5 h-5" />
-            <img src="/images/pgrb-logo.png" alt={SHOP_NAME} className="h-9 object-contain" />
+            <img src="/images/pgrb-logo.png" alt={settings.shopName} className="h-9 object-contain" />
           </button>
           <h1 className="text-lg font-bold font-serif text-foreground hidden sm:block">Checkout</h1>
         </div>

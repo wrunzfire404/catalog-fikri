@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Search, ShoppingCart, ShoppingBag, ArrowLeft } from "lucide-react";
-import { products, SHOP_NAME, type Product } from "@/lib/products";
+import { type Product } from "@/lib/products";
 import { ProductCard, ProductModal } from "@/components/catalog";
 import { CartDrawer } from "@/components/cart";
 import { useCart } from "@/context/CartContext";
+import { useStore } from "@/context/StoreContext";
 
 export default function Stock() {
   const { cart, totalItems, addToCart, updateQty, removeItem } = useCart();
+  const { products, settings } = useStore();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -22,7 +24,7 @@ export default function Stock() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-center gap-2 text-foreground hover:text-primary transition">
             <ArrowLeft className="w-5 h-5" />
-            <img src="/images/pgrb-logo.png" alt={SHOP_NAME} className="h-9 object-contain" />
+            <img src="/images/pgrb-logo.png" alt={settings.shopName} className="h-9 object-contain" />
           </Link>
 
           <button

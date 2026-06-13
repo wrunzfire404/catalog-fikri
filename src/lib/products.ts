@@ -16,6 +16,14 @@ export type Product = {
   variants?: ProductVariant[];
 };
 
+export type Settings = {
+  shopName: string;
+  tagline: string;
+  waNumber: string;
+  address: string;
+  mapsUrl: string;
+};
+
 const rereVariants: ProductVariant[] = [
   { slug: "maroon", color: "Maroon", image: "/images/rere-maroon.png" },
   { slug: "hitam", color: "Hitam", image: "/images/rere-hitam.png" },
@@ -25,7 +33,7 @@ const rereVariants: ProductVariant[] = [
   { slug: "cream", color: "Cream", image: "/images/rere-cream.png" },
 ];
 
-export const products: Product[] = [
+export const defaultProducts: Product[] = [
   {
     slug: "rere",
     code: "B",
@@ -48,11 +56,13 @@ export const products: Product[] = [
   { slug: "stripe-mila", code: "C", name: "STRIPE MILA", ld: "100-110", pj: "55", price: 45000, image: "/images/stripe-mila.png" },
 ];
 
-export const WA_NUMBER = "6283131261552";
-export const SHOP_NAME = "PGRB";
-export const SHOP_TAGLINE = "Pusat Grosir Rajut Bandung";
-export const SHOP_ADDRESS = "Jl. Caringin No. 123, Babakan Ciparay, Bandung, Jawa Barat 40223";
-export const SHOP_MAPS = "https://maps.google.com/?q=PGRB+Pusat+Grosir+Rajut+Bandung+Caringin+Babakan+Ciparay";
+export const defaultSettings: Settings = {
+  shopName: "PGRB",
+  tagline: "Pusat Grosir Rajut Bandung",
+  waNumber: "6283131261552",
+  address: "Jl. Caringin No. 123, Babakan Ciparay, Bandung, Jawa Barat 40223",
+  mapsUrl: "https://maps.google.com/?q=PGRB+Pusat+Grosir+Rajut+Bandung+Caringin+Babakan+Ciparay",
+};
 
 export function formatRupiah(n: number) {
   return "Rp " + n.toLocaleString("id-ID");
@@ -87,10 +97,18 @@ export function getProductGallery(product: Product) {
   ];
 }
 
-export function waCheckoutLink(cart: CartItem[], customer: CustomerInfo) {
+export function slugify(text: string) {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+export function waCheckoutLink(cart: CartItem[], customer: CustomerInfo, settings: Settings) {
   const total = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
 
-  let text = `🛍️ *ORDER BARU — PGRB*\n\n`;
+  let text = `🛍️ *ORDER BARU — ${settings.shopName}*\n\n`;
 
   text += `📦 *Detail Pesanan:*\n`;
   text += `──────────────────\n`;
@@ -114,9 +132,11 @@ export function waCheckoutLink(cart: CartItem[], customer: CustomerInfo) {
   }
   text += `\nMohon dikonfirmasi ketersediaan stok & ongkir ya, Kak 🙏`;
 
-  return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
+  return `https://wa.me/${settings.waNumber}?text=${encodeURIComponent(text)}`;
 }
 
-export function waCsLink() {
-  return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Halo PGRB, saya mau tanya katalog rajutnya 🙏")}`;
+export function waCsLink(settings: Settings) {
+  return `https://wa.me/${settings.waNumber}?text=${encodeURIComponent(
+    `Halo ${settings.shopName}, saya mau tanya katalog rajutnya 🙏`
+  )}`;
 }
