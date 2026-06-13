@@ -27,44 +27,174 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --font-display: "Bagel Fat One", "Fraunces", serif;
-  --font-serif: "Fraunces", "Cormorant Garamond", serif;
-  --font-sans: "Inter", system-ui, sans-serif;
-  --shadow-elegant: 0 20px 60px -20px color-mix(in oklab, var(--primary) 35%, transparent);
-  --shadow-card: 0 2px 10px -2px color-mix(in oklab, var(--primary) 12%, transparent);
+  --font-serif: "Playfair Display", "Georgia", serif;
+  --font-sans: "DM Sans", system-ui, sans-serif;
+  --shadow-elegant: 0 24px 64px -20px color-mix(in oklab, var(--foreground) 15%, transparent);
+  --shadow-card: 0 1px 3px color-mix(in oklab, var(--foreground) 6%, transparent), 0 6px 20px -6px color-mix(in oklab, var(--foreground) 8%, transparent);
+  --shadow-button: 0 4px 14px -4px color-mix(in oklab, var(--primary) 40%, transparent);
 }
 
 :root {
   --radius: 0.75rem;
-  /* Cream background, deep emerald primary — from PGRB brand */
-  --background: #F8F5ED;
-  --foreground: #222222;
+
+  /* PGRB Brand — Warm fashion palette */
+  --background: #FAF8F2;
+  --foreground: #1C1C1C;
   --card: #FFFFFF;
-  --card-foreground: #222222;
+  --card-foreground: #1C1C1C;
   --popover: #FFFFFF;
-  --popover-foreground: #222222;
-  --primary: #2E6044;
+  --popover-foreground: #1C1C1C;
+
+  /* Deep forest green — grounded, premium */
+  --primary: #1E4D38;
   --primary-foreground: #FFFFFF;
-  --secondary: #EBE6D9;
-  --secondary-foreground: #2E6044;
-  --muted: #EBE6D9;
-  --muted-foreground: #737373;
-  --accent: #EBE6D9;
-  --accent-foreground: #2E6044;
-  --destructive: #EF4444;
+
+  /* Warm stone secondary */
+  --secondary: #EFECE2;
+  --secondary-foreground: #1E4D38;
+
+  /* Muted tones */
+  --muted: #EFECE2;
+  --muted-foreground: #6B6B6B;
+
+  /* Soft terracotta accent */
+  --accent: #F4EBE4;
+  --accent-foreground: #8B5E3C;
+
+  --destructive: #E5484D;
   --destructive-foreground: #FFFFFF;
-  --border: #E5E5E5;
-  --input: #E5E5E5;
-  --ring: #2E6044;
+  --border: #E8E4D9;
+  --input: #E8E4D9;
+  --ring: #1E4D38;
 }
 
 @layer base {
-  * { border-color: var(--color-border); }
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    font-feature-settings: "ss01", "cv11";
+    letter-spacing: -0.01em;
+    line-height: 1.65;
   }
-  h1, h2, h3 { font-family: var(--font-serif); letter-spacing: -0.02em; }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-serif);
+    letter-spacing: -0.025em;
+    font-weight: 700;
+  }
+
+  /* Custom selection */
+  ::selection {
+    background-color: color-mix(in oklab, var(--primary) 20%, transparent);
+    color: var(--foreground);
+  }
+}
+
+/* ============================================
+   Micro-interactions & Animations
+   ============================================ */
+
+/* Button press effect */
+@layer base {
+  .btn-press {
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s ease;
+  }
+  .btn-press:active {
+    transform: scale(0.97);
+  }
+}
+
+/* Card hover lift */
+.card-lift {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+}
+.card-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-elegant);
+}
+
+/* Fade in up animation for sections */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* Staggered children */
+.stagger-children > * {
+  opacity: 0;
+  animation: fade-in-up 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
+.stagger-children > *:nth-child(7) { animation-delay: 0.35s; }
+.stagger-children > *:nth-child(8) { animation-delay: 0.4s; }
+
+/* Product image zoom on hover */
+.img-zoom {
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.group:hover .img-zoom {
+  transform: scale(1.06);
+}
+
+/* Subtle shimmer for placeholders */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, var(--secondary) 25%, #F5F3EC 50%, var(--secondary) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Pulse ring for cart badge */
+@keyframes badge-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+
+.badge-pulse {
+  animation: badge-pulse 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
 }

@@ -12,36 +12,43 @@ export function ProductCard({ product, onSelect }: { product: Product; onSelect:
   const hasVariants = gallery.length > 1;
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-card transition-all duration-300 hover:shadow-elegant border border-border/40">
-      <div className="relative aspect-[4/5] overflow-hidden bg-secondary/50 cursor-pointer" onClick={onSelect}>
+    <div className="card-lift group flex flex-col overflow-hidden rounded-2xl bg-white shadow-card border border-border/20">
+      {/* Image */}
+      <div className="relative aspect-[4/5] overflow-hidden bg-secondary/40 cursor-pointer" onClick={onSelect}>
         {product.image ? (
-          <img src={product.image} alt={product.name} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          <img src={product.image} alt={product.name} className="img-zoom h-full w-full object-cover" loading="lazy" />
         ) : (
           <PlaceholderArt name={product.name} />
         )}
 
         {hasVariants && (
-          <span className="absolute top-3 left-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold text-primary backdrop-blur-sm shadow-sm">
+          <span className="absolute top-3 left-3 rounded-full bg-white/90 backdrop-blur-md px-3 py-1 text-[11px] font-semibold text-primary shadow-sm border border-border/30">
             {gallery.length} Warna
           </span>
         )}
 
-        <div className="absolute inset-x-0 bottom-0 flex h-1/3 items-end justify-center bg-gradient-to-t from-black/60 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-          <span className="text-xs font-semibold text-white drop-shadow-md tracking-wide">Lihat Detail</span>
+        {/* Hover overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center p-4">
+          <span className="text-[12px] font-semibold text-white tracking-wider bg-white/15 backdrop-blur-md rounded-full px-4 py-1.5">
+            Lihat Detail
+          </span>
         </div>
       </div>
+
+      {/* Info */}
       <div className="flex flex-col p-4 flex-1">
-        <p className="text-[13px] font-medium text-foreground mb-2 line-clamp-2 leading-snug">
-          {product.code}-{product.name.toUpperCase()}
-        </p>
+        <div className="flex items-start gap-1 mb-1.5">
+          <span className="text-[10px] font-bold text-primary bg-primary/[0.07] rounded px-1.5 py-0.5 shrink-0">{product.code}</span>
+          <p className="text-[13px] font-semibold text-foreground line-clamp-2 leading-snug">{product.name}</p>
+        </div>
 
         <div className="mt-auto">
-          <p className="text-[15px] font-bold text-primary">{formatRupiah(product.price)}</p>
+          <p className="text-[16px] font-bold text-primary">{formatRupiah(product.price)}</p>
         </div>
 
         <button
           onClick={onSelect}
-          className="mt-4 w-full rounded-lg border border-primary/20 py-2.5 text-[13px] font-semibold text-primary transition-colors hover:bg-primary hover:text-white"
+          className="mt-3 w-full rounded-xl border border-primary/20 py-2.5 text-[13px] font-semibold text-primary transition-all duration-200 hover:bg-primary hover:text-white hover:shadow-button hover:border-primary btn-press"
         >
           {hasVariants ? "Pilih Varian" : "Beli Sekarang"}
         </button>
