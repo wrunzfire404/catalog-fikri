@@ -34,9 +34,9 @@ export default function Home() {
       </header>
 
       <main className="flex-1 flex flex-col">
-        {/* Hero Slideshow — compact, text overlaid */}
-        <section className="relative text-white bg-primary">
-          <div className="relative aspect-[4/3] sm:aspect-[2/1] md:aspect-[2.5/1] lg:aspect-[3/1] overflow-hidden">
+        {/* Hero Slideshow */}
+        <section className="relative text-white bg-primary flex-1 md:flex-none">
+          <div className="relative aspect-[4/3] sm:aspect-[2/1] md:aspect-[2.5/1] lg:aspect-[3/1] overflow-hidden flex-1 md:flex-none">
             {BANNERS.map((banner, i) => (
               <img
                 key={banner.src}
@@ -47,34 +47,22 @@ export default function Home() {
                 }`}
               />
             ))}
-            <div className="absolute inset-0 bg-black/35" />
+            <div className="absolute inset-0 bg-black/30" />
           </div>
 
-          {/* Text overlay on image */}
+          {/* Text overlay */}
           <div className="absolute inset-0 flex items-center justify-center px-4 pointer-events-none">
             <div className="text-center max-w-lg pointer-events-auto">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 border border-white/15 px-4 py-1.5 text-[11px] font-semibold backdrop-blur-sm mb-4">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 border border-white/15 px-4 py-1.5 text-[11px] font-semibold backdrop-blur-sm mb-3">
                 <Sparkles className="w-3 h-3" />
                 {settings.tagline}
               </span>
-
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-serif leading-[1.08] mb-3">
+              <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold font-serif leading-[1.08]">
                 Rajut Premium, Harga Grosir.
               </h1>
-
-              <p className="text-white/75 text-sm sm:text-[15px] leading-relaxed mb-6 max-w-sm mx-auto hidden sm:block">
+              <p className="text-white/75 text-sm sm:text-[15px] leading-relaxed mt-3 max-w-sm mx-auto hidden sm:block">
                 Koleksi terkini dari pusat grosir Bandung — kualitas terjamin, siap kirim ke seluruh Indonesia.
               </p>
-
-              <a
-                href={waCsLink(settings)}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-2.5 sm:px-6 sm:py-3 text-[14px] sm:text-[15px] font-bold text-white shadow-[0_6px_20px_rgba(37,211,102,0.3)] transition hover:bg-[#20bd5a] btn-press"
-              >
-                <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
-                Chat CS Sekarang
-              </a>
             </div>
           </div>
 
@@ -94,8 +82,8 @@ export default function Home() {
         </section>
 
         {/* Trust Bar */}
-        <div className="bg-white border-b border-border/60">
-          <div className="mx-auto max-w-5xl px-4 py-4 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[12px] md:text-[13px] text-muted-foreground">
+        <div className="bg-white border-b border-border/60 shrink-0">
+          <div className="mx-auto max-w-5xl px-4 py-3 flex flex-wrap items-center justify-center gap-x-6 text-[12px] text-muted-foreground">
             <span className="inline-flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5 text-primary shrink-0" />
               Kualitas Terjamin
@@ -111,9 +99,10 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Pilihan Menu */}
-        <section className="mx-auto max-w-5xl px-4 py-16 md:py-20 w-full">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-7">
+        {/* Menu Grid — kalau mobile, stretch ke full height */}
+        <div className="flex-1 md:flex-none flex items-center justify-center bg-background">
+          <div className="w-full max-w-5xl px-4 py-6 md:py-16">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-7">
             {/* Cek Katalog */}
             <button
               onClick={() => navigate("/stock")}
@@ -165,10 +154,11 @@ export default function Home() {
               </span>
             </button>
           </div>
-        </section>
+          </div>
+        </div>
       </main>
 
-      <footer className="border-t border-border/60 bg-white py-12">
+      <footer className="border-t border-border/60 bg-white py-8 md:py-12 shrink-0">
         <div className="mx-auto max-w-6xl px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
             <div className="space-y-2">
