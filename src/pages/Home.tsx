@@ -32,7 +32,7 @@ export default function Home() {
 
       {/* Hero Banner */}
       <section className="relative bg-primary text-white">
-        <div className="relative aspect-[16/9] md:aspect-[3/1] lg:aspect-[4/1] max-h-[35vh] lg:max-h-[40vh] overflow-hidden">
+        <div className="relative w-full h-[30vh] md:h-[35vh] lg:h-[45vh] overflow-hidden">
           {BANNERS.map((banner, i) => (
             <img
               key={banner.src}
@@ -71,7 +71,7 @@ export default function Home() {
       </section>
 
       {/* Menu */}
-      <main className="flex-1 flex flex-col justify-center px-4 py-8 md:py-12 max-w-5xl mx-auto w-full">
+      <main className="flex-1 flex flex-col justify-center px-4 py-8 md:py-12 max-w-6xl mx-auto w-full">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 w-full">
           {/* Katalog */}
           <button
@@ -121,8 +121,8 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border/60 bg-white py-6 md:py-10">
-        <div className="max-w-4xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+      <footer className="border-t border-border/60 bg-white py-6 md:py-10 mt-auto">
+        <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <img src="/images/pgrb-logo.png" alt={settings.shopName} className="h-7 object-contain opacity-60" />
             <span className="text-[12px] text-muted-foreground">© {new Date().getFullYear()} {settings.shopName}</span>
