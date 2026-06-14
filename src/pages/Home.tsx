@@ -4,9 +4,10 @@ import { ShoppingBag, MessageCircle, MapPin, Sparkles, ChevronRight } from "luci
 import { useStore } from "@/context/StoreContext";
 
 const BANNERS = [
-  { src: "/images/katalog.jpeg", alt: "Banner PGRB 1" },
-  { src: "/images/cs.jpeg", alt: "Banner PGRB 2" },
-  { src: "/images/toko.jpeg", alt: "Banner PGRB 3" },
+  { src: "/images/banner1.jpeg", alt: "Banner PGRB 1" },
+  { src: "/images/banner2.jpeg", alt: "Banner PGRB 2" },
+  { src: "/images/banner3.jpeg", alt: "Banner PGRB 3" },
+  { src: "/images/banner4.png", alt: "Banner PGRB 4" },
 ];
 
 export default function Home() {
