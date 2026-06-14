@@ -96,40 +96,50 @@ export function ProductModal({
         className="flex w-full flex-col max-h-[92vh] sm:max-h-[88vh] max-w-md overflow-hidden rounded-t-[1.5rem] bg-white shadow-2xl animate-in slide-in-from-bottom-8 sm:rounded-[1.5rem]"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="relative shrink-0">
+        <div className="relative shrink-0 bg-background p-4 sm:p-5 pb-0">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 z-10 grid h-8 w-8 place-items-center rounded-full bg-black/20 text-white backdrop-blur-md transition hover:bg-black/40"
+            className="absolute top-6 right-6 z-20 grid h-8 w-8 place-items-center rounded-full bg-black/20 text-white backdrop-blur-md transition hover:bg-black/40"
           >
             <X className="h-5 w-5" />
           </button>
           <div
             ref={carouselRef}
             onScroll={handleScroll}
-            className="flex aspect-[4/5] sm:aspect-square snap-x snap-mandatory overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden bg-secondary"
+            className="relative flex aspect-[4/5] sm:aspect-[4/3] snap-x snap-mandatory overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden rounded-2xl shadow-sm border border-border/50 bg-secondary"
           >
             {gallery.map((variant, index) => (
-              <div key={`${product.slug}-${variant.slug}-${index}`} className="w-full shrink-0 snap-center relative">
+              <div 
+                key={`${product.slug}-${variant.slug}-${index}`} 
+                className="w-full shrink-0 snap-center relative group cursor-pointer overflow-hidden"
+                onClick={() => {
+                  if (variant.image) window.open(variant.image, '_blank');
+                }}
+              >
                 {variant.image ? (
                   <img
                     src={variant.image}
                     alt={`${product.name}${variant.color ? ` warna ${variant.color}` : ""}`}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 ) : (
                   <PlaceholderArt name={product.name} />
                 )}
+                {/* Gradient overlay for "Click to enlarge" */}
+                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/70 to-transparent p-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pointer-events-none">
+                  <span className="text-white text-[12px] font-medium tracking-wide">Klik untuk perbesar</span>
+                </div>
               </div>
             ))}
           </div>
 
           {hasVariants && (
-            <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5 z-10">
+            <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5 z-10 pointer-events-none">
               {gallery.map((variant, index) => (
                 <button
                   key={`${variant.slug}-dot`}
                   onClick={() => scrollToIndex(index)}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${index === activeIndex ? "w-6 bg-primary shadow-sm" : "w-1.5 bg-white/70 hover:bg-white"}`}
+                  className={`h-1.5 rounded-full transition-all duration-300 pointer-events-auto ${index === activeIndex ? "w-6 bg-primary shadow-sm" : "w-1.5 bg-white/70 hover:bg-white"}`}
                 />
               ))}
             </div>
