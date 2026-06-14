@@ -85,6 +85,23 @@
     font-family: var(--font-sans);
     letter-spacing: -0.01em;
     line-height: 1.65;
+    position: relative;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; 
+    left: 0; 
+    width: 100vw; 
+    height: 100vh;
+    background-image: url('/images/background.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.15; /* Transparansi agar tekstur rajut terlihat samar dan elegan */
+    z-index: -1;
+    pointer-events: none;
   }
 
   h1, h2, h3, h4 {
