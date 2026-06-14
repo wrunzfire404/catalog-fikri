@@ -69,6 +69,7 @@ export function ProductModal({
   const gallery = getProductGallery(product);
   const [activeIndex, setActiveIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const activeVariant = gallery[activeIndex] ?? null;
   const hasVariants = gallery.length > 1;
@@ -113,7 +114,7 @@ export function ProductModal({
                 key={`${product.slug}-${variant.slug}-${index}`} 
                 className="w-full shrink-0 snap-center relative group cursor-pointer overflow-hidden"
                 onClick={() => {
-                  if (variant.image) window.open(variant.image, '_blank');
+                  if (variant.image) setZoomedImage(variant.image);
                 }}
               >
                 {variant.image ? (
@@ -233,6 +234,27 @@ export function ProductModal({
           </button>
         </div>
       </div>
+
+      {/* Lightbox / Image Zoom Modal */}
+      {zoomedImage && (
+        <div 
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-4 animate-in fade-in duration-200"
+          onClick={(e) => { e.stopPropagation(); setZoomedImage(null); }}
+        >
+          <button
+            onClick={() => setZoomedImage(null)}
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 z-[70] grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20"
+          >
+            <X className="h-6 w-6" />
+          </button>
+          <img 
+            src={zoomedImage} 
+            alt="Zoomed" 
+            className="max-h-full max-w-full object-contain rounded-xl shadow-2xl animate-in zoom-in-95 duration-200" 
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </div>
   );
 }
