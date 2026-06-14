@@ -59,7 +59,7 @@ export default function Stock() {
   return (
     <div className="min-h-screen bg-background text-foreground pb-24 md:pb-0">
       <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-border/60">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-center gap-2 text-foreground hover:text-primary transition">
             <ArrowLeft className="w-5 h-5" />
             <img src="/images/pgrb-logo.png" alt={settings.shopName} className="h-9 object-contain" />
@@ -80,7 +80,7 @@ export default function Stock() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 py-10 md:py-14">
+      <main className="mx-auto max-w-7xl px-4 py-10 md:py-14">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between mb-10">
           <div className="animate-fade-in-up">
             <p className="text-[11px] uppercase tracking-[0.25em] text-primary font-semibold mb-2">Koleksi</p>
@@ -144,7 +144,7 @@ export default function Stock() {
       )}
 
       {totalItems > 0 && !isCartOpen && !selectedProduct && (
-        <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] p-4 bg-white border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-20 animate-in slide-in-from-bottom-full">
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-border shadow-[0_-10px_40px_rgba(0,0,0,0.08)] md:hidden z-20 animate-in slide-in-from-bottom-full">
           <Link
             to="/cart"
             className="w-full flex items-center justify-between rounded-xl bg-primary px-5 py-3.5 text-white shadow-lg"
