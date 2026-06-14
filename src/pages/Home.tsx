@@ -124,31 +124,22 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-primary text-primary-foreground py-12 mt-auto">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-start justify-between gap-10">
-          <div className="flex flex-col gap-5 max-w-sm">
-            {/* Trik invert + brightness-0 membuat logo jadi solid putih */}
-            <img src="/images/logo.png" alt={settings.shopName} className="h-10 object-contain brightness-0 invert opacity-90" />
-            <p className="text-[13px] text-primary-foreground/70 leading-relaxed font-sans">
-              Pusat grosir rajut premium di Bandung. Kami menyediakan koleksi rajut berkualitas dengan harga terbaik untuk kebutuhan retail maupun partai besar.
-            </p>
+      <footer className="bg-primary text-primary-foreground py-8 mt-auto relative z-10">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4">
+            <img src="/images/logo.png" alt={settings.shopName} className="h-7 object-contain brightness-0 invert opacity-90" />
+            <span className="text-[11px] text-primary-foreground/40 hidden md:block">|</span>
+            <span className="text-[11px] text-primary-foreground/60 text-center md:text-left">Pusat grosir rajut premium Bandung</span>
           </div>
-          <div className="flex gap-12 md:gap-20 text-[12px] uppercase tracking-widest font-semibold font-sans">
-            <div className="flex flex-col gap-4">
-              <span className="text-primary-foreground/40 mb-1">Menu Utama</span>
-              <button onClick={() => navigate("/")} className="hover:text-white text-primary-foreground/80 transition text-left">Beranda</button>
-              <button onClick={() => navigate("/stock")} className="hover:text-white text-primary-foreground/80 transition text-left">Katalog Belanja</button>
-            </div>
-            <div className="flex flex-col gap-4">
-              <span className="text-primary-foreground/40 mb-1">Layanan</span>
-              <button onClick={() => navigate("/contact")} className="hover:text-white text-primary-foreground/80 transition text-left">Hubungi CS</button>
-              <button onClick={() => navigate("/visit")} className="hover:text-white text-primary-foreground/80 transition text-left">Lokasi Toko</button>
-            </div>
+          <div className="flex flex-wrap justify-center items-center gap-6 text-[11px] uppercase tracking-widest font-semibold font-sans">
+            <button onClick={() => navigate("/stock")} className="hover:text-white text-primary-foreground/80 transition">Katalog</button>
+            <button onClick={() => navigate("/contact")} className="hover:text-white text-primary-foreground/80 transition">Hubungi CS</button>
+            <button onClick={() => navigate("/visit")} className="hover:text-white text-primary-foreground/80 transition">Lokasi Toko</button>
           </div>
         </div>
-        <div className="max-w-6xl mx-auto px-6 mt-16 pt-8 border-t border-primary-foreground/10 flex flex-col md:flex-row items-center justify-between text-[11px] text-primary-foreground/40 uppercase tracking-widest font-sans">
+        <div className="max-w-6xl mx-auto px-6 mt-6 pt-5 border-t border-primary-foreground/10 flex flex-col md:flex-row items-center justify-between text-[10px] text-primary-foreground/40 uppercase tracking-widest font-sans">
           <span>© {new Date().getFullYear()} {settings.shopName}. All rights reserved.</span>
-          <span className="mt-3 md:mt-0">Designed for Fashion</span>
+          <span className="mt-2 md:mt-0">Designed for Fashion</span>
         </div>
       </footer>
     </div>
