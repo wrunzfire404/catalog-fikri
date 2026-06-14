@@ -82,7 +82,7 @@ export default function Home() {
           {/* Katalog */}
           <button
             onClick={() => navigate("/stock")}
-            className="relative w-full h-32 md:h-48 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border"
+            className="relative w-full h-32 md:h-48 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border rounded-3xl"
           >
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500 z-10" />
             <img src="/images/katalog.jpeg" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Katalog" />
@@ -96,7 +96,7 @@ export default function Home() {
           {/* Hubungi CS */}
           <button
             onClick={() => navigate("/contact")}
-            className="relative w-full h-32 md:h-48 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border"
+            className="relative w-full h-32 md:h-48 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border rounded-3xl"
           >
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500 z-10" />
             <img src="/images/cs.jpeg" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Hubungi CS" />
@@ -110,7 +110,7 @@ export default function Home() {
           {/* Lokasi */}
           <button
             onClick={() => navigate("/visit")}
-            className="relative w-full h-32 md:h-48 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border"
+            className="relative w-full h-32 md:h-48 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border rounded-3xl"
           >
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500 z-10" />
             <img src="/images/toko.jpeg" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Lokasi Toko" />
