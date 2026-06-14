@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ShoppingBag, MessageCircle, MapPin, Sparkles, ChevronRight } from "lucide-react";
 import { useStore } from "@/context/StoreContext";
+import { useCart } from "@/context/CartContext";
+import { CartDrawer } from "@/components/cart";
 
 const BANNERS = [
   { src: "/images/banner1.jpeg", alt: "Banner PGRB 1" },
@@ -13,8 +15,10 @@ const BANNERS = [
 export default function Home() {
   const navigate = useNavigate();
   const { settings } = useStore();
+  const { cart, totalItems, updateQty, removeItem } = useCart();
   const [bannerIndex, setBannerIndex] = useState(0);
   const [slidingPath, setSlidingPath] = useState<string | null>(null);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const handleNavigate = (path: string) => {
     setSlidingPath(path);
@@ -43,11 +47,16 @@ export default function Home() {
               <button onClick={() => handleNavigate("/visit")} className="hover:text-primary transition-colors">Lokasi</button>
             </nav>
             <button 
-              onClick={() => handleNavigate("/stock")}
-              className="grid h-10 w-10 place-items-center rounded-full bg-secondary text-foreground hover:bg-primary hover:text-white transition-colors"
+              onClick={() => setIsCartOpen(true)}
+              className="relative grid h-10 w-10 place-items-center rounded-full bg-secondary text-foreground hover:bg-primary hover:text-white transition-colors"
               aria-label="Keranjang Belanja"
             >
               <ShoppingBag className="h-5 w-5" />
+              {totalItems > 0 && (
+                <span className="absolute top-0 right-0 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white border-2 border-white badge-pulse">
+                  {totalItems}
+                </span>
+              )}
             </button>
           </div>
         </div>
@@ -164,6 +173,16 @@ export default function Home() {
       <div 
         className={`fixed inset-0 z-[100] bg-background transition-transform duration-500 ease-in-out ${slidingPath ? "translate-x-0" : "translate-x-full"}`} 
       />
+
+      {/* Cart Drawer */}
+      {isCartOpen && (
+        <CartDrawer
+          cart={cart}
+          onClose={() => setIsCartOpen(false)}
+          onUpdateQty={updateQty}
+          onRemoveItem={removeItem}
+        />
+      )}
     </div>
   );
 }
