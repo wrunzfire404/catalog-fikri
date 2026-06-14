@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { ShoppingBag, Sparkles, ChevronRight } from "lucide-react";
+import { ShoppingCart, Sparkles, ChevronRight } from "lucide-react";
 import { useStore } from "@/context/StoreContext";
 import { useCart } from "@/context/CartContext";
 import { CartDrawer } from "@/components/cart";
@@ -40,12 +40,12 @@ export default function Home() {
             </nav>
             <button 
               onClick={() => setIsCartOpen(true)}
-              className="relative h-11 w-11 grid place-items-center rounded-full bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
+              className="relative p-2 text-foreground hover:bg-secondary rounded-full transition"
               aria-label="Keranjang Belanja"
             >
-              <ShoppingBag className="w-5 h-5" />
+              <ShoppingCart className="w-6 h-6 text-primary" />
               {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[11px] font-bold text-destructive-foreground badge-pulse">
+                <span className="absolute top-0 right-0 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white border-2 border-white badge-pulse">
                   {totalItems}
                 </span>
               )}
