@@ -118,6 +118,7 @@ export default function Stock() {
           onClose={() => setSelectedProduct(null)}
           onAddToCart={(variant, qty) => {
             addToCart(selectedProduct, variant, qty);
+            const currentProduct = selectedProduct;
             const name = selectedProduct.name;
             setSelectedProduct(null);
             // Fetch featured & show popup with rekomendasi

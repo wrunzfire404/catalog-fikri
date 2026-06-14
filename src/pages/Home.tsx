@@ -143,9 +143,12 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="bg-primary text-primary-foreground mt-auto relative z-10">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-center md:justify-between text-[10px] md:text-[11px] text-primary-foreground/60 uppercase tracking-widest font-sans">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-3 text-[10px] md:text-[11px] text-primary-foreground/60 uppercase tracking-widest font-sans">
+          <div className="flex items-center gap-3">
+            <img src="/images/logo.png" alt={settings.shopName} className="h-6 md:h-8 object-contain brightness-0 invert opacity-90" />
+            <span className="hidden md:inline">| Pusat grosir rajut premium Bandung</span>
+          </div>
           <span>© {new Date().getFullYear()} {settings.shopName}. All rights reserved.</span>
-          <span className="hidden md:inline">Pusat grosir rajut premium Bandung</span>
         </div>
       </footer>
 
