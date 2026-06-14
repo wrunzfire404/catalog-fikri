@@ -26,7 +26,7 @@ export default function Home() {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background border-b border-border/60">
         <div className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto w-full">
-          <img src="/images/pgrb-logo.png" alt={settings.shopName} className="h-10 object-contain mix-blend-multiply" />
+          <img src="/images/logo-white.png" alt={settings.shopName} className="h-10 object-contain mix-blend-multiply" />
           <nav className="hidden md:flex items-center gap-8 text-[12px] font-semibold tracking-widest uppercase text-foreground">
             <button onClick={() => navigate("/stock")} className="hover:text-primary transition-colors">Katalog</button>
             <button onClick={() => navigate("/contact")} className="hover:text-primary transition-colors">Kontak</button>
@@ -127,7 +127,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-start justify-between gap-10">
           <div className="flex flex-col gap-5 max-w-sm">
             {/* Trik invert + brightness-0 membuat logo jadi solid putih */}
-            <img src="/images/pgrb-logo.png" alt={settings.shopName} className="h-10 object-contain brightness-0 invert opacity-90" />
+            <img src="/images/logo-white.png" alt={settings.shopName} className="h-10 object-contain brightness-0 invert opacity-90" />
             <p className="text-[13px] text-primary-foreground/70 leading-relaxed font-sans">
               Pusat grosir rajut premium di Bandung. Kami menyediakan koleksi rajut berkualitas dengan harga terbaik untuk kebutuhan retail maupun partai besar.
             </p>
