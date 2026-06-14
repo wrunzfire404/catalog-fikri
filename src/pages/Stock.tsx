@@ -144,7 +144,7 @@ export default function Stock() {
       )}
 
       {totalItems > 0 && !isCartOpen && !selectedProduct && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.05)] md:hidden z-20 animate-in slide-in-from-bottom-full">
+        <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] p-4 bg-white border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-20 animate-in slide-in-from-bottom-full">
           <Link
             to="/cart"
             className="w-full flex items-center justify-between rounded-xl bg-primary px-5 py-3.5 text-white shadow-lg"
