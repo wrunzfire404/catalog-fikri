@@ -40,12 +40,12 @@ export default function Home() {
             </nav>
             <button 
               onClick={() => setIsCartOpen(true)}
-              className="relative grid h-10 w-10 place-items-center rounded-full bg-secondary text-foreground hover:bg-primary hover:text-white transition-colors"
+              className="relative h-11 w-11 grid place-items-center rounded-full bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
               aria-label="Keranjang Belanja"
             >
-              <ShoppingBag className="h-5 w-5" />
+              <ShoppingBag className="w-5 h-5" />
               {totalItems > 0 && (
-                <span className="absolute top-0 right-0 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white border-2 border-white badge-pulse">
+                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[11px] font-bold text-destructive-foreground badge-pulse">
                   {totalItems}
                 </span>
               )}
@@ -142,22 +142,10 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-primary text-primary-foreground py-5 mt-auto relative z-10">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4">
-            <img src="/images/logo.png" alt={settings.shopName} className="h-9 object-contain brightness-0 invert opacity-90" />
-            <span className="text-[11px] text-primary-foreground/40 hidden md:block">|</span>
-            <span className="text-[11px] text-primary-foreground/60 text-center md:text-left">Pusat grosir rajut premium Bandung</span>
-          </div>
-          <div className="flex flex-wrap justify-center items-center gap-6 text-[11px] uppercase tracking-widest font-semibold font-sans mt-2 md:mt-0">
-            <button onClick={() => navigate("/stock")} className="hover:text-white text-primary-foreground/80 transition">Katalog</button>
-            <button onClick={() => navigate("/contact")} className="hover:text-white text-primary-foreground/80 transition">Hubungi CS</button>
-            <button onClick={() => navigate("/visit")} className="hover:text-white text-primary-foreground/80 transition">Lokasi Toko</button>
-          </div>
-        </div>
-        <div className="max-w-6xl mx-auto px-6 mt-4 pt-4 border-t border-primary-foreground/10 flex flex-col md:flex-row items-center justify-between text-[10px] text-primary-foreground/40 uppercase tracking-widest font-sans">
+      <footer className="bg-primary text-primary-foreground mt-auto relative z-10">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-center md:justify-between text-[10px] md:text-[11px] text-primary-foreground/60 uppercase tracking-widest font-sans">
           <span>© {new Date().getFullYear()} {settings.shopName}. All rights reserved.</span>
-          <span className="mt-2 md:mt-0">Designed for Fashion</span>
+          <span className="hidden md:inline">Pusat grosir rajut premium Bandung</span>
         </div>
       </footer>
 
