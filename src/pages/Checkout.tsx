@@ -117,7 +117,7 @@ export default function Checkout() {
             className="flex items-center gap-2 text-foreground hover:text-primary transition"
           >
             <ArrowLeft className="w-5 h-5" />
-            <img src="/images/pgrb-logo.png" alt={settings.shopName} className="h-9 object-contain" />
+            <img src="/images/logo.png" alt={settings.shopName} className="h-9 object-contain mix-blend-multiply" />
           </button>
           <h1 className="text-lg font-bold font-serif text-foreground hidden sm:block">Checkout</h1>
         </div>

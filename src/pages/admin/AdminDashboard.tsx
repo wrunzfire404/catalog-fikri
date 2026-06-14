@@ -42,7 +42,7 @@ export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
       <header className="sticky top-0 z-30 bg-white border-b border-border">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
-            <img src="/images/pgrb-logo.png" alt={settings.shopName} className="h-9 object-contain" />
+            <img src="/images/logo.png" alt={settings.shopName} className="h-9 object-contain mix-blend-multiply" />
             <span className="text-[13px] font-semibold text-muted-foreground border-l border-border pl-3">Admin Panel</span>
           </div>
           <div className="flex items-center gap-2">

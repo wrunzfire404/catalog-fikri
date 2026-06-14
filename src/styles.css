@@ -110,6 +110,11 @@
     font-weight: 700;
   }
 
+  /* Make main wrappers transparent to reveal body texture */
+  #root > .min-h-screen {
+    background-color: transparent !important;
+  }
+
   /* Custom selection */
   ::selection {
     background-color: color-mix(in oklab, var(--primary) 20%, transparent);

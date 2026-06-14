@@ -27,7 +27,7 @@ export default function AdminLogin({ onLogin }: { onLogin: () => void }) {
         <div className="mx-auto flex max-w-6xl items-center px-4 py-3">
           <Link to="/" className="flex items-center gap-2 text-foreground hover:text-primary transition">
             <ArrowLeft className="w-5 h-5" />
-            <img src="/images/pgrb-logo.png" alt={settings.shopName} className="h-9 object-contain" />
+            <img src="/images/logo.png" alt={settings.shopName} className="h-9 object-contain mix-blend-multiply" />
           </Link>
         </div>
       </header>
