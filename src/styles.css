@@ -27,45 +27,45 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --font-serif: "Fraunces", "Georgia", serif;
-  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
-  --shadow-elegant: 0 24px 64px -20px color-mix(in oklab, var(--foreground) 15%, transparent);
-  --shadow-card: 0 1px 3px color-mix(in oklab, var(--foreground) 6%, transparent), 0 6px 20px -6px color-mix(in oklab, var(--foreground) 8%, transparent);
-  --shadow-button: 0 4px 14px -4px color-mix(in oklab, var(--primary) 40%, transparent);
+  --font-serif: "Outfit", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --shadow-elegant: 0 4px 20px -10px color-mix(in oklab, var(--foreground) 10%, transparent);
+  --shadow-card: 0 1px 2px color-mix(in oklab, var(--foreground) 5%, transparent);
+  --shadow-button: none;
 }
 
 :root {
-  --radius: 0.75rem;
+  --radius: 0rem;
 
-  /* PGRB Brand — Warm fashion palette */
-  --background: #FAF8F2;
-  --foreground: #1C1C1C;
+  /* PGRB Brand — Minimalist Editorial Fashion Palette */
+  --background: #FDFBF5;
+  --foreground: #111111;
   --card: #FFFFFF;
-  --card-foreground: #1C1C1C;
+  --card-foreground: #111111;
   --popover: #FFFFFF;
-  --popover-foreground: #1C1C1C;
+  --popover-foreground: #111111;
 
-  /* Deep forest green — grounded, premium */
-  --primary: #1E4D38;
+  /* Deep forest green from logo — grounded, premium */
+  --primary: #2E634A;
   --primary-foreground: #FFFFFF;
 
-  /* Warm stone secondary */
-  --secondary: #EFECE2;
-  --secondary-foreground: #1E4D38;
+  /* Subtle warm cream secondary */
+  --secondary: #F2EBE1;
+  --secondary-foreground: #2E634A;
 
   /* Muted tones */
-  --muted: #EFECE2;
-  --muted-foreground: #6B6B6B;
+  --muted: #F2EBE1;
+  --muted-foreground: #737373;
 
-  /* Soft terracotta accent */
-  --accent: #F4EBE4;
-  --accent-foreground: #8B5E3C;
+  /* Soft accent */
+  --accent: #F2EBE1;
+  --accent-foreground: #2E634A;
 
   --destructive: #E5484D;
   --destructive-foreground: #FFFFFF;
-  --border: #E8E4D9;
-  --input: #E8E4D9;
-  --ring: #1E4D38;
+  --border: #E6E1D6;
+  --input: #E6E1D6;
+  --ring: #2E634A;
 }
 
 @layer base {

@@ -12,7 +12,7 @@ export function ProductCard({ product, onSelect }: { product: Product; onSelect:
   const hasVariants = gallery.length > 1;
 
   return (
-    <div className="card-lift group flex flex-col overflow-hidden rounded-2xl bg-white shadow-card border border-border/20">
+    <div className="group flex flex-col overflow-hidden bg-white">
       {/* Image */}
       <div className="relative aspect-[4/5] overflow-hidden bg-secondary/40 cursor-pointer" onClick={onSelect}>
         {product.image ? (
@@ -48,7 +48,7 @@ export function ProductCard({ product, onSelect }: { product: Product; onSelect:
 
         <button
           onClick={onSelect}
-          className="mt-3 w-full rounded-xl border border-primary/20 py-2.5 text-[13px] font-semibold text-primary transition-all duration-200 hover:bg-primary hover:text-white hover:shadow-button hover:border-primary btn-press"
+          className="mt-3 w-full border border-border py-2.5 text-[13px] font-semibold text-foreground transition-all duration-300 hover:bg-primary hover:text-white hover:border-primary uppercase tracking-wider"
         >
           {hasVariants ? "Pilih Varian" : "Beli Sekarang"}
         </button>

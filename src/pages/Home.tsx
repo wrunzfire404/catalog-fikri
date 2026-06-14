@@ -76,46 +76,43 @@ export default function Home() {
           {/* Katalog */}
           <button
             onClick={() => navigate("/stock")}
-            className="w-full flex md:flex-col items-center gap-4 md:gap-5 rounded-2xl bg-white p-4 md:p-8 shadow-card border border-border/20 card-lift text-left md:text-center"
+            className="relative w-full h-32 md:h-48 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border"
           >
-            <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-primary/[0.07] flex items-center justify-center shrink-0">
-              <ShoppingBag className="w-6 h-6 md:w-8 md:h-8 text-primary" />
+            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500 z-10" />
+            <img src="/images/banner1.jpeg" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Katalog" />
+            <div className="absolute inset-0 p-5 md:p-6 flex flex-col justify-end z-20">
+              <h3 className="text-xl md:text-2xl font-bold font-serif text-white mb-1 tracking-wide">Cek Katalog</h3>
+              <p className="text-xs md:text-sm text-white/90 font-medium uppercase tracking-widest">Koleksi Terbaru</p>
             </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="text-[15px] md:text-lg font-bold font-serif text-foreground">Cek Katalog</h3>
-              <p className="text-[12px] md:text-[14px] text-muted-foreground mt-0.5 md:mt-2 line-clamp-2 md:line-clamp-none">Lihat koleksi rajut, pilih varian, checkout via WhatsApp</p>
-            </div>
-            <ChevronRight className="w-5 h-5 text-muted-foreground/30 shrink-0 md:hidden" />
+            <ChevronRight className="absolute bottom-6 right-6 w-6 h-6 text-white z-20 group-hover:translate-x-2 transition-transform duration-300" />
           </button>
 
           {/* Hubungi CS */}
           <button
             onClick={() => navigate("/contact")}
-            className="w-full flex md:flex-col items-center gap-4 md:gap-5 rounded-2xl bg-white p-4 md:p-8 shadow-card border border-border/20 card-lift text-left md:text-center"
+            className="relative w-full h-32 md:h-48 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border"
           >
-            <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-primary/[0.07] flex items-center justify-center shrink-0">
-              <MessageCircle className="w-6 h-6 md:w-8 md:h-8 text-primary" />
+            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500 z-10" />
+            <img src="/images/banner2.jpeg" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Hubungi CS" />
+            <div className="absolute inset-0 p-5 md:p-6 flex flex-col justify-end z-20">
+              <h3 className="text-xl md:text-2xl font-bold font-serif text-white mb-1 tracking-wide">Hubungi CS</h3>
+              <p className="text-xs md:text-sm text-white/90 font-medium uppercase tracking-widest">Tanya Stok & Harga</p>
             </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="text-[15px] md:text-lg font-bold font-serif text-foreground">Hubungi CS</h3>
-              <p className="text-[12px] md:text-[14px] text-muted-foreground mt-0.5 md:mt-2 line-clamp-2 md:line-clamp-none">Info stok, harga grosir, pengiriman — tim kami siap bantu</p>
-            </div>
-            <ChevronRight className="w-5 h-5 text-muted-foreground/30 shrink-0 md:hidden" />
+            <ChevronRight className="absolute bottom-6 right-6 w-6 h-6 text-white z-20 group-hover:translate-x-2 transition-transform duration-300" />
           </button>
 
           {/* Lokasi */}
           <button
             onClick={() => navigate("/visit")}
-            className="w-full flex md:flex-col items-center gap-4 md:gap-5 rounded-2xl bg-white p-4 md:p-8 shadow-card border border-border/20 card-lift text-left md:text-center"
+            className="relative w-full h-32 md:h-48 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border"
           >
-            <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-primary/[0.07] flex items-center justify-center shrink-0">
-              <MapPin className="w-6 h-6 md:w-8 md:h-8 text-primary" />
+            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500 z-10" />
+            <img src="/images/banner3.jpeg" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Lokasi Toko" />
+            <div className="absolute inset-0 p-5 md:p-6 flex flex-col justify-end z-20">
+              <h3 className="text-xl md:text-2xl font-bold font-serif text-white mb-1 tracking-wide">Lokasi Toko</h3>
+              <p className="text-xs md:text-sm text-white/90 font-medium uppercase tracking-widest">Kunjungi Kami</p>
             </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="text-[15px] md:text-lg font-bold font-serif text-foreground">Lokasi Toko</h3>
-              <p className="text-[12px] md:text-[14px] text-muted-foreground mt-0.5 md:mt-2 line-clamp-2 md:line-clamp-none">Datang langsung ke toko kami di Bandung — lihat di Google Maps</p>
-            </div>
-            <ChevronRight className="w-5 h-5 text-muted-foreground/30 shrink-0 md:hidden" />
+            <ChevronRight className="absolute bottom-6 right-6 w-6 h-6 text-white z-20 group-hover:translate-x-2 transition-transform duration-300" />
           </button>
         </div>
       </main>
