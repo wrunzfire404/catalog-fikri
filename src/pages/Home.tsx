@@ -4,9 +4,9 @@ import { ShoppingBag, MessageCircle, MapPin, Sparkles, ChevronRight } from "luci
 import { useStore } from "@/context/StoreContext";
 
 const BANNERS = [
-  { src: "/images/banner1.jpeg", alt: "Banner PGRB 1" },
-  { src: "/images/banner2.jpeg", alt: "Banner PGRB 2" },
-  { src: "/images/banner3.jpeg", alt: "Banner PGRB 3" },
+  { src: "/images/katalog.jpeg", alt: "Banner PGRB 1" },
+  { src: "/images/cs.jpeg", alt: "Banner PGRB 2" },
+  { src: "/images/toko.jpeg", alt: "Banner PGRB 3" },
 ];
 
 export default function Home() {
@@ -26,7 +26,7 @@ export default function Home() {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background border-b border-border/60">
         <div className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto w-full">
-          <img src="/images/logo-white.png" alt={settings.shopName} className="h-10 object-contain mix-blend-multiply" />
+          <img src="/images/logo.png" alt={settings.shopName} className="h-10 object-contain mix-blend-multiply" />
           <nav className="hidden md:flex items-center gap-8 text-[12px] font-semibold tracking-widest uppercase text-foreground">
             <button onClick={() => navigate("/stock")} className="hover:text-primary transition-colors">Katalog</button>
             <button onClick={() => navigate("/contact")} className="hover:text-primary transition-colors">Kontak</button>
@@ -84,7 +84,7 @@ export default function Home() {
             className="relative w-full h-32 md:h-48 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border"
           >
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500 z-10" />
-            <img src="/images/banner1.jpeg" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Katalog" />
+            <img src="/images/katalog.jpeg" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Katalog" />
             <div className="absolute inset-0 p-5 md:p-6 flex flex-col justify-end z-20">
               <h3 className="text-xl md:text-2xl font-bold font-serif text-white mb-1 tracking-wide">Cek Katalog</h3>
               <p className="text-xs md:text-sm text-white/90 font-medium uppercase tracking-widest">Koleksi Terbaru</p>
@@ -98,7 +98,7 @@ export default function Home() {
             className="relative w-full h-32 md:h-48 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border"
           >
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500 z-10" />
-            <img src="/images/banner2.jpeg" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Hubungi CS" />
+            <img src="/images/cs.jpeg" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Hubungi CS" />
             <div className="absolute inset-0 p-5 md:p-6 flex flex-col justify-end z-20">
               <h3 className="text-xl md:text-2xl font-bold font-serif text-white mb-1 tracking-wide">Hubungi CS</h3>
               <p className="text-xs md:text-sm text-white/90 font-medium uppercase tracking-widest">Tanya Stok & Harga</p>
@@ -112,7 +112,7 @@ export default function Home() {
             className="relative w-full h-32 md:h-48 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border"
           >
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500 z-10" />
-            <img src="/images/banner3.jpeg" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Lokasi Toko" />
+            <img src="/images/toko.jpeg" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Lokasi Toko" />
             <div className="absolute inset-0 p-5 md:p-6 flex flex-col justify-end z-20">
               <h3 className="text-xl md:text-2xl font-bold font-serif text-white mb-1 tracking-wide">Lokasi Toko</h3>
               <p className="text-xs md:text-sm text-white/90 font-medium uppercase tracking-widest">Kunjungi Kami</p>
@@ -127,7 +127,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-start justify-between gap-10">
           <div className="flex flex-col gap-5 max-w-sm">
             {/* Trik invert + brightness-0 membuat logo jadi solid putih */}
-            <img src="/images/logo-white.png" alt={settings.shopName} className="h-10 object-contain brightness-0 invert opacity-90" />
+            <img src="/images/logo.png" alt={settings.shopName} className="h-10 object-contain brightness-0 invert opacity-90" />
             <p className="text-[13px] text-primary-foreground/70 leading-relaxed font-sans">
               Pusat grosir rajut premium di Bandung. Kami menyediakan koleksi rajut berkualitas dengan harga terbaik untuk kebutuhan retail maupun partai besar.
             </p>
