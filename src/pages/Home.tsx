@@ -14,6 +14,14 @@ export default function Home() {
   const navigate = useNavigate();
   const { settings } = useStore();
   const [bannerIndex, setBannerIndex] = useState(0);
+  const [slidingPath, setSlidingPath] = useState<string | null>(null);
+
+  const handleNavigate = (path: string) => {
+    setSlidingPath(path);
+    setTimeout(() => {
+      navigate(path);
+    }, 400);
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -27,12 +35,21 @@ export default function Home() {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background border-b border-border/60">
         <div className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto w-full">
-          <img src="/images/logo.png" alt={settings.shopName} className="h-10 object-contain mix-blend-multiply" />
-          <nav className="hidden md:flex items-center gap-8 text-[12px] font-semibold tracking-widest uppercase text-foreground">
-            <button onClick={() => navigate("/stock")} className="hover:text-primary transition-colors">Katalog</button>
-            <button onClick={() => navigate("/contact")} className="hover:text-primary transition-colors">Kontak</button>
-            <button onClick={() => navigate("/visit")} className="hover:text-primary transition-colors">Lokasi</button>
-          </nav>
+          <img src="/images/logo.png" alt={settings.shopName} className="h-12 object-contain mix-blend-multiply" />
+          <div className="flex items-center gap-6">
+            <nav className="hidden md:flex items-center gap-8 text-[12px] font-semibold tracking-widest uppercase text-foreground">
+              <button onClick={() => handleNavigate("/stock")} className="hover:text-primary transition-colors">Katalog</button>
+              <button onClick={() => handleNavigate("/contact")} className="hover:text-primary transition-colors">Kontak</button>
+              <button onClick={() => handleNavigate("/visit")} className="hover:text-primary transition-colors">Lokasi</button>
+            </nav>
+            <button 
+              onClick={() => handleNavigate("/stock")}
+              className="grid h-10 w-10 place-items-center rounded-full bg-secondary text-foreground hover:bg-primary hover:text-white transition-colors"
+              aria-label="Keranjang Belanja"
+            >
+              <ShoppingBag className="h-5 w-5" />
+            </button>
+          </div>
         </div>
       </header>
 
@@ -81,8 +98,8 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 w-full">
           {/* Katalog */}
           <button
-            onClick={() => navigate("/stock")}
-            className="relative w-full h-32 md:h-48 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border rounded-3xl"
+            onClick={() => handleNavigate("/stock")}
+            className="relative w-full h-48 md:h-64 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border rounded-3xl"
           >
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500 z-10" />
             <img src="/images/katalog.jpeg" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Katalog" />
@@ -95,8 +112,8 @@ export default function Home() {
 
           {/* Hubungi CS */}
           <button
-            onClick={() => navigate("/contact")}
-            className="relative w-full h-32 md:h-48 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border rounded-3xl"
+            onClick={() => handleNavigate("/contact")}
+            className="relative w-full h-48 md:h-64 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border rounded-3xl"
           >
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500 z-10" />
             <img src="/images/cs.jpeg" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Hubungi CS" />
@@ -109,8 +126,8 @@ export default function Home() {
 
           {/* Lokasi */}
           <button
-            onClick={() => navigate("/visit")}
-            className="relative w-full h-32 md:h-48 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border rounded-3xl"
+            onClick={() => handleNavigate("/visit")}
+            className="relative w-full h-48 md:h-64 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border rounded-3xl"
           >
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500 z-10" />
             <img src="/images/toko.jpeg" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Lokasi Toko" />
@@ -124,24 +141,29 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-primary text-primary-foreground py-8 mt-auto relative z-10">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+      <footer className="bg-primary text-primary-foreground py-5 mt-auto relative z-10">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4">
-            <img src="/images/logo.png" alt={settings.shopName} className="h-7 object-contain brightness-0 invert opacity-90" />
+            <img src="/images/logo.png" alt={settings.shopName} className="h-9 object-contain brightness-0 invert opacity-90" />
             <span className="text-[11px] text-primary-foreground/40 hidden md:block">|</span>
             <span className="text-[11px] text-primary-foreground/60 text-center md:text-left">Pusat grosir rajut premium Bandung</span>
           </div>
-          <div className="flex flex-wrap justify-center items-center gap-6 text-[11px] uppercase tracking-widest font-semibold font-sans">
-            <button onClick={() => navigate("/stock")} className="hover:text-white text-primary-foreground/80 transition">Katalog</button>
-            <button onClick={() => navigate("/contact")} className="hover:text-white text-primary-foreground/80 transition">Hubungi CS</button>
-            <button onClick={() => navigate("/visit")} className="hover:text-white text-primary-foreground/80 transition">Lokasi Toko</button>
+          <div className="flex flex-wrap justify-center items-center gap-6 text-[11px] uppercase tracking-widest font-semibold font-sans mt-2 md:mt-0">
+            <button onClick={() => handleNavigate("/stock")} className="hover:text-white text-primary-foreground/80 transition">Katalog</button>
+            <button onClick={() => handleNavigate("/contact")} className="hover:text-white text-primary-foreground/80 transition">Hubungi CS</button>
+            <button onClick={() => handleNavigate("/visit")} className="hover:text-white text-primary-foreground/80 transition">Lokasi Toko</button>
           </div>
         </div>
-        <div className="max-w-6xl mx-auto px-6 mt-6 pt-5 border-t border-primary-foreground/10 flex flex-col md:flex-row items-center justify-between text-[10px] text-primary-foreground/40 uppercase tracking-widest font-sans">
+        <div className="max-w-6xl mx-auto px-6 mt-4 pt-4 border-t border-primary-foreground/10 flex flex-col md:flex-row items-center justify-between text-[10px] text-primary-foreground/40 uppercase tracking-widest font-sans">
           <span>© {new Date().getFullYear()} {settings.shopName}. All rights reserved.</span>
           <span className="mt-2 md:mt-0">Designed for Fashion</span>
         </div>
       </footer>
+
+      {/* Slide Overlay for Navigation */}
+      <div 
+        className={`fixed inset-0 z-[100] bg-background transition-transform duration-500 ease-in-out ${slidingPath ? "translate-x-0" : "translate-x-full"}`} 
+      />
     </div>
   );
 }
