@@ -21,10 +21,16 @@ export default function SettingsPanel() {
   };
 
   const handleSave = async () => {
-    await saveSettings(draft);
-    saveAdminCreds(creds.user, creds.pass);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    try {
+      await saveSettings(draft);
+      saveAdminCreds(creds.user, creds.pass);
+      setSaved(true);
+      alert("Berhasil menyimpan pengaturan!");
+      setTimeout(() => setSaved(false), 2000);
+    } catch (error) {
+      console.error(error);
+      alert("Gagal menyimpan pengaturan! Pastikan Anda sudah menjalankan script SQL di Supabase.");
+    }
   };
 
   const handleUploadBanner = async (file: File) => {
