@@ -26,6 +26,7 @@ export async function getAllProducts(): Promise<Product[]> {
     image: (row.image as string) || undefined,
     variants: Array.isArray(row.variants) ? (row.variants as Product["variants"]) : undefined,
     featured: (row.featured as boolean) || false,
+    stock: typeof row.stock === "number" ? row.stock : undefined,
   }));
 }
 
@@ -47,6 +48,7 @@ export async function saveProduct(product: Product) {
     image: product.image || null,
     variants: product.variants || [],
     featured: product.featured || false,
+    stock: product.stock !== undefined ? product.stock : null,
   };
 
   if (existing) {
@@ -83,6 +85,7 @@ export async function getSettings(): Promise<Settings> {
     waNumber: (data.wa_number as string) || defaultSettings.waNumber,
     address: (data.address as string) || defaultSettings.address,
     mapsUrl: (data.maps_url as string) || defaultSettings.mapsUrl,
+    banners: Array.isArray(data.banners) ? (data.banners as Settings["banners"]) : defaultSettings.banners,
   };
 }
 
@@ -94,6 +97,7 @@ export async function saveSettings(s: Settings) {
     wa_number: s.waNumber,
     address: s.address,
     maps_url: s.mapsUrl,
+    banners: s.banners || null,
   });
 }
 

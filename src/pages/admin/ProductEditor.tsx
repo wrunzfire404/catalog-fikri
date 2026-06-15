@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { X, Plus, Trash2, Upload, ImageIcon, Loader2 } from "lucide-react";
 import { useStore } from "@/context/StoreContext";
-import { supabase } from "@/lib/supabase";
+import { supabase, uploadImage } from "@/lib/supabase";
 import { slugify, type Product, type ProductVariant } from "@/lib/products";
+
+type DraftVariant = { slug: string; color: string; image: string; stock: string };
 
 type Draft = {
   slug: string;
@@ -13,12 +15,13 @@ type Draft = {
   price: string;
   note: string;
   image: string;
-  variants: ProductVariant[];
+  stock: string;
+  variants: DraftVariant[];
 };
 
 function toDraft(product: Product | null): Draft {
   if (!product) {
-    return { slug: "", code: "", name: "", ld: "", pj: "", price: "", note: "", image: "", variants: [] };
+    return { slug: "", code: "", name: "", ld: "", pj: "", price: "", note: "", image: "", stock: "", variants: [] };
   }
   return {
     slug: product.slug,
@@ -29,23 +32,12 @@ function toDraft(product: Product | null): Draft {
     price: String(product.price),
     note: product.note ?? "",
     image: product.image ?? "",
-    variants: product.variants ? product.variants.map((v) => ({ ...v })) : [],
+    stock: product.stock !== undefined ? String(product.stock) : "",
+    variants: product.variants ? product.variants.map((v) => ({ ...v, stock: v.stock !== undefined ? String(v.stock) : "" })) : [],
   };
 }
 
-// Upload file to Supabase Storage
-async function uploadImage(file: File): Promise<string> {
-  const ext = file.name.split(".").pop() || "jpg";
-  const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-  const { error } = await supabase.storage
-    .from("product-images")
-    .upload(filename, file, { upsert: true, contentType: file.type });
 
-  if (error) throw error;
-
-  const { data } = supabase.storage.from("product-images").getPublicUrl(filename);
-  return data.publicUrl;
-}
 
 export default function ProductEditor({ product, onClose }: { product: Product | null; onClose: () => void }) {
   const { products, saveProduct } = useStore();
@@ -74,11 +66,11 @@ export default function ProductEditor({ product, onClose }: { product: Product |
   const addVariant = () => {
     setDraft((prev) => ({
       ...prev,
-      variants: [...prev.variants, { slug: `varian-${prev.variants.length + 1}`, color: "", image: "" }],
+      variants: [...prev.variants, { slug: `varian-${prev.variants.length + 1}`, color: "", image: "", stock: "" }],
     }));
   };
 
-  const updateVariant = (index: number, patch: Partial<ProductVariant>) => {
+  const updateVariant = (index: number, patch: Partial<DraftVariant>) => {
     setDraft((prev) => {
       const variants = [...prev.variants];
       variants[index] = { ...variants[index], ...patch };
@@ -121,6 +113,7 @@ export default function ProductEditor({ product, onClose }: { product: Product |
         slug: v.slug || slugify(v.color),
         color: v.color.trim(),
         image: v.image || undefined,
+        stock: v.stock.trim() ? parseInt(v.stock.replace(/[^0-9]/g, ""), 10) : undefined,
       }));
 
     const finalProduct: Product = {
@@ -132,6 +125,7 @@ export default function ProductEditor({ product, onClose }: { product: Product |
       price: priceNum,
       note: draft.note.trim() || undefined,
       image: draft.image || cleanVariants[0]?.image || undefined,
+      stock: draft.stock.trim() && cleanVariants.length === 0 ? parseInt(draft.stock.replace(/[^0-9]/g, ""), 10) : undefined,
       variants: cleanVariants.length ? cleanVariants : undefined,
     };
 
@@ -200,6 +194,10 @@ export default function ProductEditor({ product, onClose }: { product: Product |
             <Field label="Panjang (PJ)" value={draft.pj} onChange={(v) => set("pj", v)} placeholder="55" />
           </div>
 
+          {draft.variants.length === 0 && (
+            <Field label="Stok Total (opsional)" value={draft.stock} onChange={(v) => set("stock", v.replace(/[^0-9]/g, ""))} placeholder="Kosongkan jika tak terbatas" />
+          )}
+
           <div>
             <label className="text-[13px] font-semibold text-foreground mb-1.5 block">Catatan (opsional)</label>
             <textarea
@@ -248,8 +246,14 @@ export default function ProductEditor({ product, onClose }: { product: Product |
                     <input
                       value={variant.color}
                       onChange={(e) => updateVariant(index, { color: e.target.value })}
-                      placeholder="Nama warna (cth: Maroon)"
-                      className="flex-1 rounded-lg border border-border bg-white px-3 py-2 text-[14px] outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+                      placeholder="Nama warna"
+                      className="flex-1 min-w-0 rounded-lg border border-border bg-white px-3 py-2 text-[14px] outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+                    />
+                    <input
+                      value={variant.stock}
+                      onChange={(e) => updateVariant(index, { stock: e.target.value.replace(/[^0-9]/g, "") })}
+                      placeholder="Stok"
+                      className="w-16 rounded-lg border border-border bg-white px-2 py-2 text-[14px] text-center outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
                     />
                     <button
                       onClick={() => removeVariant(index)}

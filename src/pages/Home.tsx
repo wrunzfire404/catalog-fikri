@@ -5,12 +5,6 @@ import { useStore } from "@/context/StoreContext";
 import { useCart } from "@/context/CartContext";
 import { CartDrawer } from "@/components/cart";
 
-const BANNERS = [
-  { src: "/images/banner1.jpeg", alt: "Banner PGRB 1" },
-  { src: "/images/banner2.jpeg", alt: "Banner PGRB 2" },
-  { src: "/images/banner3.jpeg", alt: "Banner PGRB 3" },
-  { src: "/images/banner4.png", alt: "Banner PGRB 4" },
-];
 
 export default function Home() {
   const navigate = useNavigate();
@@ -19,12 +13,21 @@ export default function Home() {
   const [bannerIndex, setBannerIndex] = useState(0);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
+  const activeBanners = settings.banners && settings.banners.length > 0 
+    ? settings.banners 
+    : [
+        { src: "/images/banner1.jpeg", alt: "Banner PGRB 1" },
+        { src: "/images/banner2.jpeg", alt: "Banner PGRB 2" },
+        { src: "/images/banner3.jpeg", alt: "Banner PGRB 3" },
+        { src: "/images/banner4.png", alt: "Banner PGRB 4" },
+      ];
+
   useEffect(() => {
     const timer = setInterval(() => {
-      setBannerIndex((prev) => (prev + 1) % BANNERS.length);
+      setBannerIndex((prev) => (prev + 1) % activeBanners.length);
     }, 8000);
     return () => clearInterval(timer);
-  }, []);
+  }, [activeBanners.length]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
@@ -57,9 +60,9 @@ export default function Home() {
       {/* Hero Banner */}
       <section className="relative bg-primary text-white">
         <div className="relative w-full h-[30vh] md:h-[35vh] lg:h-[45vh] overflow-hidden">
-          {BANNERS.map((banner, i) => (
+          {activeBanners.map((banner, i) => (
             <img
-              key={banner.src}
+              key={banner.src + i}
               src={banner.src}
               alt={banner.alt}
               className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
@@ -80,7 +83,7 @@ export default function Home() {
             </div>
           </div>
           <div className="absolute bottom-3 inset-x-0 flex items-center justify-center gap-1.5">
-            {BANNERS.map((_, i) => (
+            {activeBanners.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setBannerIndex(i)}

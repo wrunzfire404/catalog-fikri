@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { Save, RotateCcw, ShieldCheck, KeyRound } from "lucide-react";
+import { Save, RotateCcw, ShieldCheck, KeyRound, Image as ImageIcon, Upload, Trash2, Loader2, ArrowUp, ArrowDown } from "lucide-react";
 import { useStore } from "@/context/StoreContext";
 import { saveAdminCreds, getAdminCreds, resetProductsToDefault, resetSettingsToDefault } from "@/lib/store";
 import { type Settings } from "@/lib/products";
+import { uploadImage } from "@/lib/supabase";
 
 export default function SettingsPanel() {
   const { settings, saveSettings, refresh } = useStore();
-  const [draft, setDraft] = useState<Settings>({ ...settings });
+  const [draft, setDraft] = useState<Settings>({ ...settings, banners: settings.banners || [] });
   const [saved, setSaved] = useState(false);
+  const [uploadingBanner, setUploadingBanner] = useState(false);
 
   // Creds
   const [creds, setCreds] = useState(() => getAdminCreds());
@@ -23,6 +25,36 @@ export default function SettingsPanel() {
     saveAdminCreds(creds.user, creds.pass);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+  };
+
+  const handleUploadBanner = async (file: File) => {
+    try {
+      setUploadingBanner(true);
+      const url = await uploadImage(file);
+      const newBanner = { src: url, alt: `Banner ${draft.banners?.length ? draft.banners.length + 1 : 1}` };
+      setDraft((prev) => ({ ...prev, banners: [...(prev.banners || []), newBanner] }));
+      setSaved(false);
+    } catch {
+      alert("Gagal mengunggah banner.");
+    } finally {
+      setUploadingBanner(false);
+    }
+  };
+
+  const moveBanner = (index: number, direction: "up" | "down") => {
+    const arr = [...(draft.banners || [])];
+    if (direction === "up" && index > 0) {
+      [arr[index - 1], arr[index]] = [arr[index], arr[index - 1]];
+    } else if (direction === "down" && index < arr.length - 1) {
+      [arr[index], arr[index + 1]] = [arr[index + 1], arr[index]];
+    }
+    setDraft((prev) => ({ ...prev, banners: arr }));
+    setSaved(false);
+  };
+
+  const removeBanner = (index: number) => {
+    setDraft((prev) => ({ ...prev, banners: (prev.banners || []).filter((_, i) => i !== index) }));
+    setSaved(false);
   };
 
   const handleResetAll = async () => {
@@ -48,6 +80,67 @@ export default function SettingsPanel() {
           <Field label="Nomor WhatsApp" value={draft.waNumber} onChange={(v) => set("waNumber", v)} placeholder="628xxxxxxxxxx tanpa + atau 0" />
           <Field label="Alamat Toko" value={draft.address} onChange={(v) => set("address", v)} />
           <Field label="URL Google Maps" value={draft.mapsUrl} onChange={(v) => set("mapsUrl", v)} placeholder="https://maps.google.com/?q=..." />
+        </div>
+      </div>
+
+      {/* Banner Management */}
+      <div className="rounded-2xl bg-white shadow-card border border-border/40 p-6 md:p-8 mb-6">
+        <h2 className="font-bold font-serif text-foreground text-lg mb-6 flex items-center gap-2">
+          <ImageIcon className="w-5 h-5 text-primary" />
+          Manajemen Banner Homepage
+        </h2>
+
+        <div className="space-y-4">
+          <label className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-[13px] font-medium text-foreground cursor-pointer hover:bg-secondary transition">
+            {uploadingBanner ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+            {uploadingBanner ? "Mengunggah..." : "Tambah Banner"}
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => e.target.files?.[0] && handleUploadBanner(e.target.files[0])}
+            />
+          </label>
+
+          {(!draft.banners || draft.banners.length === 0) && (
+            <p className="text-[13px] text-muted-foreground bg-secondary/40 rounded-lg px-4 py-3 border border-border/50">
+              Belum ada banner. Banner default akan ditampilkan di Homepage.
+            </p>
+          )}
+
+          <div className="space-y-3">
+            {draft.banners?.map((banner, idx) => (
+              <div key={idx} className="flex items-center gap-3 rounded-xl border border-border p-2 bg-white">
+                <div className="w-24 h-14 bg-secondary rounded-md overflow-hidden shrink-0 border border-border/50">
+                  <img src={banner.src} alt={banner.alt} className="w-full h-full object-cover" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <input
+                    value={banner.alt}
+                    onChange={(e) => {
+                      const newBanners = [...(draft.banners || [])];
+                      newBanners[idx].alt = e.target.value;
+                      setDraft((prev) => ({ ...prev, banners: newBanners }));
+                    }}
+                    placeholder="Teks alternatif banner"
+                    className="w-full text-[13px] bg-transparent outline-none font-medium"
+                  />
+                </div>
+                <div className="flex items-center gap-1 shrink-0 px-2">
+                  <button onClick={() => moveBanner(idx, "up")} disabled={idx === 0} className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-md disabled:opacity-30 transition">
+                    <ArrowUp className="w-4 h-4" />
+                  </button>
+                  <button onClick={() => moveBanner(idx, "down")} disabled={idx === draft.banners!.length - 1} className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-md disabled:opacity-30 transition">
+                    <ArrowDown className="w-4 h-4" />
+                  </button>
+                  <div className="w-px h-5 bg-border mx-1" />
+                  <button onClick={() => removeBanner(idx)} className="p-1.5 text-destructive/70 hover:text-destructive hover:bg-destructive/10 rounded-md transition">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

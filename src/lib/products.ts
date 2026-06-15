@@ -2,6 +2,7 @@ export type ProductVariant = {
   slug: string;
   color: string;
   image?: string;
+  stock?: number;
 };
 
 export type Product = {
@@ -15,6 +16,7 @@ export type Product = {
   image?: string;
   variants?: ProductVariant[];
   featured?: boolean;
+  stock?: number;
 };
 
 export type Settings = {
@@ -23,6 +25,7 @@ export type Settings = {
   waNumber: string;
   address: string;
   mapsUrl: string;
+  banners?: { src: string; alt: string }[];
 };
 
 const rereVariants: ProductVariant[] = [
@@ -63,6 +66,12 @@ export const defaultSettings: Settings = {
   waNumber: "6283131261552",
   address: "Jl. Caringin No. 123, Babakan Ciparay, Bandung, Jawa Barat 40223",
   mapsUrl: "https://maps.google.com/?q=PGRB+Pusat+Grosir+Rajut+Bandung+Caringin+Babakan+Ciparay",
+  banners: [
+    { src: "/images/banner1.jpeg", alt: "Banner PGRB 1" },
+    { src: "/images/banner2.jpeg", alt: "Banner PGRB 2" },
+    { src: "/images/banner3.jpeg", alt: "Banner PGRB 3" },
+    { src: "/images/banner4.png", alt: "Banner PGRB 4" },
+  ],
 };
 
 export function formatRupiah(n: number) {
