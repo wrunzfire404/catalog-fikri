@@ -11,10 +11,11 @@ export default function AdminLogin({ onLogin }: { onLogin: () => void }) {
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (adminLogin(user.trim(), pass)) {
+    const success = await adminLogin(user.trim(), pass);
+    if (success) {
       onLogin();
     } else {
       setError("Username atau password salah.");
