@@ -91,10 +91,6 @@ export default function AdminLogin({ onLogin }: { onLogin: () => void }) {
               Masuk
             </button>
           </form>
-
-          <p className="text-center text-[12px] text-muted-foreground/70 mt-4">
-            Default: <span className="font-mono">admin</span> / <span className="font-mono">pgrb2024</span>
-          </p>
         </div>
       </main>
     </div>

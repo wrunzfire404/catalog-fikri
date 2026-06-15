@@ -115,7 +115,7 @@ export function getAdminCreds(): { user: string; pass: string } {
       if (parsed.user && parsed.pass) return parsed;
     }
   } catch { /* ignore */ }
-  return { user: "admin", pass: "pgrb2024" };
+  return { user: "admin", pass: "adminpgrb2024" };
 }
 
 export function saveAdminCreds(user: string, pass: string) {
