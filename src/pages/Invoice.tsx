@@ -46,6 +46,10 @@ export default function Invoice() {
         logging: false,
       });
       
+      if (!canvas.width || !canvas.height) {
+        throw new Error("Kalkulasi ukuran dokumen gagal (Width/Height 0).");
+      }
+
       const imgData = canvas.toDataURL("image/jpeg", 1.0);
       const pdf = new jsPDF({
         orientation: "portrait",
@@ -58,9 +62,16 @@ export default function Invoice() {
       
       pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
       pdf.save(`${invoiceNo}.pdf`);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Gagal membuat PDF", err);
-      alert("Gagal men-download PDF. Silakan coba lagi.");
+      // Fallback to window.print if it's a SecurityError or something
+      if (err?.name === "SecurityError" || err?.message?.toLowerCase().includes("tainted")) {
+        alert("Gagal men-download PDF karena masalah keamanan gambar. Sistem akan mencoba membuka mode Print bawaan.");
+        window.print();
+      } else {
+        alert(`Gagal men-download PDF: ${err?.message || "Unknown error"}. Silakan coba mode Print bawaan.`);
+        window.print();
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -127,13 +138,14 @@ export default function Invoice() {
             {/* INVOICE TEMPLATE (A4 format roughly) */}
             <div 
               ref={invoiceRef} 
+              id="invoice-print-area"
               className="bg-white p-10 md:p-14 text-black font-sans w-[800px]"
             >
               {/* Header Invoice */}
               <div className="flex justify-between items-start mb-12">
                 <div className="flex items-center gap-3">
-                  {/* Gunakan gambar logo asli */}
-                  <img src="/images/logo.png" className="h-16 object-contain" alt="Logo" />
+                  {/* Gunakan gambar logo asli dengan crossOrigin agar tidak tainting canvas */}
+                  <img src="/images/logo.png" className="h-16 object-contain" alt="Logo" crossOrigin="anonymous" />
                   <div>
                     <h2 className="font-bold text-2xl tracking-tight">{settings.shopName}</h2>
                     <p className="text-sm text-gray-500 mt-1">{settings.waNumber}</p>

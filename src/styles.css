@@ -220,3 +220,33 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--muted-foreground);
 }
+
+/* Print Styles untuk Invoice */
+@media print {
+  /* Sembunyikan elemen utama */
+  body * {
+    visibility: hidden;
+  }
+  
+  /* Tampilkan hanya container invoice */
+  #invoice-print-area, #invoice-print-area * {
+    visibility: visible;
+  }
+  
+  #invoice-print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* Set halaman A4 tanpa margin default browser */
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+}
