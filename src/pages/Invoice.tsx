@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
 import { CheckCircle2, Download, MessageCircle, FileText, ArrowLeft, Loader2 } from "lucide-react";
 import { formatRupiah, type CartItem, type CustomerInfo, waCheckoutLink } from "@/lib/products";
 import { useStore } from "@/context/StoreContext";
@@ -33,48 +31,8 @@ export default function Invoice() {
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
   const totalPrice = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
 
-  const handleDownloadPDF = async () => {
-    if (!invoiceRef.current) return;
-    try {
-      setIsGenerating(true);
-      // Tunggu font/gambar load
-      await new Promise(r => setTimeout(r, 100));
-      
-      const canvas = await html2canvas(invoiceRef.current, {
-        scale: 2, // Kualitas HD
-        useCORS: true,
-        logging: false,
-      });
-      
-      if (!canvas.width || !canvas.height) {
-        throw new Error("Kalkulasi ukuran dokumen gagal (Width/Height 0).");
-      }
-
-      const imgData = canvas.toDataURL("image/jpeg", 1.0);
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4"
-      });
-      
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      
-      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`${invoiceNo}.pdf`);
-    } catch (err: any) {
-      console.error("Gagal membuat PDF", err);
-      // Fallback to window.print if it's a SecurityError or something
-      if (err?.name === "SecurityError" || err?.message?.toLowerCase().includes("tainted")) {
-        alert("Gagal men-download PDF karena masalah keamanan gambar. Sistem akan mencoba membuka mode Print bawaan.");
-        window.print();
-      } else {
-        alert(`Gagal men-download PDF: ${err?.message || "Unknown error"}. Silakan coba mode Print bawaan.`);
-        window.print();
-      }
-    } finally {
-      setIsGenerating(false);
-    }
+  const handleDownloadPDF = () => {
+    window.print();
   };
 
   const handleKonfirmasiWA = () => {
@@ -108,11 +66,10 @@ export default function Invoice() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10">
           <button
             onClick={handleDownloadPDF}
-            disabled={isGenerating}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-[15px] font-bold text-white shadow-md transition hover:bg-primary/90 active:scale-[0.98] disabled:opacity-70"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-[15px] font-bold text-white shadow-md transition hover:bg-primary/90 active:scale-[0.98]"
           >
-            {isGenerating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
-            {isGenerating ? "Memproses PDF..." : "Download Invoice PDF"}
+            <Download className="w-5 h-5" />
+            Simpan PDF (Print)
           </button>
           
           <button
