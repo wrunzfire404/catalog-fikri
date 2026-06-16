@@ -86,6 +86,10 @@ export async function getSettings(): Promise<Settings> {
     address: (data.address as string) || defaultSettings.address,
     mapsUrl: (data.maps_url as string) || defaultSettings.mapsUrl,
     banners: Array.isArray(data.banners) ? (data.banners as Settings["banners"]) : defaultSettings.banners,
+    menuKatalogImage: data.menu_katalog_image !== undefined ? (data.menu_katalog_image as string) : defaultSettings.menuKatalogImage,
+    menuCsImage: data.menu_cs_image !== undefined ? (data.menu_cs_image as string) : defaultSettings.menuCsImage,
+    menuLokasiImage: data.menu_lokasi_image !== undefined ? (data.menu_lokasi_image as string) : defaultSettings.menuLokasiImage,
+    bannerText: data.banner_text !== undefined ? (data.banner_text as string) : defaultSettings.bannerText,
   };
 }
 
@@ -98,6 +102,10 @@ export async function saveSettings(s: Settings) {
     address: s.address,
     maps_url: s.mapsUrl,
     banners: s.banners || null,
+    menu_katalog_image: s.menuKatalogImage || null,
+    menu_cs_image: s.menuCsImage || null,
+    menu_lokasi_image: s.menuLokasiImage || null,
+    banner_text: s.bannerText || null,
   });
 }
 
