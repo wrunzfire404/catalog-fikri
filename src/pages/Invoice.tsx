@@ -128,30 +128,30 @@ export default function Invoice() {
         </h3>
 
         {/* Invoice Preview Container */}
-        <div className="w-full overflow-x-auto pb-8 custom-scrollbar rounded-xl">
-          <div className="w-[800px] shadow-2xl bg-white lg:mx-auto" style={{ border: "1px solid #e5e7eb" }}>
+        <div className="w-full pb-8">
+          <div className="w-full max-w-[800px] shadow-2xl bg-white mx-auto rounded-xl overflow-hidden" style={{ border: "1px solid #e5e7eb" }}>
             
             {/* INVOICE TEMPLATE */}
             <div 
               ref={invoiceRef} 
               id="invoice-print-area"
-              className="p-10 font-sans w-[800px]"
+              className="p-5 sm:p-10 font-sans w-full"
               style={{ backgroundColor: "#ffffff", color: "#000000" }}
             >
-              <div className="flex justify-between items-start mb-12">
+              <div className="flex flex-col sm:flex-row justify-between items-start gap-6 sm:gap-4 mb-10 sm:mb-12">
                 <div className="flex items-center gap-3">
-                  <img src="/images/logo.png" className="h-16 object-contain" alt="Logo" crossOrigin="anonymous" />
+                  <img src="/images/logo.png" className="h-12 sm:h-16 object-contain" alt="Logo" crossOrigin="anonymous" />
                   <div>
-                    <h2 className="font-bold text-2xl tracking-tight" style={{ color: "#000000" }}>{settings.shopName}</h2>
-                    <p className="text-sm mt-1" style={{ color: "#6b7280" }}>{settings.waNumber}</p>
-                    <p className="text-sm max-w-[250px] leading-snug" style={{ color: "#6b7280" }}>{settings.address}</p>
+                    <h2 className="font-bold text-xl sm:text-2xl tracking-tight" style={{ color: "#000000" }}>{settings.shopName}</h2>
+                    <p className="text-xs sm:text-sm mt-1" style={{ color: "#6b7280" }}>{settings.waNumber}</p>
+                    <p className="text-xs sm:text-sm max-w-[250px] leading-snug" style={{ color: "#6b7280" }}>{settings.address}</p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <h1 className="text-3xl font-bold font-serif tracking-wider mb-2" style={{ color: "#1f2937" }}>INVOICE</h1>
-                  <p className="text-sm font-semibold" style={{ color: "#4b5563" }}>NO: {invoiceNo}</p>
-                  <p className="text-sm" style={{ color: "#6b7280" }}>Tanggal: {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-                  <p className="text-xs font-semibold mt-2 px-2 py-1 inline-block rounded" style={{ color: "#ef4444", backgroundColor: "#fef2f2", border: "1px solid #fecaca" }}>BELUM DIBAYAR</p>
+                <div className="text-left sm:text-right w-full sm:w-auto border-t sm:border-t-0 pt-4 sm:pt-0 border-gray-100">
+                  <h1 className="text-2xl sm:text-3xl font-bold font-serif tracking-wider mb-2" style={{ color: "#1f2937" }}>INVOICE</h1>
+                  <p className="text-xs sm:text-sm font-semibold" style={{ color: "#4b5563" }}>NO: {invoiceNo}</p>
+                  <p className="text-xs sm:text-sm" style={{ color: "#6b7280" }}>Tanggal: {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                  <p className="text-[10px] sm:text-xs font-semibold mt-2 px-2 py-1 inline-block rounded" style={{ color: "#ef4444", backgroundColor: "#fef2f2", border: "1px solid #fecaca" }}>BELUM DIBAYAR</p>
                 </div>
               </div>
 
@@ -169,45 +169,47 @@ export default function Invoice() {
                 )}
               </div>
 
-              <table className="w-full text-left border-collapse mb-10">
-                <thead>
-                  <tr>
-                    <th className="py-2 px-2 text-sm font-bold uppercase tracking-wider w-12" style={{ color: "#1f2937", borderBottom: "2px solid #1f2937" }}>No</th>
-                    <th className="py-2 px-2 text-sm font-bold uppercase tracking-wider" style={{ color: "#1f2937", borderBottom: "2px solid #1f2937" }}>Nama Produk</th>
-                    <th className="py-2 px-2 text-sm font-bold uppercase tracking-wider text-center w-24" style={{ color: "#1f2937", borderBottom: "2px solid #1f2937" }}>Jumlah</th>
-                    <th className="py-2 px-2 text-sm font-bold uppercase tracking-wider text-right w-32" style={{ color: "#1f2937", borderBottom: "2px solid #1f2937" }}>Harga Satuan</th>
-                    <th className="py-2 px-2 text-sm font-bold uppercase tracking-wider text-right w-36" style={{ color: "#1f2937", borderBottom: "2px solid #1f2937" }}>Total Harga</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {cart.map((item, idx) => (
-                    <tr key={idx} style={{ borderBottom: "1px solid #e5e7eb" }}>
-                      <td className="py-2 px-2 text-sm" style={{ color: "#4b5563" }}>{idx + 1}</td>
-                      <td className="py-2 px-2 text-sm font-medium" style={{ color: "#1f2937" }}>
-                        {item.product.name}
-                        {item.variant?.color && item.variant.color !== item.product.name && (
-                          <span className="font-normal inline-block ml-1" style={{ color: "#6b7280" }}>
-                            (Warna: {item.variant.color})
-                          </span>
-                        )}
-                      </td>
-                      <td className="py-2 px-2 text-sm text-center" style={{ color: "#4b5563" }}>{item.quantity}</td>
-                      <td className="py-2 px-2 text-sm text-right" style={{ color: "#4b5563" }}>{formatRupiah(item.product.price)}</td>
-                      <td className="py-2 px-2 text-sm font-semibold text-right" style={{ color: "#1f2937" }}>{formatRupiah(item.product.price * item.quantity)}</td>
+              <div className="overflow-x-auto w-full mb-10">
+                <table className="w-full text-left border-collapse min-w-[500px]">
+                  <thead>
+                    <tr>
+                      <th className="py-2 px-2 text-xs sm:text-sm font-bold uppercase tracking-wider w-8 sm:w-12" style={{ color: "#1f2937", borderBottom: "2px solid #1f2937" }}>No</th>
+                      <th className="py-2 px-2 text-xs sm:text-sm font-bold uppercase tracking-wider" style={{ color: "#1f2937", borderBottom: "2px solid #1f2937" }}>Nama Produk</th>
+                      <th className="py-2 px-2 text-xs sm:text-sm font-bold uppercase tracking-wider text-center w-16 sm:w-24" style={{ color: "#1f2937", borderBottom: "2px solid #1f2937" }}>Jumlah</th>
+                      <th className="py-2 px-2 text-xs sm:text-sm font-bold uppercase tracking-wider text-right w-24 sm:w-32" style={{ color: "#1f2937", borderBottom: "2px solid #1f2937" }}>Harga</th>
+                      <th className="py-2 px-2 text-xs sm:text-sm font-bold uppercase tracking-wider text-right w-28 sm:w-36" style={{ color: "#1f2937", borderBottom: "2px solid #1f2937" }}>Total</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {cart.map((item, idx) => (
+                      <tr key={idx} style={{ borderBottom: "1px solid #e5e7eb" }}>
+                        <td className="py-2 px-2 text-xs sm:text-sm" style={{ color: "#4b5563" }}>{idx + 1}</td>
+                        <td className="py-2 px-2 text-xs sm:text-sm font-medium" style={{ color: "#1f2937" }}>
+                          {item.product.name}
+                          {item.variant?.color && item.variant.color !== item.product.name && (
+                            <span className="font-normal inline-block ml-1" style={{ color: "#6b7280" }}>
+                              (Warna: {item.variant.color})
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-2 px-2 text-xs sm:text-sm text-center" style={{ color: "#4b5563" }}>{item.quantity}</td>
+                        <td className="py-2 px-2 text-xs sm:text-sm text-right" style={{ color: "#4b5563" }}>{formatRupiah(item.product.price)}</td>
+                        <td className="py-2 px-2 text-xs sm:text-sm font-semibold text-right" style={{ color: "#1f2937" }}>{formatRupiah(item.product.price * item.quantity)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-              <div className="flex justify-end mb-12">
-                <div className="w-[300px] rounded-lg overflow-hidden" style={{ border: "1px solid #e5e7eb" }}>
+              <div className="flex sm:justify-end mb-10 sm:mb-12">
+                <div className="w-full sm:w-[300px] rounded-lg overflow-hidden" style={{ border: "1px solid #e5e7eb" }}>
                   <div className="flex justify-between px-4 py-3" style={{ backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb" }}>
-                    <span className="text-sm font-semibold" style={{ color: "#4b5563" }}>Total Item</span>
-                    <span className="text-sm font-bold" style={{ color: "#1f2937" }}>{totalItems} Pcs</span>
+                    <span className="text-xs sm:text-sm font-semibold" style={{ color: "#4b5563" }}>Total Item</span>
+                    <span className="text-xs sm:text-sm font-bold" style={{ color: "#1f2937" }}>{totalItems} Pcs</span>
                   </div>
                   <div className="flex justify-between px-4 py-4" style={{ backgroundColor: "#1f2937", color: "#ffffff" }}>
-                    <span className="font-bold">Total Belanja</span>
-                    <span className="font-bold">{formatRupiah(totalPrice)}</span>
+                    <span className="text-sm sm:text-base font-bold">Total Belanja</span>
+                    <span className="text-sm sm:text-base font-bold">{formatRupiah(totalPrice)}</span>
                   </div>
                 </div>
               </div>
