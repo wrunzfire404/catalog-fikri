@@ -47,6 +47,16 @@ export default function SettingsPanel() {
     }
   };
 
+  const handleUploadMenuImage = async (field: "menuKatalogImage" | "menuCsImage" | "menuLokasiImage", file: File) => {
+    try {
+      const url = await uploadImage(file);
+      setDraft((prev) => ({ ...prev, [field]: url }));
+      setSaved(false);
+    } catch {
+      alert("Gagal mengunggah gambar menu.");
+    }
+  };
+
   const moveBanner = (index: number, direction: "up" | "down") => {
     const arr = [...(draft.banners || [])];
     if (direction === "up" && index > 0) {
@@ -150,6 +160,35 @@ export default function SettingsPanel() {
         </div>
       </div>
 
+      {/* Menu Image Management */}
+      <div className="rounded-2xl bg-white shadow-card border border-border/40 p-6 md:p-8 mb-6">
+        <h2 className="font-bold font-serif text-foreground text-lg mb-6 flex items-center gap-2">
+          <ImageIcon className="w-5 h-5 text-primary" />
+          Gambar Menu Utama
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <MenuImageUploader 
+            label="Katalog" 
+            src={draft.menuKatalogImage} 
+            onUpload={(file) => handleUploadMenuImage("menuKatalogImage", file)}
+            onRemove={() => { setDraft(p => ({ ...p, menuKatalogImage: "" })); setSaved(false); }}
+          />
+          <MenuImageUploader 
+            label="Hubungi CS" 
+            src={draft.menuCsImage} 
+            onUpload={(file) => handleUploadMenuImage("menuCsImage", file)}
+            onRemove={() => { setDraft(p => ({ ...p, menuCsImage: "" })); setSaved(false); }}
+          />
+          <MenuImageUploader 
+            label="Lokasi Toko" 
+            src={draft.menuLokasiImage} 
+            onUpload={(file) => handleUploadMenuImage("menuLokasiImage", file)}
+            onRemove={() => { setDraft(p => ({ ...p, menuLokasiImage: "" })); setSaved(false); }}
+          />
+        </div>
+      </div>
+
       {/* Credentials */}
       <div className="rounded-2xl bg-white shadow-card border border-border/40 p-6 md:p-8 mb-6">
         <h2 className="font-bold font-serif text-foreground text-lg mb-6 flex items-center gap-2">
@@ -216,6 +255,56 @@ function Field({
         placeholder={placeholder}
         className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-[14px] outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
       />
+    </div>
+  );
+}
+
+function MenuImageUploader({
+  label, src, onUpload, onRemove
+}: {
+  label: string; src?: string; onUpload: (f: File) => void; onRemove: () => void;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    await onUpload(file);
+    setUploading(false);
+  };
+
+  return (
+    <div className="border border-border rounded-xl p-4 bg-secondary/20 flex flex-col items-center text-center">
+      <p className="text-[14px] font-semibold mb-3">{label}</p>
+      {src ? (
+        <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden bg-secondary mb-3 border border-border/50 group">
+          <img src={src} className="w-full h-full object-cover" alt={label} />
+          <button 
+            onClick={onRemove}
+            className="absolute top-2 right-2 p-1.5 bg-red-500/80 hover:bg-red-500 text-white rounded-md opacity-0 md:group-hover:opacity-100 transition-opacity"
+            title="Hapus gambar"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      ) : (
+        <div className="w-full aspect-[4/3] rounded-lg bg-secondary/50 mb-3 border border-dashed border-border/60 flex items-center justify-center">
+          <span className="text-[12px] text-muted-foreground">Tanpa Gambar (Polos)</span>
+        </div>
+      )}
+      <label className="inline-flex items-center justify-center gap-2 w-full rounded-lg bg-white border border-border px-3 py-2 text-[12px] font-medium cursor-pointer hover:bg-secondary transition">
+        {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+        {uploading ? "Mengunggah..." : (src ? "Ganti Gambar" : "Tambah Gambar")}
+        <input type="file" accept="image/*" className="hidden" onChange={handleFile} disabled={uploading} />
+      </label>
+      {src && (
+        <button 
+          onClick={onRemove}
+          className="mt-2 text-[12px] text-destructive/80 hover:text-destructive md:hidden"
+        >
+          Hapus Gambar
+        </button>
+      )}
     </div>
   );
 }

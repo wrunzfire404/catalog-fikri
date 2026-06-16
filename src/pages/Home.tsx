@@ -103,10 +103,12 @@ export default function Home() {
           {/* Katalog */}
           <button
             onClick={() => navigate("/stock")}
-            className="relative w-full h-48 md:h-64 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border rounded-3xl"
+            className={`relative w-full h-48 md:h-64 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border rounded-3xl ${!settings.menuKatalogImage ? 'bg-primary/90' : ''}`}
           >
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500 z-10" />
-            <img src="/images/katalog.jpeg" className="absolute inset-0 w-[110%] h-full object-cover -translate-x-[5%] group-hover:translate-x-0 transition-transform duration-700" alt="Katalog" />
+            {settings.menuKatalogImage && (
+              <img src={settings.menuKatalogImage} className="absolute inset-0 w-[110%] h-full object-cover -translate-x-[5%] group-hover:translate-x-0 transition-transform duration-700" alt="Katalog" />
+            )}
             <div className="absolute inset-0 p-5 md:p-6 flex flex-col justify-end z-20">
               <h3 className="text-xl md:text-2xl font-bold font-serif text-white mb-1 tracking-wide">Cek Katalog</h3>
               <p className="text-xs md:text-sm text-white/90 font-medium uppercase tracking-widest">Koleksi Terbaru</p>
@@ -117,10 +119,12 @@ export default function Home() {
           {/* Hubungi CS */}
           <button
             onClick={() => navigate("/contact")}
-            className="relative w-full h-48 md:h-64 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border rounded-3xl"
+            className={`relative w-full h-48 md:h-64 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border rounded-3xl ${!settings.menuCsImage ? 'bg-primary/90' : ''}`}
           >
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500 z-10" />
-            <img src="/images/cs.jpeg" className="absolute inset-0 w-[110%] h-full object-cover -translate-x-[5%] group-hover:translate-x-0 transition-transform duration-700" alt="Hubungi CS" />
+            {settings.menuCsImage && (
+              <img src={settings.menuCsImage} className="absolute inset-0 w-[110%] h-full object-cover -translate-x-[5%] group-hover:translate-x-0 transition-transform duration-700" alt="Hubungi CS" />
+            )}
             <div className="absolute inset-0 p-5 md:p-6 flex flex-col justify-end z-20">
               <h3 className="text-xl md:text-2xl font-bold font-serif text-white mb-1 tracking-wide">Hubungi CS</h3>
               <p className="text-xs md:text-sm text-white/90 font-medium uppercase tracking-widest">Tanya Stok & Harga</p>
@@ -131,10 +135,12 @@ export default function Home() {
           {/* Lokasi */}
           <button
             onClick={() => navigate("/visit")}
-            className="relative w-full h-48 md:h-64 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border rounded-3xl"
+            className={`relative w-full h-48 md:h-64 overflow-hidden group transition-all duration-500 hover:shadow-xl text-left border border-border rounded-3xl ${!settings.menuLokasiImage ? 'bg-primary/90' : ''}`}
           >
             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500 z-10" />
-            <img src="/images/toko.jpeg" className="absolute inset-0 w-[110%] h-full object-cover -translate-x-[5%] group-hover:translate-x-0 transition-transform duration-700" alt="Lokasi Toko" />
+            {settings.menuLokasiImage && (
+              <img src={settings.menuLokasiImage} className="absolute inset-0 w-[110%] h-full object-cover -translate-x-[5%] group-hover:translate-x-0 transition-transform duration-700" alt="Lokasi Toko" />
+            )}
             <div className="absolute inset-0 p-5 md:p-6 flex flex-col justify-end z-20">
               <h3 className="text-xl md:text-2xl font-bold font-serif text-white mb-1 tracking-wide">Lokasi Toko</h3>
               <p className="text-xs md:text-sm text-white/90 font-medium uppercase tracking-widest">Kunjungi Kami</p>

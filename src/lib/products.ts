@@ -26,6 +26,9 @@ export type Settings = {
   address: string;
   mapsUrl: string;
   banners?: { src: string; alt: string }[];
+  menuKatalogImage?: string;
+  menuCsImage?: string;
+  menuLokasiImage?: string;
 };
 
 const rereVariants: ProductVariant[] = [
@@ -72,6 +75,9 @@ export const defaultSettings: Settings = {
     { src: "/images/banner3.jpeg", alt: "Banner PGRB 3" },
     { src: "/images/banner4.png", alt: "Banner PGRB 4" },
   ],
+  menuKatalogImage: "/images/katalog.jpeg",
+  menuCsImage: "/images/cs.jpeg",
+  menuLokasiImage: "/images/toko.jpeg",
 };
 
 export function formatRupiah(n: number) {
