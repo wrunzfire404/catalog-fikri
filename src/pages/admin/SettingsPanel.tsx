@@ -92,7 +92,8 @@ export default function SettingsPanel() {
 
         <div className="space-y-5">
           <Field label="Nama Toko" value={draft.shopName} onChange={(v) => set("shopName", v)} />
-          <Field label="Tagline" value={draft.tagline} onChange={(v) => set("tagline", v)} />
+          <Field label="Tagline (Teks Kecil di Atas)" value={draft.tagline} onChange={(v) => set("tagline", v)} />
+          <Field label="Teks Banner Utama" value={draft.bannerText || ""} onChange={(v) => set("bannerText", v)} placeholder="Contoh: Rajut Premium, Harga Grosir." />
           <Field label="Nomor WhatsApp" value={draft.waNumber} onChange={(v) => set("waNumber", v)} placeholder="628xxxxxxxxxx tanpa + atau 0" />
           <Field label="Alamat Toko" value={draft.address} onChange={(v) => set("address", v)} />
           <Field label="URL Google Maps" value={draft.mapsUrl} onChange={(v) => set("mapsUrl", v)} placeholder="https://maps.google.com/?q=..." />

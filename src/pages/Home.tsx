@@ -78,7 +78,7 @@ export default function Home() {
                 {settings.tagline}
               </span>
               <h1 className="text-xl sm:text-3xl md:text-5xl font-bold font-serif leading-tight">
-                Rajut Premium, Harga Grosir.
+                {settings.bannerText || "Rajut Premium, Harga Grosir."}
               </h1>
             </div>
           </div>

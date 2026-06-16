@@ -29,6 +29,7 @@ export type Settings = {
   menuKatalogImage?: string;
   menuCsImage?: string;
   menuLokasiImage?: string;
+  bannerText?: string;
 };
 
 const rereVariants: ProductVariant[] = [
@@ -78,6 +79,7 @@ export const defaultSettings: Settings = {
   menuKatalogImage: "/images/katalog.jpeg",
   menuCsImage: "/images/cs.jpeg",
   menuLokasiImage: "/images/toko.jpeg",
+  bannerText: "Rajut Premium, Harga Grosir.",
 };
 
 export function formatRupiah(n: number) {
