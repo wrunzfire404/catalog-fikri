@@ -30,6 +30,7 @@ export type Settings = {
   menuCsImage?: string;
   menuLokasiImage?: string;
   bannerText?: string;
+  paymentInfo?: string;
 };
 
 const rereVariants: ProductVariant[] = [
@@ -80,6 +81,7 @@ export const defaultSettings: Settings = {
   menuCsImage: "/images/cs.jpeg",
   menuLokasiImage: "/images/toko.jpeg",
   bannerText: "Rajut Premium, Harga Grosir.",
+  paymentInfo: "Bank BCA: 2781764053 (a.n. Muhammad Fikri Zaini)\n\nSetelah transfer, harap konfirmasi melalui WhatsApp dengan menyertakan bukti transfer.",
 };
 
 export function formatRupiah(n: number) {

@@ -97,6 +97,17 @@ export default function SettingsPanel() {
           <Field label="Nomor WhatsApp" value={draft.waNumber} onChange={(v) => set("waNumber", v)} placeholder="628xxxxxxxxxx tanpa + atau 0" />
           <Field label="Alamat Toko" value={draft.address} onChange={(v) => set("address", v)} />
           <Field label="URL Google Maps" value={draft.mapsUrl} onChange={(v) => set("mapsUrl", v)} placeholder="https://maps.google.com/?q=..." />
+          
+          <div>
+            <label className="text-[13px] font-semibold text-foreground mb-1.5 block">Instruksi Pembayaran / Rekening Bank</label>
+            <textarea
+              value={draft.paymentInfo || ""}
+              onChange={(e) => set("paymentInfo", e.target.value)}
+              placeholder="Contoh: Bank BCA 1234567 a.n. Fikri"
+              rows={4}
+              className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-[14px] outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10 resize-none"
+            />
+          </div>
         </div>
       </div>
 

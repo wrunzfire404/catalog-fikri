@@ -74,38 +74,14 @@ export default function Checkout() {
 
   const handleOrder = () => {
     if (!validate()) return;
-    window.open(waCheckoutLink(cart, customer, settings), "_blank", "noreferrer");
-    setSubmitted(true);
+    
+    // Redirect ke halaman Invoice dengan membawa data
+    navigate("/invoice", { state: { cart, customer } });
+    
+    // Hapus keranjang setelah pesanan dibuat
     clearCart();
   };
 
-  if (submitted) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background p-4">
-        <div className="text-center space-y-5 max-w-md">
-          <CheckCircle2 className="w-24 h-24 mx-auto text-green-500" />
-          <h2 className="text-2xl font-bold font-serif text-foreground">Pesanan Terkirim!</h2>
-          <p className="text-muted-foreground text-sm leading-relaxed">
-            Orderan kamu sudah dikirim ke WhatsApp PGRB. Tim kami akan segera merespon dan mengkonfirmasi ketersediaan stok & ongkir.
-          </p>
-          <div className="flex flex-col gap-3 pt-4">
-            <Link
-              to="/stock"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-[15px] font-bold text-white shadow-md transition hover:bg-primary/90"
-            >
-              Lanjut Belanja
-            </Link>
-            <Link
-              to="/"
-              className="text-[14px] text-muted-foreground hover:text-primary transition"
-            >
-              Kembali ke Beranda
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-24 md:pb-0">

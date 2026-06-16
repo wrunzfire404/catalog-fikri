@@ -10,6 +10,7 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Visit from "./pages/Visit";
 import Contact from "./pages/Contact";
+import Invoice from "./pages/Invoice";
 import Admin from "./pages/admin/Admin";
 import "./styles.css";
 
@@ -26,6 +27,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/visit" element={<Visit />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/invoice" element={<Invoice />} />
               <Route path="/admin/*" element={<Admin />} />
             </Routes>
           </CartProvider>

@@ -90,6 +90,7 @@ export async function getSettings(): Promise<Settings> {
     menuCsImage: data.menu_cs_image !== null && data.menu_cs_image !== undefined ? (data.menu_cs_image as string) : defaultSettings.menuCsImage,
     menuLokasiImage: data.menu_lokasi_image !== null && data.menu_lokasi_image !== undefined ? (data.menu_lokasi_image as string) : defaultSettings.menuLokasiImage,
     bannerText: data.banner_text !== null && data.banner_text !== undefined ? (data.banner_text as string) : defaultSettings.bannerText,
+    paymentInfo: data.payment_info !== null && data.payment_info !== undefined ? (data.payment_info as string) : defaultSettings.paymentInfo,
   };
 }
 
@@ -106,6 +107,7 @@ export async function saveSettings(s: Settings) {
     menu_cs_image: s.menuCsImage === "" ? "" : s.menuCsImage || null,
     menu_lokasi_image: s.menuLokasiImage === "" ? "" : s.menuLokasiImage || null,
     banner_text: s.bannerText === "" ? "" : s.bannerText || null,
+    payment_info: s.paymentInfo === "" ? "" : s.paymentInfo || null,
   });
 }
 
