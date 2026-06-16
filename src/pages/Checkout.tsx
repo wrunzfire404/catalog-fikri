@@ -18,6 +18,7 @@ import {
 import { useCart } from "@/context/CartContext";
 import { useStore } from "@/context/StoreContext";
 import { PlaceholderArt } from "@/components/catalog";
+import { saveOrder } from "@/lib/store";
 
 const EMPTY_CUSTOMER: CustomerInfo = {
   nama: "",
@@ -72,11 +73,23 @@ export default function Checkout() {
     return Object.keys(errs).length === 0;
   };
 
-  const handleOrder = () => {
+  const handleOrder = async () => {
     if (!validate()) return;
     
+    // Generate Invoice Number
+    const date = new Date();
+    const invoiceNo = `INV-${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}-${Math.floor(Math.random() * 1000)}`;
+    
+    // Simpan ke Supabase di background (tanpa memblokir user)
+    saveOrder({
+      invoice_no: invoiceNo,
+      customer_info: customer,
+      cart_items: cart,
+      total_price: totalPrice
+    });
+    
     // Redirect ke halaman Invoice dengan membawa data
-    navigate("/invoice", { state: { cart, customer } });
+    navigate("/invoice", { state: { cart, customer, invoiceNo } });
     
     // Hapus keranjang setelah pesanan dibuat
     clearCart();

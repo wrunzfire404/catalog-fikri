@@ -9,15 +9,16 @@ import {
   Trash2,
   ExternalLink,
   Boxes,
-  Star,
+  FileText,
 } from "lucide-react";
 import { adminLogout } from "@/lib/store";
 import { useStore } from "@/context/StoreContext";
 import { formatRupiah, type Product } from "@/lib/products";
 import ProductEditor from "./ProductEditor";
 import SettingsPanel from "./SettingsPanel";
+import OrdersPanel from "./OrdersPanel";
 
-type Tab = "products" | "settings";
+type Tab = "products" | "settings" | "orders";
 
 export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const { products, settings, toggleFeatured, deleteProduct } = useStore();
@@ -76,6 +77,15 @@ export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
           >
             <Package className="w-4 h-4" />
             Produk
+          </button>
+          <button
+            onClick={() => setTab("orders")}
+            className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-[14px] font-semibold transition ${
+              tab === "orders" ? "bg-white text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <FileText className="w-4 h-4" />
+            Pesanan
           </button>
           <button
             onClick={() => setTab("settings")}
@@ -172,6 +182,8 @@ export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
               ))}
             </div>
           </>
+        ) : tab === "orders" ? (
+          <OrdersPanel />
         ) : (
           <SettingsPanel />
         )}

@@ -4,6 +4,8 @@ import {
   defaultSettings,
   type Product,
   type Settings,
+  type CustomerInfo,
+  type CartItem,
 } from "./products";
 
 // ---- Products ----
@@ -154,4 +156,34 @@ export async function adminLogin(user: string, pass: string): Promise<boolean> {
 export function adminLogout() {
   window.localStorage.removeItem("pgrb-auth-session");
   supabase.auth.signOut().catch(() => {});
+}
+
+// ---- Orders ----
+export type Order = {
+  id: string;
+  invoice_no: string;
+  customer_info: CustomerInfo;
+  cart_items: CartItem[];
+  total_price: number;
+  created_at: string;
+};
+
+export async function saveOrder(orderData: Omit<Order, "id" | "created_at">) {
+  const { error } = await supabase.from("orders").insert(orderData);
+  if (error) {
+    console.error("Gagal menyimpan pesanan:", error);
+  }
+}
+
+export async function getOrders(): Promise<Order[]> {
+  const { data, error } = await supabase
+    .from("orders")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Gagal memuat daftar pesanan:", error);
+    return [];
+  }
+  return data as Order[];
 }

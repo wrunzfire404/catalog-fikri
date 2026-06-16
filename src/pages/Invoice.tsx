@@ -14,6 +14,7 @@ export default function Invoice() {
   
   const [isGenerating, setIsGenerating] = useState(false);
   const [invoiceNo] = useState(() => {
+    if (state?.invoiceNo) return state.invoiceNo;
     const date = new Date();
     return `INV-${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}-${Math.floor(Math.random() * 1000)}`;
   });
