@@ -49,14 +49,14 @@ export default function Invoice() {
       }
 
       const imgData = canvas.toDataURL("image/jpeg", 1.0);
+      const pdfWidth = 210; // Lebar standar kertas A4 dalam mm
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
-        format: "a4"
+        format: [pdfWidth, pdfHeight]
       });
-      
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
       
       pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
       pdf.save(`${invoiceNo}.pdf`);

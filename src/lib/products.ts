@@ -150,7 +150,8 @@ export function waCheckoutLink(cart: CartItem[], customer: CustomerInfo, setting
   if (customer.catatan) {
     text += `Catatan     : ${customer.catatan}\n`;
   }
-  text += `\nMohon dikonfirmasi ketersediaan stok & ongkir ya, Kak 🙏`;
+  text += `\n*PENTING:*\n`;
+  text += `Halo Admin, saya sudah menyelesaikan pembayaran. Berikut saya lampirkan Bukti Transfer dan file PDF Invoice pesanan saya 🙏`;
 
   return `https://wa.me/${settings.waNumber}?text=${encodeURIComponent(text)}`;
 }
