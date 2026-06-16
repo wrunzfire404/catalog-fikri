@@ -94,17 +94,19 @@ export function ProductModal({
       onClick={onClose}
     >
       <div
-        className="flex w-full flex-col max-h-[92vh] sm:max-h-[88vh] max-w-md overflow-hidden rounded-t-[1.5rem] bg-white shadow-2xl animate-in slide-in-from-bottom-8 sm:rounded-[1.5rem]"
+        className="relative flex w-full flex-col max-h-[92vh] sm:max-h-[88vh] max-w-md overflow-hidden rounded-t-[1.5rem] bg-white shadow-2xl animate-in slide-in-from-bottom-8 sm:rounded-[1.5rem]"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="relative shrink-0 bg-background p-4 sm:p-5 pb-0">
-          <button
-            onClick={onClose}
-            className="absolute top-6 right-6 z-20 grid h-8 w-8 place-items-center rounded-full bg-black/20 text-white backdrop-blur-md transition hover:bg-black/40"
-          >
-            <X className="h-5 w-5" />
-          </button>
-          <div
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 sm:top-5 sm:right-5 z-[30] grid h-8 w-8 place-items-center rounded-full bg-black/30 text-white backdrop-blur-md transition hover:bg-black/50"
+        >
+          <X className="h-5 w-5" />
+        </button>
+
+        <div className="flex flex-col flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="relative shrink-0 bg-background p-4 sm:p-5 pb-0">
+            <div
             ref={carouselRef}
             onScroll={handleScroll}
             className="relative flex aspect-[4/5] sm:aspect-[4/3] snap-x snap-mandatory overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden rounded-2xl shadow-sm border border-border/50 bg-secondary"
@@ -147,7 +149,7 @@ export function ProductModal({
           )}
         </div>
 
-        <div className="flex flex-col flex-1 overflow-y-auto p-5">
+        <div className="flex flex-col p-5">
           <div className="mb-4">
             <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">Kode {product.code}</p>
             <h2 className="text-xl font-bold text-foreground font-serif leading-tight">{product.name}</h2>
@@ -223,8 +225,9 @@ export function ProductModal({
             {product.note && <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground border-t border-border/50 pt-3">{product.note}</p>}
           </div>
         </div>
+        </div>
 
-        <div className="p-4 border-t border-border bg-white">
+        <div className="p-4 border-t border-border bg-white shrink-0">
           <button
             onClick={() => onAddToCart(activeVariant, quantity)}
             className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3.5 text-[15px] font-bold text-white shadow-md transition hover:bg-primary/90 active:scale-[0.98]"
