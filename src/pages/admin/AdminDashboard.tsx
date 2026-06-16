@@ -9,6 +9,7 @@ import {
   Trash2,
   ExternalLink,
   Boxes,
+  Star,
   FileText,
 } from "lucide-react";
 import { adminLogout } from "@/lib/store";
