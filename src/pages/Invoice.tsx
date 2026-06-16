@@ -126,14 +126,15 @@ export default function Invoice() {
           Preview Invoice
         </h3>
 
-        <div className="overflow-x-auto pb-8 flex justify-center custom-scrollbar">
-          <div className="shadow-2xl bg-white" style={{ minWidth: "800px", border: "1px solid #e5e7eb" }}>
+        {/* Invoice Preview Container */}
+        <div className="w-full overflow-x-auto pb-8 custom-scrollbar rounded-xl">
+          <div className="w-[800px] shadow-2xl bg-white lg:mx-auto" style={{ border: "1px solid #e5e7eb" }}>
             
             {/* INVOICE TEMPLATE */}
             <div 
               ref={invoiceRef} 
               id="invoice-print-area"
-              className="p-10 md:p-14 font-sans w-[800px]"
+              className="p-10 font-sans w-[800px]"
               style={{ backgroundColor: "#ffffff", color: "#000000" }}
             >
               <div className="flex justify-between items-start mb-12">
