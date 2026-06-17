@@ -165,6 +165,7 @@ export type Order = {
   customer_info: CustomerInfo;
   cart_items: CartItem[];
   total_price: number;
+  status?: "unpaid" | "paid";
   created_at: string;
 };
 
@@ -186,4 +187,12 @@ export async function getOrders(): Promise<Order[]> {
     return [];
   }
   return data as Order[];
+}
+
+export async function updateOrderStatus(id: string, status: "unpaid" | "paid") {
+  const { error } = await supabase.from("orders").update({ status }).eq("id", id);
+  if (error) {
+    console.error("Gagal mengubah status pesanan:", error);
+    throw error;
+  }
 }

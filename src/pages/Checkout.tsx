@@ -85,7 +85,8 @@ export default function Checkout() {
       invoice_no: invoiceNo,
       customer_info: customer,
       cart_items: cart,
-      total_price: totalPrice
+      total_price: totalPrice,
+      status: "unpaid"
     });
     
     // Redirect ke halaman Invoice dengan membawa data

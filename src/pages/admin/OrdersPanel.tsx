@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { getOrders, type Order } from "@/lib/store";
+import { getOrders, updateOrderStatus, type Order } from "@/lib/store";
 import { formatRupiah } from "@/lib/products";
-import { Printer } from "lucide-react";
+import { Printer, CheckCircle, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function OrdersPanel() {
@@ -20,6 +20,18 @@ export default function OrdersPanel() {
     setLoading(false);
   };
 
+  const toggleStatus = async (order: Order) => {
+    const newStatus = order.status === "paid" ? "unpaid" : "paid";
+    // Optimistic UI update
+    setOrders(orders.map((o) => (o.id === order.id ? { ...o, status: newStatus } : o)));
+    try {
+      await updateOrderStatus(order.id, newStatus);
+    } catch (e) {
+      alert("Gagal memperbarui status pesanan");
+      loadOrders(); // Revert
+    }
+  };
+
   const handlePrint = (order: Order) => {
     // Arahkan ke halaman invoice dengan membawa data pesanan persis seperti checkout
     navigate("/invoice", {
@@ -27,6 +39,7 @@ export default function OrdersPanel() {
         cart: order.cart_items,
         customer: order.customer_info,
         invoiceNo: order.invoice_no,
+        status: order.status || "unpaid",
       },
     });
   };
@@ -78,13 +91,26 @@ export default function OrdersPanel() {
                   <span className="text-[11px] text-muted-foreground">• {totalItems} pcs</span>
                 </div>
               </div>
-              <button
-                onClick={() => handlePrint(order)}
-                className="shrink-0 grid place-items-center w-10 h-10 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-full transition"
-                title="Cetak PDF"
-              >
-                <Printer className="w-[18px] h-[18px]" />
-              </button>
+              <div className="flex flex-col gap-2 shrink-0">
+                <button
+                  onClick={() => handlePrint(order)}
+                  className="grid place-items-center w-10 h-10 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-full transition"
+                  title="Cetak PDF"
+                >
+                  <Printer className="w-[18px] h-[18px]" />
+                </button>
+                <button
+                  onClick={() => toggleStatus(order)}
+                  className={`grid place-items-center w-10 h-10 rounded-full transition ${
+                    order.status === "paid"
+                      ? "bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
+                      : "bg-amber-50 text-amber-600 hover:bg-amber-100"
+                  }`}
+                  title={order.status === "paid" ? "Tandai Belum Lunas" : "Tandai Lunas"}
+                >
+                  {order.status === "paid" ? <CheckCircle className="w-[18px] h-[18px]" /> : <Clock className="w-[18px] h-[18px]" />}
+                </button>
+              </div>
             </div>
           );
         })}
@@ -98,9 +124,10 @@ export default function OrdersPanel() {
               <th className="px-5 py-4 font-semibold w-40">No. Invoice</th>
               <th className="px-5 py-4 font-semibold">Tanggal</th>
               <th className="px-5 py-4 font-semibold">Customer</th>
+              <th className="px-5 py-4 font-semibold text-center">Status</th>
               <th className="px-5 py-4 font-semibold text-center">Item</th>
               <th className="px-5 py-4 font-semibold text-right">Total</th>
-              <th className="px-5 py-4 font-semibold text-center w-32">Aksi</th>
+              <th className="px-5 py-4 font-semibold text-center w-40">Aksi</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/50">
@@ -127,6 +154,17 @@ export default function OrdersPanel() {
                     <div className="text-xs text-muted-foreground mt-0.5">{order.customer_info.noWa}</div>
                   </td>
                   <td className="px-5 py-4 text-center">
+                    <span
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
+                        order.status === "paid"
+                          ? "bg-emerald-100 text-emerald-700"
+                          : "bg-amber-100 text-amber-700"
+                      }`}
+                    >
+                      {order.status === "paid" ? "Lunas" : "Belum Lunas"}
+                    </span>
+                  </td>
+                  <td className="px-5 py-4 text-center">
                     <span className="inline-flex bg-secondary text-foreground px-2 py-1 rounded text-xs font-medium">
                       {totalItems} pcs
                     </span>
@@ -135,14 +173,26 @@ export default function OrdersPanel() {
                     {formatRupiah(order.total_price)}
                   </td>
                   <td className="px-5 py-4 text-center">
-                    <button
-                      onClick={() => handlePrint(order)}
-                      className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg font-semibold transition"
-                      title="Lihat & Cetak PDF"
-                    >
-                      <Printer className="w-4 h-4" />
-                      Cetak
-                    </button>
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => toggleStatus(order)}
+                        className={`inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition ${
+                          order.status === "paid"
+                            ? "bg-amber-50 text-amber-600 hover:bg-amber-100"
+                            : "bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
+                        }`}
+                        title={order.status === "paid" ? "Batalkan Lunas" : "Tandai Lunas"}
+                      >
+                        {order.status === "paid" ? <Clock className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
+                      </button>
+                      <button
+                        onClick={() => handlePrint(order)}
+                        className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg font-semibold transition"
+                        title="Lihat & Cetak PDF"
+                      >
+                        <Printer className="w-4 h-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               );

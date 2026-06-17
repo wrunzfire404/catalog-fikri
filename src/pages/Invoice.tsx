@@ -21,6 +21,7 @@ export default function Invoice() {
 
   const cart = state?.cart as CartItem[] | undefined;
   const customer = state?.customer as CustomerInfo | undefined;
+  const status = state?.status as "unpaid" | "paid" | undefined;
 
   useEffect(() => {
     if (!cart || cart.length === 0 || !customer) {
@@ -151,7 +152,11 @@ export default function Invoice() {
                   <h1 className="text-2xl sm:text-3xl font-bold font-serif tracking-wider mb-2" style={{ color: "#1f2937" }}>INVOICE</h1>
                   <p className="text-xs sm:text-sm font-semibold" style={{ color: "#4b5563" }}>NO: {invoiceNo}</p>
                   <p className="text-xs sm:text-sm" style={{ color: "#6b7280" }}>Tanggal: {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-                  <p className="text-[10px] sm:text-xs font-semibold mt-2 px-2 py-1 inline-block rounded" style={{ color: "#ef4444", backgroundColor: "#fef2f2", border: "1px solid #fecaca" }}>BELUM DIBAYAR</p>
+                  {status === "paid" ? (
+                    <p className="text-[10px] sm:text-xs font-bold mt-2 px-3 py-1 inline-block rounded" style={{ color: "#15803d", backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0" }}>SUDAH DIBAYAR</p>
+                  ) : (
+                    <p className="text-[10px] sm:text-xs font-semibold mt-2 px-2 py-1 inline-block rounded" style={{ color: "#ef4444", backgroundColor: "#fef2f2", border: "1px solid #fecaca" }}>BELUM DIBAYAR</p>
+                  )}
                 </div>
               </div>
 
