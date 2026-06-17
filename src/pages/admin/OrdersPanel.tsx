@@ -49,7 +49,49 @@ export default function OrdersPanel() {
 
   return (
     <div className="bg-white rounded-xl shadow-card border border-border/40 overflow-hidden">
-      <div className="overflow-x-auto">
+      
+      {/* Tampilan Mobile (Card) */}
+      <div className="block sm:hidden divide-y divide-border/50">
+        {orders.map((order) => {
+          const date = new Date(order.created_at);
+          const formattedDate = new Intl.DateTimeFormat("id-ID", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          }).format(date);
+          const totalItems = order.cart_items.reduce((acc, item) => acc + item.quantity, 0);
+
+          return (
+            <div key={order.id} className="p-4 flex items-center justify-between gap-3 hover:bg-secondary/20 transition">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="font-mono font-bold text-xs text-primary bg-primary/10 px-1.5 py-0.5 rounded">
+                    {order.invoice_no}
+                  </span>
+                  <span className="text-[11px] text-muted-foreground">{formattedDate}</span>
+                </div>
+                <h3 className="font-semibold text-[14px] text-foreground truncate">{order.customer_info.nama}</h3>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="text-[12px] font-bold">{formatRupiah(order.total_price)}</span>
+                  <span className="text-[11px] text-muted-foreground">• {totalItems} pcs</span>
+                </div>
+              </div>
+              <button
+                onClick={() => handlePrint(order)}
+                className="shrink-0 grid place-items-center w-10 h-10 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-full transition"
+                title="Cetak PDF"
+              >
+                <Printer className="w-[18px] h-[18px]" />
+              </button>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Tampilan Desktop (Table) */}
+      <div className="hidden sm:block overflow-x-auto">
         <table className="w-full text-left text-sm whitespace-nowrap">
           <thead className="bg-secondary/50 border-b border-border text-muted-foreground">
             <tr>
