@@ -82,8 +82,8 @@ export default function Invoice() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-24 md:pb-12">
-      <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-border/60">
+    <div className="min-h-screen print:min-h-0 bg-background text-foreground pb-24 md:pb-12 print:pb-0 print:bg-white">
+      <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-border/60 print:hidden">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-center gap-2 text-foreground hover:text-primary transition">
             <ArrowLeft className="w-5 h-5" />
@@ -93,8 +93,8 @@ export default function Invoice() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-4xl px-4 py-8 md:py-12">
-        <div className="text-center mb-8 space-y-3">
+      <main className="mx-auto max-w-4xl px-4 py-8 md:py-12 print:py-0 print:max-w-none">
+        <div className="text-center mb-8 space-y-3 print:hidden">
           <CheckCircle2 className="w-16 h-16 mx-auto text-[#25D366]" />
           <h1 className="text-2xl md:text-3xl font-bold font-serif">Pesanan Dibuat!</h1>
           <p className="text-muted-foreground text-sm max-w-md mx-auto">
@@ -102,7 +102,7 @@ export default function Invoice() {
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10 print:hidden">
           <button
             onClick={handleDownloadPDF}
             disabled={isGenerating}
@@ -121,16 +121,16 @@ export default function Invoice() {
           </button>
         </div>
 
-        <hr className="border-border/60 mb-10" />
+        <hr className="border-border/60 mb-10 print:hidden" />
 
-        <h3 className="text-center font-semibold text-muted-foreground mb-4 flex items-center justify-center gap-2">
+        <h3 className="text-center font-semibold text-muted-foreground mb-4 flex items-center justify-center gap-2 print:hidden">
           <FileText className="w-4 h-4" />
           Preview Invoice
         </h3>
 
         {/* Invoice Preview Container */}
         <div className="w-full pb-8">
-          <div className="w-full max-w-[800px] shadow-2xl bg-white mx-auto rounded-xl overflow-hidden" style={{ border: "1px solid #e5e7eb" }}>
+          <div className="w-full max-w-[800px] shadow-2xl bg-white mx-auto rounded-xl overflow-hidden print:overflow-visible print:shadow-none" style={{ border: "1px solid #e5e7eb" }}>
             
             {/* INVOICE TEMPLATE */}
             <div 
@@ -174,7 +174,7 @@ export default function Invoice() {
                 )}
               </div>
 
-              <div className="overflow-x-auto w-full mb-6">
+              <div className="overflow-x-auto print:overflow-visible w-full mb-6">
                 <table className="w-full text-left border-collapse min-w-[500px]">
                   <thead>
                     <tr>
@@ -207,7 +207,7 @@ export default function Invoice() {
               </div>
 
               <div className="flex sm:justify-end mb-8 sm:mb-10 break-inside-avoid">
-                <div className="w-full sm:w-[300px] rounded-lg overflow-hidden" style={{ border: "1px solid #e5e7eb" }}>
+                <div className="w-full sm:w-[300px] rounded-lg overflow-hidden print:overflow-visible" style={{ border: "1px solid #e5e7eb" }}>
                   <div className="flex justify-between px-4 py-3" style={{ backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb" }}>
                     <span className="text-xs sm:text-sm font-semibold" style={{ color: "#4b5563" }}>Total Item</span>
                     <span className="text-xs sm:text-sm font-bold" style={{ color: "#1f2937" }}>{totalItems} Pcs</span>
