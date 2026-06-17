@@ -139,7 +139,7 @@ export default function Invoice() {
               className="p-5 sm:p-10 font-sans w-full"
               style={{ backgroundColor: "#ffffff", color: "#000000" }}
             >
-              <div className="flex flex-col sm:flex-row justify-between items-start gap-6 sm:gap-4 mb-10 sm:mb-12">
+              <div className="flex flex-col sm:flex-row justify-between items-start gap-4 sm:gap-4 mb-6 sm:mb-8">
                 <div className="flex items-center gap-3">
                   <img src="/images/logo.png" className="h-12 sm:h-16 object-contain" alt="Logo" crossOrigin="anonymous" />
                   <div>
@@ -160,7 +160,7 @@ export default function Invoice() {
                 </div>
               </div>
 
-              <div className="mb-10 p-5 rounded-lg" style={{ backgroundColor: "#f9fafb", border: "1px solid #f3f4f6" }}>
+              <div className="mb-6 p-4 rounded-lg break-inside-avoid" style={{ backgroundColor: "#f9fafb", border: "1px solid #f3f4f6" }}>
                 <p className="text-xs uppercase tracking-widest font-semibold mb-2" style={{ color: "#6b7280" }}>Tagihan Kepada:</p>
                 <h3 className="text-lg font-bold" style={{ color: "#1f2937" }}>{customer.nama}</h3>
                 <p className="text-sm mt-1" style={{ color: "#4b5563" }}>{customer.noWa}</p>
@@ -174,7 +174,7 @@ export default function Invoice() {
                 )}
               </div>
 
-              <div className="overflow-x-auto w-full mb-10">
+              <div className="overflow-x-auto w-full mb-6">
                 <table className="w-full text-left border-collapse min-w-[500px]">
                   <thead>
                     <tr>
@@ -187,7 +187,7 @@ export default function Invoice() {
                   </thead>
                   <tbody>
                     {cart.map((item, idx) => (
-                      <tr key={idx} style={{ borderBottom: "1px solid #e5e7eb" }}>
+                      <tr key={idx} className="break-inside-avoid" style={{ borderBottom: "1px solid #e5e7eb" }}>
                         <td className="py-2 px-2 text-xs sm:text-sm" style={{ color: "#4b5563" }}>{idx + 1}</td>
                         <td className="py-2 px-2 text-xs sm:text-sm font-medium" style={{ color: "#1f2937" }}>
                           {item.product.name}
@@ -206,7 +206,7 @@ export default function Invoice() {
                 </table>
               </div>
 
-              <div className="flex sm:justify-end mb-10 sm:mb-12">
+              <div className="flex sm:justify-end mb-8 sm:mb-10 break-inside-avoid">
                 <div className="w-full sm:w-[300px] rounded-lg overflow-hidden" style={{ border: "1px solid #e5e7eb" }}>
                   <div className="flex justify-between px-4 py-3" style={{ backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb" }}>
                     <span className="text-xs sm:text-sm font-semibold" style={{ color: "#4b5563" }}>Total Item</span>
@@ -220,13 +220,13 @@ export default function Invoice() {
               </div>
 
               {settings.paymentInfo && (
-                <div className="p-5 rounded-lg text-sm whitespace-pre-wrap leading-relaxed" style={{ border: "1px solid #e5e7eb", backgroundColor: "#f9fafb", color: "#374151" }}>
+                <div className="p-4 rounded-lg text-sm whitespace-pre-wrap leading-relaxed break-inside-avoid" style={{ border: "1px solid #e5e7eb", backgroundColor: "#f9fafb", color: "#374151" }}>
                   <p className="font-bold mb-2 uppercase tracking-wide text-xs" style={{ color: "#1f2937" }}>Instruksi Pembayaran:</p>
                   {settings.paymentInfo}
                 </div>
               )}
 
-              <div className="mt-4 text-xs text-center italic" style={{ color: "#6b7280" }}>
+              <div className="mt-3 text-[10px] sm:text-xs text-center italic break-inside-avoid" style={{ color: "#6b7280" }}>
                 * Total tagihan di atas belum termasuk Ongkos Kirim. Silakan hubungi admin via WhatsApp untuk perhitungan ongkos kirim.
               </div>
 
