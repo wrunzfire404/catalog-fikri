@@ -96,7 +96,7 @@ export default function Invoice() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-4xl px-4 py-8 md:py-12 print:py-0 print:max-w-none">
+      <main className="mx-auto max-w-4xl px-4 py-8 md:py-12 print:py-0 print:px-0 print:max-w-none">
         <div className="text-center mb-8 space-y-3 print:hidden">
           <CheckCircle2 className="w-16 h-16 mx-auto text-[#25D366]" />
           <h1 className="text-2xl md:text-3xl font-bold font-serif">Pesanan Dibuat!</h1>
@@ -143,13 +143,13 @@ export default function Invoice() {
 
         {/* Invoice Preview Container */}
         <div className="w-full pb-8">
-          <div className="w-full max-w-[800px] shadow-2xl bg-white mx-auto rounded-xl overflow-hidden print:overflow-visible print:shadow-none" style={{ border: "1px solid #e5e7eb" }}>
+          <div className="w-full max-w-[800px] shadow-2xl bg-white mx-auto rounded-xl overflow-hidden print:overflow-visible print:shadow-none print:max-w-full print:border-none" style={{ border: "1px solid #e5e7eb" }}>
             
             {/* INVOICE TEMPLATE */}
             <div 
               ref={invoiceRef} 
               id="invoice-print-area"
-              className="p-5 sm:p-10 font-sans w-full"
+              className="p-5 sm:p-10 font-sans w-full print:p-0 print:m-0"
               style={{ backgroundColor: "#ffffff", color: "#000000" }}
             >
               <div className="flex flex-col sm:flex-row justify-between items-start gap-4 sm:gap-4 mb-6 sm:mb-8">
@@ -188,7 +188,7 @@ export default function Invoice() {
               </div>
 
               <div className="overflow-x-auto print:overflow-visible w-full mb-6">
-                <table className="w-full text-left border-collapse min-w-[500px]">
+                <table className="w-full text-left border-collapse min-w-[500px] print:min-w-0">
                   <thead>
                     <tr>
                       <th className="py-2 px-2 text-xs sm:text-sm font-bold uppercase tracking-wider w-8 sm:w-12" style={{ color: "#1f2937", borderBottom: "2px solid #1f2937" }}>No</th>
