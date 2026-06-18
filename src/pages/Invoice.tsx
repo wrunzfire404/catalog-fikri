@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import { CheckCircle2, Download, MessageCircle, FileText, ArrowLeft } from "lucide-react";
+import { CheckCircle2, Download, MessageCircle, FileText, ArrowLeft, Loader2, Printer } from "lucide-react";
 import { formatRupiah, type CartItem, type CustomerInfo, waCheckoutLink } from "@/lib/products";
 import { useStore } from "@/context/StoreContext";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas-pro";
 
 export default function Invoice() {
   const { state } = useLocation();
@@ -10,6 +12,7 @@ export default function Invoice() {
   const { settings } = useStore();
   const invoiceRef = useRef<HTMLDivElement>(null);
   
+  const [isGenerating, setIsGenerating] = useState(false);
   const [invoiceNo] = useState(() => {
     if (state?.invoiceNo) return state.invoiceNo;
     const date = new Date();
@@ -19,6 +22,7 @@ export default function Invoice() {
   const cart = state?.cart as CartItem[] | undefined;
   const customer = state?.customer as CustomerInfo | undefined;
   const status = state?.status as "unpaid" | "paid" | undefined;
+  const isAdmin = state?.isAdmin as boolean | undefined;
 
   useEffect(() => {
     if (!cart || cart.length === 0 || !customer) {
@@ -31,12 +35,48 @@ export default function Invoice() {
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
   const totalPrice = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
 
-  const handleDownloadPDF = () => {
-    // Gunakan fungsi print bawaan browser karena lebih sempurna dalam memotong halaman
-    // Dibandingkan jsPDF yang menggunakan canvas gambar tunggal dan sering terpotong
+  const handlePrintAdmin = () => {
+    // Mode admin: pecah ke ukuran A4 secara fisik dengan rapi
     setTimeout(() => {
       window.print();
     }, 100);
+  };
+
+  const handleDownloadPDFCustomer = async () => {
+    if (!invoiceRef.current) return;
+    try {
+      setIsGenerating(true);
+      await new Promise(r => setTimeout(r, 100));
+      
+      const canvas = await html2canvas(invoiceRef.current, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+      });
+      
+      if (!canvas.width || !canvas.height) {
+        throw new Error("Kalkulasi dokumen gagal");
+      }
+
+      const imgData = canvas.toDataURL("image/jpeg", 1.0);
+      const pdfWidth = 210; // Lebar standar kertas A4 dalam mm
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: [pdfWidth, pdfHeight] // Kertas fleksibel mengikuti panjang konten tanpa memotong
+      });
+      
+      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`${invoiceNo}.pdf`);
+    } catch (err: any) {
+      console.error("Gagal membuat PDF", err);
+      alert("Gagal men-download PDF. Silakan coba metode Print bawaan browser.");
+      window.print();
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleKonfirmasiWA = () => {
@@ -66,13 +106,24 @@ export default function Invoice() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10 print:hidden">
-          <button
-            onClick={handleDownloadPDF}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-[15px] font-bold text-white shadow-md transition hover:bg-primary/90 active:scale-[0.98]"
-          >
-            <Download className="w-5 h-5" />
-            Cetak / Simpan PDF
-          </button>
+          {isAdmin ? (
+            <button
+              onClick={handlePrintAdmin}
+              className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-[15px] font-bold text-white shadow-md transition hover:bg-blue-700 active:scale-[0.98]"
+            >
+              <Printer className="w-5 h-5" />
+              Cetak Invoice (A4)
+            </button>
+          ) : (
+            <button
+              onClick={handleDownloadPDFCustomer}
+              disabled={isGenerating}
+              className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-[15px] font-bold text-white shadow-md transition hover:bg-primary/90 active:scale-[0.98] disabled:opacity-70"
+            >
+              {isGenerating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
+              {isGenerating ? "Memproses PDF..." : "Download Invoice PDF"}
+            </button>
+          )}
           
           <button
             onClick={handleKonfirmasiWA}

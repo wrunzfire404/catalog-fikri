@@ -40,6 +40,7 @@ export default function OrdersPanel() {
         customer: order.customer_info,
         invoiceNo: order.invoice_no,
         status: order.status || "unpaid",
+        isAdmin: true,
       },
     });
   };
