@@ -143,13 +143,13 @@ export default function Invoice() {
 
         {/* Invoice Preview Container */}
         <div className="w-full pb-8">
-          <div className="w-full max-w-[800px] shadow-2xl bg-white mx-auto rounded-xl overflow-hidden print:overflow-visible print:shadow-none print:max-w-full print:border-none" style={{ border: "1px solid #e5e7eb" }}>
+          <div className="w-full max-w-[800px] shadow-2xl bg-white mx-auto rounded-xl overflow-hidden print:overflow-visible print:shadow-none print:w-[92%] print:max-w-[92%] print:mx-auto print:border-none" style={{ border: "1px solid #e5e7eb" }}>
             
             {/* INVOICE TEMPLATE */}
             <div 
               ref={invoiceRef} 
               id="invoice-print-area"
-              className="p-5 sm:p-10 font-sans w-full print:p-0 print:m-0 print:px-2"
+              className="p-5 sm:p-10 font-sans w-full print:p-0 print:m-0"
               style={{ backgroundColor: "#ffffff", color: "#000000" }}
             >
               <div className="flex flex-col sm:flex-row justify-between items-start gap-4 sm:gap-4 mb-6 sm:mb-8">
@@ -162,7 +162,7 @@ export default function Invoice() {
                   </div>
                 </div>
                 <div className="text-left sm:text-right w-full sm:w-auto border-t sm:border-t-0 pt-4 sm:pt-0 border-gray-100">
-                  <h1 className="text-2xl sm:text-3xl font-bold font-serif tracking-wider mb-2" style={{ color: "#1f2937" }}>INVOICE</h1>
+                  <h1 className="text-2xl sm:text-3xl print:text-2xl font-bold font-serif tracking-wider mb-2" style={{ color: "#1f2937" }}>INVOICE</h1>
                   <p className="text-xs sm:text-sm font-semibold" style={{ color: "#4b5563" }}>NO: {invoiceNo}</p>
                   <p className="text-xs sm:text-sm" style={{ color: "#6b7280" }}>Tanggal: {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                   {status === "paid" ? (
