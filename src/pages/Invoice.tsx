@@ -143,7 +143,7 @@ export default function Invoice() {
 
         {/* Invoice Preview Container */}
         <div className="w-full pb-8">
-          <div className="w-full max-w-[800px] shadow-2xl bg-white mx-auto rounded-xl overflow-hidden print:overflow-visible print:shadow-none print:w-[92%] print:max-w-[92%] print:mx-auto print:border-none" style={{ border: "1px solid #e5e7eb" }}>
+          <div id="invoice-print-wrapper" className="w-full max-w-[800px] shadow-2xl bg-white mx-auto rounded-xl overflow-hidden print:overflow-visible print:shadow-none print:border-none" style={{ border: "1px solid #e5e7eb" }}>
             
             {/* INVOICE TEMPLATE */}
             <div 

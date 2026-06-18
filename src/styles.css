@@ -108,6 +108,18 @@
     body::before {
       display: none !important;
     }
+    body {
+      width: 100vw !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    #invoice-print-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding: 0 15px !important;
+      box-sizing: border-box !important;
+    }
   }
 
   h1, h2, h3, h4 {
