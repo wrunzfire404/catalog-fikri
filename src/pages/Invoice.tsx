@@ -178,7 +178,7 @@ export default function Invoice() {
                 <h3 className="text-lg font-bold" style={{ color: "#1f2937" }}>{customer.nama}</h3>
                 <p className="text-sm mt-1" style={{ color: "#4b5563" }}>{customer.noWa}</p>
                 <p className="text-sm max-w-[400px] leading-relaxed" style={{ color: "#4b5563" }}>
-                  {customer.kecamatan}, {customer.kabupaten}, {customer.provinsi}
+                  {customer.alamatLengkap ? `${customer.alamatLengkap}, ` : ''}{customer.kecamatan}, {customer.kabupaten}, {customer.provinsi}
                 </p>
                 {customer.catatan && (
                   <p className="text-sm mt-3 pt-3" style={{ color: "#4b5563", borderTop: "1px solid #e5e7eb" }}>

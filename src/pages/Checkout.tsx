@@ -25,6 +25,7 @@ const EMPTY_CUSTOMER: CustomerInfo = {
   provinsi: "",
   kabupaten: "",
   kecamatan: "",
+  alamatLengkap: "",
   noWa: "",
   catatan: "",
 };
@@ -64,6 +65,7 @@ export default function Checkout() {
   const validate = (): boolean => {
     const errs: Partial<Record<keyof CustomerInfo, string>> = {};
     if (!customer.nama.trim()) errs.nama = "Nama wajib diisi";
+    if (!customer.alamatLengkap.trim()) errs.alamatLengkap = "Alamat lengkap wajib diisi";
     if (!customer.provinsi.trim()) errs.provinsi = "Provinsi wajib diisi";
     if (!customer.kabupaten.trim()) errs.kabupaten = "Kabupaten wajib diisi";
     if (!customer.kecamatan.trim()) errs.kecamatan = "Kecamatan wajib diisi";
@@ -229,6 +231,14 @@ export default function Checkout() {
                   placeholder="Masukkan nama penerima"
                   value={customer.nama}
                   onChange={set("nama")}
+                />
+                <InputField
+                  label="Alamat Lengkap"
+                  required
+                  error={errors.alamatLengkap}
+                  placeholder="Nama jalan, RT/RW, nomor rumah..."
+                  value={customer.alamatLengkap}
+                  onChange={set("alamatLengkap")}
                 />
                 <InputField
                   label="Provinsi"

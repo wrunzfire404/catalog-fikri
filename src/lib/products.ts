@@ -99,6 +99,7 @@ export type CustomerInfo = {
   provinsi: string;
   kabupaten: string;
   kecamatan: string;
+  alamatLengkap: string;
   noWa: string;
   catatan: string;
 };
@@ -146,7 +147,7 @@ export function waCheckoutLink(cart: CartItem[], customer: CustomerInfo, setting
   text += `👤 *Data Customer:*\n`;
   text += `Nama        : ${customer.nama}\n`;
   text += `No WA       : ${customer.noWa}\n`;
-  text += `Alamat      : ${customer.kecamatan}, ${customer.kabupaten}, ${customer.provinsi}\n`;
+  text += `Alamat      : ${customer.alamatLengkap}, ${customer.kecamatan}, ${customer.kabupaten}, ${customer.provinsi}\n`;
   if (customer.catatan) {
     text += `Catatan     : ${customer.catatan}\n`;
   }
