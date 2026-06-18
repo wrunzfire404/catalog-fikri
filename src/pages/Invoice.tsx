@@ -86,6 +86,29 @@ export default function Invoice() {
 
   return (
     <div className="min-h-screen print:min-h-0 bg-background text-foreground pb-24 md:pb-12 print:pb-0 print:bg-white">
+      <style type="text/css" media="print">
+        {`
+          @page {
+            size: A4 portrait;
+            margin: 10mm;
+          }
+          body {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            width: 100%;
+          }
+          /* Paksa elemen tidak lebih besar dari kertas A4 minus margin */
+          #invoice-print-area, .print-container {
+            max-width: 190mm !important;
+            margin: 0 auto !important;
+            box-sizing: border-box !important;
+          }
+          /* Kecilkan sedikit ukuran font saat diprint agar lebih presisi */
+          #invoice-print-area {
+            zoom: 0.95;
+          }
+        `}
+      </style>
       <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-border/60 print:hidden">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <Link to={isAdmin ? "/admin" : "/"} className="flex items-center gap-2 text-foreground hover:text-primary transition">
@@ -143,7 +166,7 @@ export default function Invoice() {
 
         {/* Invoice Preview Container */}
         <div className="w-full pb-8">
-          <div className="w-full max-w-[800px] shadow-2xl bg-white mx-auto rounded-xl overflow-hidden print:overflow-visible print:shadow-none print:max-w-full print:border-none" style={{ border: "1px solid #e5e7eb" }}>
+          <div className="w-full max-w-[800px] print-container shadow-2xl bg-white mx-auto rounded-xl overflow-hidden print:overflow-visible print:shadow-none print:max-w-[190mm] print:border-none" style={{ border: "1px solid #e5e7eb" }}>
             
             {/* INVOICE TEMPLATE */}
             <div 
