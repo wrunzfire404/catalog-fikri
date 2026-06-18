@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { getOrders, updateOrderStatus, type Order } from "@/lib/store";
+import { getOrders, updateOrderStatus, deleteOrder, type Order } from "@/lib/store";
 import { formatRupiah } from "@/lib/products";
-import { Printer, CheckCircle, Clock } from "lucide-react";
+import { Printer, CheckCircle, Clock, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function OrdersPanel() {
@@ -28,6 +28,22 @@ export default function OrdersPanel() {
       await updateOrderStatus(order.id, newStatus);
     } catch (e) {
       alert("Gagal memperbarui status pesanan");
+      loadOrders(); // Revert
+    }
+  };
+
+  const handleDelete = async (order: Order) => {
+    if (!window.confirm(`Yakin ingin menghapus pesanan ${order.invoice_no} secara permanen?`)) {
+      return;
+    }
+    
+    // Optimistic UI update
+    setOrders(orders.filter((o) => o.id !== order.id));
+    
+    try {
+      await deleteOrder(order.id);
+    } catch (e) {
+      alert("Gagal menghapus pesanan");
       loadOrders(); // Revert
     }
   };
@@ -111,6 +127,13 @@ export default function OrdersPanel() {
                 >
                   {order.status === "paid" ? <CheckCircle className="w-[18px] h-[18px]" /> : <Clock className="w-[18px] h-[18px]" />}
                 </button>
+                <button
+                  onClick={() => handleDelete(order)}
+                  className="grid place-items-center w-10 h-10 bg-red-50 text-red-600 hover:bg-red-100 rounded-full transition"
+                  title="Hapus Pesanan"
+                >
+                  <Trash2 className="w-[18px] h-[18px]" />
+                </button>
               </div>
             </div>
           );
@@ -192,6 +215,13 @@ export default function OrdersPanel() {
                         title="Lihat & Cetak PDF"
                       >
                         <Printer className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(order)}
+                        className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg font-semibold transition"
+                        title="Hapus Pesanan"
+                      >
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </td>

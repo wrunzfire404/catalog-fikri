@@ -196,3 +196,11 @@ export async function updateOrderStatus(id: string, status: "unpaid" | "paid") {
     throw error;
   }
 }
+
+export async function deleteOrder(id: string) {
+  const { error } = await supabase.from("orders").delete().eq("id", id);
+  if (error) {
+    console.error("Gagal menghapus pesanan:", error);
+    throw error;
+  }
+}
