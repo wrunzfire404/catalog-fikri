@@ -99,19 +99,20 @@ export function CartDrawer({
                       <div className="flex items-center rounded-lg border border-border p-0.5 bg-secondary/30">
                         <button
                           onClick={() => onUpdateQty(index, item.quantity - 1)}
-                          className="grid h-7 w-7 place-items-center rounded-md text-foreground hover:bg-white hover:shadow-sm transition"
+                          className="grid h-7 w-7 place-items-center rounded-md text-foreground hover:bg-white hover:shadow-sm disabled:opacity-50 transition"
+                          disabled={item.quantity <= 2}
                         >
                           <Minus className="w-3.5 h-3.5" />
                         </button>
                         <input
                           type="number"
                           inputMode="numeric"
-                          min={1}
+                          min={2}
                           value={item.quantity}
                           onChange={(e) => {
                             const v = parseInt(e.target.value, 10);
-                            if (!isNaN(v) && v >= 1) onUpdateQty(index, v);
-                            else if (e.target.value === "") onUpdateQty(index, 1);
+                            if (!isNaN(v) && v >= 2) onUpdateQty(index, v);
+                            else if (e.target.value === "") onUpdateQty(index, 2);
                           }}
                           className="w-10 text-center font-semibold text-[13px] bg-transparent outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         />

@@ -51,9 +51,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   const updateQty = (index: number, qty: number) => {
-    if (qty <= 0) {
-      setCart((prev) => prev.filter((_, i) => i !== index));
-      return;
+    if (qty < 2) {
+      qty = 2;
     }
     setCart((prev) => {
       const next = [...prev];
