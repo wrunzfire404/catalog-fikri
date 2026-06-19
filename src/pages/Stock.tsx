@@ -126,8 +126,8 @@ export default function Stock() {
               // Exclude product yg barusan ditambahin
               const recs = featuredProducts.filter((p) => p.slug !== selectedProduct.slug);
               showPopup(`${name} berhasil ditambahkan (${qty} pcs)`, {
-                action: { label: "Lihat Keranjang", onClick: () => setIsCartOpen(true) },
-                secondary: { label: "Lanjut Belanja", onClick: () => setTimeout(() => setSelectedProduct(currentProduct), 300) },
+                action: { label: "Lanjut Belanja", onClick: () => setTimeout(() => setSelectedProduct(currentProduct), 300) },
+                secondary: { label: "Lihat Keranjang", onClick: () => setIsCartOpen(true) },
                 featured: recs,
               });
             });

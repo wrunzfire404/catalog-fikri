@@ -11,6 +11,7 @@ import {
   Boxes,
   Star,
   FileText,
+  Search,
 } from "lucide-react";
 import { adminLogout } from "@/lib/store";
 import { useStore } from "@/context/StoreContext";
@@ -28,6 +29,7 @@ export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [tab, setTab] = useState<Tab>(initialTab as Tab);
   const [editing, setEditing] = useState<Product | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [toggling, setToggling] = useState<string | null>(null); // slug yg lagi di-toggle
 
   const handleLogout = () => {
@@ -117,8 +119,21 @@ export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
               </button>
             </div>
 
+            <div className="relative mb-5">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Cari nama produk atau kode..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-border bg-white text-[14px] focus:outline-none focus:ring-2 focus:ring-primary/20 transition"
+              />
+            </div>
+
             <div className="grid gap-3">
-              {products.map((product) => (
+              {products
+                .filter((p) => p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.code.toLowerCase().includes(searchQuery.toLowerCase()))
+                .map((product) => (
                 <div
                   key={product.slug}
                   className="flex items-center gap-4 rounded-xl bg-white p-3 shadow-card border border-border/40"
