@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { ShoppingCart, Sparkles, ChevronRight } from "lucide-react";
+import { ShoppingCart, Sparkles, ChevronRight, ChevronLeft } from "lucide-react";
 import { useStore } from "@/context/StoreContext";
 import { useCart } from "@/context/CartContext";
 import { CartDrawer } from "@/components/cart";
@@ -12,6 +12,8 @@ export default function Home() {
   const { cart, totalItems, updateQty, removeItem } = useCart();
   const [bannerIndex, setBannerIndex] = useState(0);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   const activeBanners = settings.banners && settings.banners.length > 0 
     ? settings.banners 
@@ -28,6 +30,32 @@ export default function Home() {
     }, 8000);
     return () => clearInterval(timer);
   }, [activeBanners.length]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+    
+    if (isLeftSwipe) {
+      setBannerIndex((prev) => (prev + 1) % activeBanners.length);
+    }
+    if (isRightSwipe) {
+      setBannerIndex((prev) => (prev === 0 ? activeBanners.length - 1 : prev - 1));
+    }
+  };
+
+  const nextBanner = () => setBannerIndex((prev) => (prev + 1) % activeBanners.length);
+  const prevBanner = () => setBannerIndex((prev) => (prev === 0 ? activeBanners.length - 1 : prev - 1));
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
@@ -58,8 +86,13 @@ export default function Home() {
       </header>
 
       {/* Hero Banner */}
-      <section className="relative bg-primary text-white">
-        <div className="relative w-full h-[30vh] md:h-[35vh] lg:h-[45vh] overflow-hidden">
+      <section 
+        className="relative bg-primary text-white"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <div className="relative w-full h-[30vh] md:h-[35vh] lg:h-[45vh] overflow-hidden group">
           {activeBanners.map((banner, i) => (
             <img
               key={banner.src + i}
@@ -82,7 +115,24 @@ export default function Home() {
               </h1>
             </div>
           </div>
-          <div className="absolute bottom-3 inset-x-0 flex items-center justify-center gap-1.5">
+
+          {/* Navigasi Kiri / Kanan (Muncul pas di-hover di Desktop) */}
+          <button 
+            onClick={prevBanner} 
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-black/20 hover:bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 backdrop-blur-sm"
+            aria-label="Previous Banner"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          <button 
+            onClick={nextBanner} 
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-black/20 hover:bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 backdrop-blur-sm"
+            aria-label="Next Banner"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+
+          <div className="absolute bottom-3 inset-x-0 flex items-center justify-center gap-1.5 z-20">
             {activeBanners.map((_, i) => (
               <button
                 key={i}
