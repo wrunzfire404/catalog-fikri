@@ -88,7 +88,7 @@ export default function Invoice() {
     <div className="min-h-screen print:min-h-0 bg-background text-foreground pb-24 md:pb-12 print:pb-0 print:bg-white">
       <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-border/60 print:hidden">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-          <Link to={isAdmin ? "/admin" : "/"} className="flex items-center gap-2 text-foreground hover:text-primary transition">
+          <Link to={isAdmin ? "/admin" : "/"} state={isAdmin ? { tab: "orders" } : undefined} className="flex items-center gap-2 text-foreground hover:text-primary transition">
             <ArrowLeft className="w-5 h-5" />
             <span className="font-semibold text-sm">{isAdmin ? "Kembali ke Admin Panel" : "Kembali ke Beranda"}</span>
           </Link>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   Package,
   Settings as SettingsIcon,
@@ -23,7 +23,9 @@ type Tab = "products" | "settings" | "orders";
 
 export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const { products, settings, toggleFeatured, deleteProduct } = useStore();
-  const [tab, setTab] = useState<Tab>("products");
+  const location = useLocation();
+  const initialTab = (location.state as any)?.tab || "products";
+  const [tab, setTab] = useState<Tab>(initialTab as Tab);
   const [editing, setEditing] = useState<Product | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [toggling, setToggling] = useState<string | null>(null); // slug yg lagi di-toggle
