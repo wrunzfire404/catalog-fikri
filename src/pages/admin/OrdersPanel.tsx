@@ -261,7 +261,8 @@ export default function OrdersPanel() {
                   </td>
                 </tr>
               );
-            })}
+            })
+          )}
           </tbody>
         </table>
       </div>
