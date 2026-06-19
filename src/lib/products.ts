@@ -17,6 +17,7 @@ export type Product = {
   variants?: ProductVariant[];
   featured?: boolean;
   stock?: number;
+  minOrder?: number;
 };
 
 export type Settings = {

@@ -16,12 +16,13 @@ type Draft = {
   note: string;
   image: string;
   stock: string;
+  minOrder: string;
   variants: DraftVariant[];
 };
 
 function toDraft(product: Product | null): Draft {
   if (!product) {
-    return { slug: "", code: "", name: "", ld: "", pj: "", price: "", note: "", image: "", stock: "", variants: [] };
+    return { slug: "", code: "", name: "", ld: "", pj: "", price: "", note: "", image: "", stock: "", minOrder: "", variants: [] };
   }
   return {
     slug: product.slug,
@@ -33,6 +34,7 @@ function toDraft(product: Product | null): Draft {
     note: product.note ?? "",
     image: product.image ?? "",
     stock: product.stock !== undefined ? String(product.stock) : "",
+    minOrder: product.minOrder !== undefined ? String(product.minOrder) : "",
     variants: product.variants ? product.variants.map((v) => ({ ...v, stock: v.stock !== undefined ? String(v.stock) : "" })) : [],
   };
 }
@@ -126,6 +128,7 @@ export default function ProductEditor({ product, onClose }: { product: Product |
       note: draft.note.trim() || undefined,
       image: draft.image || cleanVariants[0]?.image || undefined,
       stock: draft.stock.trim() && cleanVariants.length === 0 ? parseInt(draft.stock.replace(/[^0-9]/g, ""), 10) : undefined,
+      minOrder: draft.minOrder.trim() ? parseInt(draft.minOrder.replace(/[^0-9]/g, ""), 10) : undefined,
       variants: cleanVariants.length ? cleanVariants : undefined,
     };
 
@@ -193,6 +196,8 @@ export default function ProductEditor({ product, onClose }: { product: Product |
             <Field label="Lingkar Dada (LD)" value={draft.ld} onChange={(v) => set("ld", v)} placeholder="110-115" />
             <Field label="Panjang (PJ)" value={draft.pj} onChange={(v) => set("pj", v)} placeholder="55" />
           </div>
+
+          <Field label="Minimal Order (opsional)" value={draft.minOrder} onChange={(v) => set("minOrder", v.replace(/[^0-9]/g, ""))} placeholder="Default: 2" />
 
           {draft.variants.length === 0 && (
             <Field label="Stok Total (opsional)" value={draft.stock} onChange={(v) => set("stock", v.replace(/[^0-9]/g, ""))} placeholder="Kosongkan jika tak terbatas" />

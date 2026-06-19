@@ -51,12 +51,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   const updateQty = (index: number, qty: number) => {
-    if (qty < 2) {
-      qty = 2;
-    }
     setCart((prev) => {
       const next = [...prev];
-      next[index] = { ...next[index], quantity: qty };
+      const item = next[index];
+      const minQty = item.product.minOrder ?? 2;
+      if (qty < minQty) {
+        qty = minQty;
+      }
+      next[index] = { ...item, quantity: qty };
       return next;
     });
   };

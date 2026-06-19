@@ -68,7 +68,8 @@ export function ProductModal({
 }) {
   const gallery = getProductGallery(product);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [quantity, setQuantity] = useState(2);
+  const minQty = product.minOrder ?? 2;
+  const [quantity, setQuantity] = useState(minQty);
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const activeVariant = gallery[activeIndex] ?? null;
@@ -187,21 +188,21 @@ export function ProductModal({
             <div className="flex items-center gap-3">
               <div className="flex items-center rounded-lg border border-border p-1 bg-secondary/30">
                 <button
-                  onClick={() => setQuantity(Math.max(2, quantity - 1))}
+                  onClick={() => setQuantity(Math.max(minQty, quantity - 1))}
                   className="grid h-8 w-8 place-items-center rounded-md text-foreground hover:bg-white hover:shadow-sm disabled:opacity-50 transition"
-                  disabled={quantity <= 2}
+                  disabled={quantity <= minQty}
                 >
                   <Minus className="w-4 h-4" />
                 </button>
                 <input
                   type="number"
                   inputMode="numeric"
-                  min={2}
+                  min={minQty}
                   value={quantity}
                   onChange={(e) => {
                     const v = parseInt(e.target.value, 10);
-                    if (!isNaN(v) && v >= 2) setQuantity(v);
-                    else if (e.target.value === "") setQuantity(2);
+                    if (!isNaN(v) && v >= minQty) setQuantity(v);
+                    else if (e.target.value === "") setQuantity(minQty);
                   }}
                   className="w-16 text-center font-semibold text-[15px] bg-transparent outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />

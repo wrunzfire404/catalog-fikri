@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { getOrders, updateOrderStatus, deleteOrder, type Order } from "@/lib/store";
 import { formatRupiah } from "@/lib/products";
-import { Printer, CheckCircle, Clock, Trash2 } from "lucide-react";
+import { Printer, CheckCircle, Clock, Trash2, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function OrdersPanel() {
   const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     loadOrders();
@@ -77,12 +78,37 @@ export default function OrdersPanel() {
     );
   }
 
+  const filteredOrders = orders.filter((o) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      o.invoice_no.toLowerCase().includes(query) ||
+      o.customer_info.nama.toLowerCase().includes(query) ||
+      o.customer_info.noWa.toLowerCase().includes(query)
+    );
+  });
+
   return (
-    <div className="bg-white rounded-xl shadow-card border border-border/40 overflow-hidden">
-      
-      {/* Tampilan Mobile (Card) */}
-      <div className="block sm:hidden divide-y divide-border/50">
-        {orders.map((order) => {
+    <div className="space-y-4">
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <input
+          type="text"
+          placeholder="Cari invoice, nama customer, atau No. WA..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-border bg-white text-[14px] focus:outline-none focus:ring-2 focus:ring-primary/20 transition shadow-sm"
+        />
+      </div>
+      <div className="bg-white rounded-xl shadow-card border border-border/40 overflow-hidden">
+        
+        {/* Tampilan Mobile (Card) */}
+        <div className="block sm:hidden divide-y divide-border/50">
+          {filteredOrders.length === 0 ? (
+            <div className="p-8 text-center text-muted-foreground text-[14px]">
+              Pesanan tidak ditemukan.
+            </div>
+          ) : (
+            filteredOrders.map((order) => {
           const date = new Date(order.created_at);
           const formattedDate = new Intl.DateTimeFormat("id-ID", {
             day: "numeric",
@@ -155,15 +181,22 @@ export default function OrdersPanel() {
             </tr>
           </thead>
           <tbody className="divide-y divide-border/50">
-            {orders.map((order) => {
-              const date = new Date(order.created_at);
-              const formattedDate = new Intl.DateTimeFormat("id-ID", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              }).format(date);
+            {filteredOrders.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="px-5 py-8 text-center text-muted-foreground text-[14px]">
+                  Pesanan tidak ditemukan.
+                </td>
+              </tr>
+            ) : (
+              filteredOrders.map((order) => {
+                const date = new Date(order.created_at);
+                const formattedDate = new Intl.DateTimeFormat("id-ID", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }).format(date);
               
               const totalItems = order.cart_items.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -230,6 +263,7 @@ export default function OrdersPanel() {
             })}
           </tbody>
         </table>
+      </div>
       </div>
     </div>
   );

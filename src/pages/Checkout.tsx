@@ -164,19 +164,20 @@ export default function Checkout() {
                           <button
                             onClick={() => updateQty(index, item.quantity - 1)}
                             className="grid h-7 w-7 place-items-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-50 transition"
-                            disabled={item.quantity <= 2}
+                            disabled={item.quantity <= (item.product.minOrder ?? 2)}
                           >
                             <Minus className="w-3.5 h-3.5" />
                           </button>
                           <input
                             type="number"
                             inputMode="numeric"
-                            min={2}
+                            min={item.product.minOrder ?? 2}
                             value={item.quantity}
                             onChange={(e) => {
                               const v = parseInt(e.target.value, 10);
-                              if (!isNaN(v) && v >= 2) updateQty(index, v);
-                              else if (e.target.value === "") updateQty(index, 2);
+                              const minQty = item.product.minOrder ?? 2;
+                              if (!isNaN(v) && v >= minQty) updateQty(index, v);
+                              else if (e.target.value === "") updateQty(index, minQty);
                             }}
                             className="w-10 text-center text-[13px] font-semibold bg-transparent outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           />
