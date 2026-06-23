@@ -235,7 +235,9 @@ export function ProductModal({
             </button>
           </div>
         </div>
+        </div>
       </div>
+    </div>
 
       {/* Lightbox / Image Zoom Modal */}
       {zoomedImage && (
