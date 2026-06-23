@@ -66,7 +66,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                     popup.action?.onClick();
                     dismiss();
                   }}
-                  className="w-full rounded-xl bg-primary px-4 py-3 text-[15px] font-bold text-white shadow-md transition hover:bg-primary/90 active:scale-[0.98]"
+                  className="w-full rounded-xl border border-border px-4 py-3 text-[15px] font-semibold text-foreground hover:bg-secondary transition"
                 >
                   {popup.action.label}
                 </button>
@@ -77,7 +77,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                     popup.secondary?.onClick();
                     dismiss();
                   }}
-                  className="w-full rounded-xl border border-border px-4 py-3 text-[14px] font-semibold text-foreground hover:bg-secondary transition"
+                  className="w-full rounded-xl bg-primary px-4 py-3 text-[15px] font-bold text-white shadow-md transition hover:bg-primary/90 active:scale-[0.98]"
                 >
                   {popup.secondary.label}
                 </button>
