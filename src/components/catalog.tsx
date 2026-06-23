@@ -225,17 +225,15 @@ export function ProductModal({
             </ul>
             {product.note && <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground border-t border-border/50 pt-3">{product.note}</p>}
           </div>
-        </div>
-        </div>
-
-        <div className="p-4 border-t border-border bg-white shrink-0">
-          <button
-            onClick={() => onAddToCart(activeVariant, quantity)}
-            className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3.5 text-[15px] font-bold text-white shadow-md transition hover:bg-primary/90 active:scale-[0.98]"
-          >
-            <ShoppingCart className="w-5 h-5" />
-            Tambah ke Keranjang — {formatRupiah(product.price * quantity)}
-          </button>
+          <div className="mt-4">
+            <button
+              onClick={() => onAddToCart(activeVariant, quantity)}
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3.5 text-[15px] font-bold text-white shadow-md transition hover:bg-primary/90 active:scale-[0.98]"
+            >
+              <ShoppingCart className="w-5 h-5" />
+              Tambah ke Keranjang — {formatRupiah(product.price * quantity)}
+            </button>
+          </div>
         </div>
       </div>
 
