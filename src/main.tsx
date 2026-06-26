@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 import { CartProvider } from "./context/CartContext";
 import { StoreProvider } from "./context/StoreContext";
 import { ToastProvider } from "./context/ToastContext";
@@ -34,5 +35,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </ToastProvider>
       </StoreProvider>
     </BrowserRouter>
+    <Analytics />
   </React.StrictMode>
 );
