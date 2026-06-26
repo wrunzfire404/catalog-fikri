@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Save, RotateCcw, ShieldCheck, KeyRound, Image as ImageIcon, Upload, Trash2, Loader2, ArrowUp, ArrowDown } from "lucide-react";
 import { useStore } from "@/context/StoreContext";
-import { saveAdminCreds, getAdminCreds, resetProductsToDefault, resetSettingsToDefault } from "@/lib/store";
+import { saveAdminCreds, getAdminCreds, resetProductsToDefault, resetSettingsToDefault, bulkCompressAllImages } from "@/lib/store";
 import { type Settings } from "@/lib/products";
 import { uploadImage } from "@/lib/supabase";
 
@@ -10,6 +10,22 @@ export default function SettingsPanel() {
   const [draft, setDraft] = useState<Settings>({ ...settings, banners: settings.banners || [] });
   const [saved, setSaved] = useState(false);
   const [uploadingBanner, setUploadingBanner] = useState(false);
+  
+  const [compressLog, setCompressLog] = useState<string>("");
+  const [isCompressing, setIsCompressing] = useState(false);
+
+  const handleBulkCompress = async () => {
+    if (!window.confirm("PENTING: Proses ini akan mengunduh, mengecilkan, dan menimpa semua foto produk lama Anda dengan versi yang lebih hemat kuota. Proses ini bisa memakan waktu beberapa menit. Lanjutkan?")) return;
+    
+    setIsCompressing(true);
+    setCompressLog("Memulai...");
+    
+    await bulkCompressAllImages((msg) => {
+      setCompressLog(msg);
+    });
+    
+    setIsCompressing(false);
+  };
 
   // Creds
   const [creds, setCreds] = useState(() => getAdminCreds());
@@ -227,7 +243,7 @@ export default function SettingsPanel() {
       </div>
 
       {/* Actions */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <button
           onClick={handleSave}
           className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-[15px] font-bold text-white shadow-md transition hover:bg-primary/90 active:scale-[0.98]"
@@ -242,6 +258,31 @@ export default function SettingsPanel() {
           <RotateCcw className="w-5 h-5" />
           Reset ke Default
         </button>
+      </div>
+
+      {/* Bulk Compress Section */}
+      <div className="border border-yellow-200 bg-yellow-50/50 p-4 rounded-xl">
+        <h3 className="font-bold text-yellow-800 text-[14px] mb-2 flex items-center gap-2">
+          <ImageIcon className="w-4 h-4" /> Sihir: Bulk Compress Foto Lama
+        </h3>
+        <p className="text-[13px] text-yellow-700/80 mb-4 leading-relaxed">
+          Gunakan tombol ini HANYA jika Anda memiliki ratusan foto lama yang belum dikompresi.
+          Sistem akan mendownload semua foto produk lama, mengecilkannya, dan menimpanya secara otomatis dengan versi hemat kuota.
+        </p>
+        <button
+          onClick={handleBulkCompress}
+          disabled={isCompressing}
+          className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-yellow-500 px-4 py-3 text-[14px] font-bold text-white shadow-sm transition hover:bg-yellow-600 disabled:opacity-70 disabled:cursor-not-allowed"
+        >
+          {isCompressing ? <Loader2 className="w-5 h-5 animate-spin" /> : <ImageIcon className="w-5 h-5" />}
+          {isCompressing ? "Memproses Kompresi..." : "Mulai Bulk Compress Sekarang"}
+        </button>
+        
+        {compressLog && (
+          <div className="mt-4 p-3 bg-white border border-yellow-200 rounded-lg text-[12px] font-mono text-yellow-800 h-24 overflow-y-auto">
+            {compressLog}
+          </div>
+        )}
       </div>
     </div>
   );

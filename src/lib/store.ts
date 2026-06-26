@@ -1,4 +1,4 @@
-import { supabase } from "./supabase";
+import { supabase, uploadImage } from "./supabase";
 import {
   defaultProducts,
   defaultSettings,
@@ -202,5 +202,73 @@ export async function deleteOrder(id: string) {
   if (error) {
     console.error("Gagal menghapus pesanan:", error);
     throw error;
+  }
+}
+
+export async function bulkCompressAllImages(onProgress: (msg: string) => void) {
+  try {
+    const products = await getAllProducts();
+    onProgress(`Ditemukan ${products.length} produk. Memulai kompresi...`);
+
+    let count = 0;
+    for (let i = 0; i < products.length; i++) {
+      const p = products[i];
+      let updated = false;
+
+      // Fungsi bantu untuk mendownload dan mengompres
+      const processImage = async (url: string, name: string) => {
+        try {
+          if (!url.startsWith("http")) return url;
+          onProgress(`Mendownload ${name}...`);
+          const res = await fetch(url);
+          const blob = await res.blob();
+          
+          // Jika ukuran > 150KB, kompres
+          if (blob.size > 150 * 1024) {
+            onProgress(`Mengompres ${name} (${(blob.size / 1024).toFixed(0)}KB)...`);
+            const ext = url.split(".").pop() || "jpg";
+            const file = new File([blob], `image.${ext}`, { type: blob.type });
+            const newUrl = await uploadImage(file);
+            return newUrl;
+          }
+          return url;
+        } catch (e) {
+          console.error(`Gagal memproses gambar ${name}:`, e);
+          return url; // Kembalikan url asli jika gagal
+        }
+      };
+
+      if (p.image) {
+        const newImage = await processImage(p.image, p.name);
+        if (newImage !== p.image) {
+          p.image = newImage;
+          updated = true;
+        }
+      }
+
+      if (p.variants) {
+        for (let j = 0; j < p.variants.length; j++) {
+          const v = p.variants[j];
+          if (v.image) {
+            const newVImage = await processImage(v.image, `${p.name} - ${v.color}`);
+            if (newVImage !== v.image) {
+              v.image = newVImage;
+              updated = true;
+            }
+          }
+        }
+      }
+
+      if (updated) {
+        onProgress(`Menyimpan pembaruan untuk ${p.name}...`);
+        await saveProduct(p);
+        count++;
+      }
+    }
+
+    onProgress(`Selesai! ${count} produk telah diperbarui ukurannya.`);
+  } catch (err) {
+    console.error("Bulk compress error:", err);
+    onProgress("Terjadi kesalahan saat melakukan bulk compress.");
   }
 }
