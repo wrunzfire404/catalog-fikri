@@ -89,8 +89,22 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     <StoreContext.Provider value={{ products, settings, loading, refresh, saveProduct, toggleFeatured, deleteProduct, saveSettings }}>
       {loading ? (
         <div className="fixed inset-0 flex flex-col items-center justify-center bg-background z-[9999]">
-          <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-4"></div>
-          <p className="text-xs font-bold tracking-widest text-primary/60 uppercase animate-pulse">Memuat Toko...</p>
+          <div className="relative flex flex-col items-center animate-in fade-in duration-500">
+            {/* Logo with pulse effect */}
+            <div className="relative mb-6">
+              <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse"></div>
+              <img 
+                src="/images/logo.png" 
+                alt="Pusat Grosir Rajut Bandung" 
+                className="relative h-16 object-contain drop-shadow-md mix-blend-multiply animate-pulse" 
+              />
+            </div>
+            
+            {/* Elegant Loading Bar */}
+            <div className="w-32 h-1 bg-secondary rounded-full overflow-hidden">
+              <div className="w-1/2 h-full bg-primary rounded-full animate-[ping_1.5s_ease-in-out_infinite] origin-left"></div>
+            </div>
+          </div>
         </div>
       ) : (
         children
