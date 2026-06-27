@@ -87,7 +87,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   return (
     <StoreContext.Provider value={{ products, settings, loading, refresh, saveProduct, toggleFeatured, deleteProduct, saveSettings }}>
-      {children}
+      {loading ? (
+        <div className="fixed inset-0 flex flex-col items-center justify-center bg-background z-[9999]">
+          <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-4"></div>
+          <p className="text-xs font-bold tracking-widest text-primary/60 uppercase animate-pulse">Memuat Toko...</p>
+        </div>
+      ) : (
+        children
+      )}
     </StoreContext.Provider>
   );
 }
