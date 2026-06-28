@@ -155,11 +155,13 @@ export function waCheckoutLink(cart: CartItem[], customer: CustomerInfo, setting
   text += `\n*PENTING:*\n`;
   text += `Halo Admin, saya sudah menyelesaikan pembayaran. Berikut saya lampirkan Bukti Transfer dan file PDF Invoice pesanan saya 🙏`;
 
-  return `https://wa.me/${settings.waNumber}?text=${encodeURIComponent(text)}`;
+  const cleanPhone = settings.waNumber.replace(/\D/g, "");
+  return `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(text)}`;
 }
 
 export function waCsLink(settings: Settings) {
-  return `https://wa.me/${settings.waNumber}?text=${encodeURIComponent(
+  const cleanPhone = settings.waNumber.replace(/\D/g, "");
+  return `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(
     `Halo ${settings.shopName}, saya mau tanya katalog rajutnya 🙏`
   )}`;
 }
