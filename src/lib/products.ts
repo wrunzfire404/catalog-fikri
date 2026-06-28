@@ -129,11 +129,17 @@ export function slugify(text: string) {
 
 function getWhatsAppLink(phone: string, text: string) {
   let cleanPhone = phone.replace(/\D/g, "");
+  
+  if (cleanPhone.startsWith("620")) {
+    cleanPhone = "62" + cleanPhone.slice(3);
+  }
+  
   if (cleanPhone.startsWith("0")) {
     cleanPhone = "62" + cleanPhone.slice(1);
   } else if (cleanPhone.startsWith("8")) {
     cleanPhone = "62" + cleanPhone;
   }
+  
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
 }
 
