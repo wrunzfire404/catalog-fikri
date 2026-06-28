@@ -127,6 +127,16 @@ export function slugify(text: string) {
     .replace(/^-+|-+$/g, "");
 }
 
+function getWhatsAppLink(phone: string, text: string) {
+  let cleanPhone = phone.replace(/\D/g, "");
+  if (cleanPhone.startsWith("0")) {
+    cleanPhone = "62" + cleanPhone.slice(1);
+  } else if (cleanPhone.startsWith("8")) {
+    cleanPhone = "62" + cleanPhone;
+  }
+  return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
+}
+
 export function waCheckoutLink(cart: CartItem[], customer: CustomerInfo, settings: Settings) {
   const total = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
 
@@ -155,13 +165,12 @@ export function waCheckoutLink(cart: CartItem[], customer: CustomerInfo, setting
   text += `\n*PENTING:*\n`;
   text += `Halo Admin, saya sudah menyelesaikan pembayaran. Berikut saya lampirkan Bukti Transfer dan file PDF Invoice pesanan saya 🙏`;
 
-  const cleanPhone = settings.waNumber.replace(/\D/g, "");
-  return `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(text)}`;
+  return getWhatsAppLink(settings.waNumber, text);
 }
 
 export function waCsLink(settings: Settings) {
-  const cleanPhone = settings.waNumber.replace(/\D/g, "");
-  return `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(
+  return getWhatsAppLink(
+    settings.waNumber,
     `Halo ${settings.shopName}, saya mau tanya katalog rajutnya 🙏`
-  )}`;
+  );
 }
