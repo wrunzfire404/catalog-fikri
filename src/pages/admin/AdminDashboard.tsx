@@ -12,6 +12,8 @@ import {
   Star,
   FileText,
   Search,
+  EyeOff,
+  Eye,
 } from "lucide-react";
 import { adminLogout } from "@/lib/store";
 import { useStore } from "@/context/StoreContext";
@@ -23,7 +25,7 @@ import OrdersPanel from "./OrdersPanel";
 type Tab = "products" | "settings" | "orders";
 
 export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
-  const { products, settings, toggleFeatured, deleteProduct } = useStore();
+  const { products, settings, toggleFeatured, toggleHidden, deleteProduct } = useStore();
   const location = useLocation();
   const initialTab = (location.state as any)?.tab || "products";
   const [tab, setTab] = useState<Tab>(initialTab as Tab);
@@ -136,7 +138,9 @@ export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                 .map((product) => (
                 <div
                   key={product.slug}
-                  className="flex items-center gap-4 rounded-xl bg-white p-3 shadow-card border border-border/40"
+                  className={`flex items-center gap-4 rounded-xl p-3 shadow-card border border-border/40 transition-all ${
+                    product.isHidden ? "bg-secondary/30 opacity-75 grayscale-[0.2]" : "bg-white"
+                  }`}
                 >
                   <div className="w-14 h-16 shrink-0 rounded-lg overflow-hidden bg-secondary">
                     {product.image ? (
@@ -156,9 +160,36 @@ export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                       {formatRupiah(product.price)}
                       {product.variants?.length ? ` · ${product.variants.length} varian` : ""}
                       {product.featured && " · ⭐ Rekomendasi"}
+                      {product.isHidden && " · 🚫 Disembunyikan"}
                     </p>
                   </div>
                   <div className="flex items-center gap-1">
+                    <button
+                      onClick={async () => {
+                        setToggling(product.slug + "-hide");
+                        try {
+                          await toggleHidden(product.slug);
+                        } catch (e) {
+                          alert("Error: " + (e instanceof Error ? e.message : "Gagal menyembunyikan"));
+                        } finally {
+                          setToggling(null);
+                        }
+                      }}
+                      disabled={toggling === product.slug + "-hide"}
+                      className={`grid h-9 w-9 place-items-center rounded-lg transition disabled:opacity-40 ${
+                        product.isHidden
+                          ? "text-blue-600 bg-blue-50 hover:bg-blue-100"
+                          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      }`}
+                      aria-label="Toggle Hide"
+                      title={product.isHidden ? "Tampilkan produk ini" : "Sembunyikan produk ini"}
+                    >
+                      {product.isHidden ? (
+                        <EyeOff className="w-[18px] h-[18px]" />
+                      ) : (
+                        <Eye className="w-[18px] h-[18px]" />
+                      )}
+                    </button>
                     <button
                       onClick={async () => {
                         setToggling(product.slug);

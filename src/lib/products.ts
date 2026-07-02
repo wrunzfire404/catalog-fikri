@@ -16,6 +16,7 @@ export type Product = {
   image?: string;
   variants?: ProductVariant[];
   featured?: boolean;
+  isHidden?: boolean;
   stock?: number;
   minOrder?: number;
 };

@@ -28,6 +28,7 @@ export async function getAllProducts(): Promise<Product[]> {
     image: (row.image as string) || undefined,
     variants: Array.isArray(row.variants) ? (row.variants as Product["variants"]) : undefined,
     featured: (row.featured as boolean) || false,
+    isHidden: (row.is_hidden as boolean) || false,
     stock: typeof row.stock === "number" ? row.stock : undefined,
   }));
 }
@@ -50,6 +51,7 @@ export async function saveProduct(product: Product) {
     image: product.image || null,
     variants: product.variants || [],
     featured: product.featured || false,
+    is_hidden: product.isHidden || false,
     stock: product.stock !== undefined ? product.stock : null,
   };
 

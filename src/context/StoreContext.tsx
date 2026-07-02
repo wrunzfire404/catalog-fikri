@@ -22,6 +22,7 @@ type StoreValue = {
   refresh: () => void;
   saveProduct: (p: Product) => Promise<void>;
   toggleFeatured: (slug: string) => Promise<void>;
+  toggleHidden: (slug: string) => Promise<void>;
   deleteProduct: (slug: string) => Promise<void>;
   saveSettings: (s: Settings) => Promise<void>;
 };
@@ -69,6 +70,21 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     [products]
   );
 
+  const toggleHidden = useCallback(
+    async (slug: string) => {
+      setProducts((prev) =>
+        prev.map((p) =>
+          p.slug === slug ? { ...p, isHidden: !p.isHidden } : p
+        )
+      );
+      const product = products.find((p) => p.slug === slug);
+      if (product) {
+        await writeProduct({ ...product, isHidden: !product.isHidden });
+      }
+    },
+    [products]
+  );
+
   const deleteProduct = useCallback(
     async (slug: string) => {
       await removeProduct(slug);
@@ -86,7 +102,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <StoreContext.Provider value={{ products, settings, loading, refresh, saveProduct, toggleFeatured, deleteProduct, saveSettings }}>
+    <StoreContext.Provider value={{ products, settings, loading, refresh, saveProduct, toggleFeatured, toggleHidden, deleteProduct, saveSettings }}>
       {loading ? (
         <div className="fixed inset-0 flex flex-col items-center justify-center bg-background z-[9999]">
           <div className="relative flex flex-col items-center animate-in fade-in duration-500">

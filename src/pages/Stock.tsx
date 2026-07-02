@@ -36,10 +36,11 @@ export default function Stock() {
             image: (row.image as string) || undefined,
             variants: Array.isArray(row.variants) ? (row.variants as Product["variants"]) : undefined,
             featured: (row.featured as boolean) || false,
+            isHidden: (row.is_hidden as boolean) || false,
           })) as Product[];
         }
         return [] as Product[];
-      });
+      }).then(products => products.filter(p => !p.isHidden));
 
   // Listen for product selection from popup
   useEffect(() => {
@@ -53,7 +54,7 @@ export default function Stock() {
   }, [storeProducts]);
 
   const filtered = storeProducts.filter((p) =>
-    `${p.code} ${p.name}`.toLowerCase().includes(query.toLowerCase().trim())
+    !p.isHidden && `${p.code} ${p.name}`.toLowerCase().includes(query.toLowerCase().trim())
   );
 
   return (
