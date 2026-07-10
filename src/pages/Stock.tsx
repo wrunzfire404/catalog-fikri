@@ -37,6 +37,7 @@ export default function Stock() {
             variants: Array.isArray(row.variants) ? (row.variants as Product["variants"]) : undefined,
             featured: (row.featured as boolean) || false,
             isHidden: (row.is_hidden as boolean) || false,
+            minOrder: typeof row.min_order === "number" ? row.min_order : undefined,
           })) as Product[];
         }
         return [] as Product[];

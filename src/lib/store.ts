@@ -30,6 +30,7 @@ export async function getAllProducts(): Promise<Product[]> {
     featured: (row.featured as boolean) || false,
     isHidden: (row.is_hidden as boolean) || false,
     stock: typeof row.stock === "number" ? row.stock : undefined,
+    minOrder: typeof row.min_order === "number" ? row.min_order : undefined,
   }));
 }
 
@@ -53,6 +54,7 @@ export async function saveProduct(product: Product) {
     featured: product.featured || false,
     is_hidden: product.isHidden || false,
     stock: product.stock !== undefined ? product.stock : null,
+    min_order: product.minOrder !== undefined ? product.minOrder : null,
   };
 
   if (existing) {
