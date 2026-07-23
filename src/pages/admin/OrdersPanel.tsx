@@ -172,19 +172,19 @@ export default function OrdersPanel() {
         <table className="w-full text-left text-sm whitespace-nowrap">
           <thead className="bg-secondary/50 border-b border-border text-muted-foreground">
             <tr>
-              <th className="px-5 py-4 font-semibold w-40">No. Invoice</th>
-              <th className="px-5 py-4 font-semibold">Tanggal</th>
-              <th className="px-5 py-4 font-semibold">Customer</th>
-              <th className="px-5 py-4 font-semibold text-center">Status</th>
-              <th className="px-5 py-4 font-semibold text-center">Item</th>
-              <th className="px-5 py-4 font-semibold text-right">Total</th>
-              <th className="px-5 py-4 font-semibold text-center w-40">Aksi</th>
+              <th className="px-4 py-4 font-semibold">No. Invoice</th>
+              <th className="px-4 py-4 font-semibold">Tanggal</th>
+              <th className="px-4 py-4 font-semibold">Customer</th>
+              <th className="px-4 py-4 font-semibold text-center">Status</th>
+              <th className="px-4 py-4 font-semibold text-center">Item</th>
+              <th className="px-4 py-4 font-semibold text-right">Total</th>
+              <th className="px-4 py-4 font-semibold text-center pr-6">Aksi</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/50">
             {filteredOrders.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-5 py-8 text-center text-muted-foreground text-[14px]">
+                <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground text-[14px]">
                   Pesanan tidak ditemukan.
                 </td>
               </tr>
@@ -203,15 +203,15 @@ export default function OrdersPanel() {
 
               return (
                 <tr key={order.id} className="hover:bg-secondary/20 transition">
-                  <td className="px-5 py-4 font-mono font-medium text-primary">
+                  <td className="px-4 py-4 font-mono font-medium text-primary">
                     {order.invoice_no}
                   </td>
-                  <td className="px-5 py-4 text-muted-foreground">{formattedDate}</td>
-                  <td className="px-5 py-4">
+                  <td className="px-4 py-4 text-muted-foreground">{formattedDate}</td>
+                  <td className="px-4 py-4">
                     <div className="font-medium text-foreground">{order.customer_info.nama}</div>
                     <div className="text-xs text-muted-foreground mt-0.5">{order.customer_info.noWa}</div>
                   </td>
-                  <td className="px-5 py-4 text-center">
+                  <td className="px-4 py-4 text-center">
                     <span
                       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
                         order.status === "paid"
@@ -222,19 +222,19 @@ export default function OrdersPanel() {
                       {order.status === "paid" ? "Lunas" : "Belum Lunas"}
                     </span>
                   </td>
-                  <td className="px-5 py-4 text-center">
+                  <td className="px-4 py-4 text-center">
                     <span className="inline-flex bg-secondary text-foreground px-2 py-1 rounded text-xs font-medium">
                       {totalItems} pcs
                     </span>
                   </td>
-                  <td className="px-5 py-4 font-bold text-foreground text-right">
+                  <td className="px-4 py-4 font-bold text-foreground text-right">
                     {formatRupiah(order.total_price)}
                   </td>
-                  <td className="px-5 py-4 text-center">
-                    <div className="flex items-center justify-center gap-2">
+                  <td className="px-4 py-4 text-center pr-6">
+                    <div className="flex items-center justify-end gap-1.5">
                       <button
                         onClick={() => toggleStatus(order)}
-                        className={`inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition ${
+                        className={`grid place-items-center w-9 h-9 rounded-lg transition ${
                           order.status === "paid"
                             ? "bg-amber-50 text-amber-600 hover:bg-amber-100"
                             : "bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
@@ -245,14 +245,14 @@ export default function OrdersPanel() {
                       </button>
                       <button
                         onClick={() => handlePrint(order)}
-                        className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg font-semibold transition"
+                        className="grid place-items-center w-9 h-9 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition"
                         title="Lihat & Cetak PDF"
                       >
                         <Printer className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleDelete(order)}
-                        className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg font-semibold transition"
+                        className="grid place-items-center w-9 h-9 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition"
                         title="Hapus Pesanan"
                       >
                         <Trash2 className="w-4 h-4" />
