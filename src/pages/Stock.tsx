@@ -23,6 +23,7 @@ export default function Stock() {
       .from("products")
       .select("*")
       .eq("featured", true)
+      .order("created_at", { ascending: false })
       .then(({ data, error }) => {
         if (!error && data) {
           return data.map((row: Record<string, unknown>) => ({

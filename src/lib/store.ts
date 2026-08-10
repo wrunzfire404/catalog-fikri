@@ -13,7 +13,7 @@ export async function getAllProducts(): Promise<Product[]> {
   const { data, error } = await supabase
     .from("products")
     .select("*")
-    .order("created_at", { ascending: true });
+    .order("created_at", { ascending: false });
 
   if (error || !data || data.length === 0) return defaultProducts;
 
