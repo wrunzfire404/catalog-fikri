@@ -144,14 +144,23 @@ export function CartDrawer({
                 <span className="text-primary">{formatRupiah(totalPrice)}</span>
               </div>
             </div>
-            <Link
-              to="/checkout"
-              onClick={onClose}
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3.5 text-[15px] font-bold text-white shadow-md transition hover:bg-primary/90 active:scale-[0.98]"
-            >
-              Lanjut ke Pengiriman
-              <ArrowRight className="w-5 h-5" />
-            </Link>
+            {totalItems < 12 ? (
+              <button
+                disabled
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-secondary px-4 py-3.5 text-[15px] font-bold text-muted-foreground shadow-sm cursor-not-allowed"
+              >
+                Minimal order 12 pcs
+              </button>
+            ) : (
+              <Link
+                to="/checkout"
+                onClick={onClose}
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3.5 text-[15px] font-bold text-white shadow-md transition hover:bg-primary/90 active:scale-[0.98]"
+              >
+                Lanjut ke Pengiriman
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            )}
           </div>
         )}
       </div>
