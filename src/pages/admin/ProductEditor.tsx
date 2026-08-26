@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { X, Plus, Trash2, Upload, ImageIcon, Loader2 } from "lucide-react";
+import { X, Plus, Trash2, Upload, ImageIcon, Loader2, Eye, EyeOff } from "lucide-react";
 import { useStore } from "@/context/StoreContext";
 import { supabase, uploadImage } from "@/lib/supabase";
 import { slugify, type Product, type ProductVariant } from "@/lib/products";
 
-type DraftVariant = { slug: string; color: string; image: string; stock: string };
+type DraftVariant = { slug: string; color: string; image: string; stock: string; isHidden?: boolean };
 
 type Draft = {
   slug: string;
@@ -116,6 +116,7 @@ export default function ProductEditor({ product, onClose }: { product: Product |
         color: v.color.trim(),
         image: v.image || undefined,
         stock: v.stock.trim() ? parseInt(v.stock.replace(/[^0-9]/g, ""), 10) : undefined,
+        isHidden: v.isHidden,
       }));
 
     const finalProduct: Product = {
@@ -260,6 +261,13 @@ export default function ProductEditor({ product, onClose }: { product: Product |
                       placeholder="Stok"
                       className="w-16 rounded-lg border border-border bg-white px-2 py-2 text-[14px] text-center outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
                     />
+                    <button
+                      onClick={() => updateVariant(index, { isHidden: !variant.isHidden })}
+                      className={`grid h-9 w-9 place-items-center rounded-lg transition shrink-0 ${variant.isHidden ? 'text-amber-500 hover:bg-amber-500/10' : 'text-muted-foreground hover:bg-secondary'}`}
+                      title={variant.isHidden ? "Varian disembunyikan" : "Varian terlihat"}
+                    >
+                      {variant.isHidden ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
+                    </button>
                     <button
                       onClick={() => removeVariant(index)}
                       className="grid h-9 w-9 place-items-center rounded-lg text-muted-foreground hover:bg-destructive/5 hover:text-destructive transition shrink-0"

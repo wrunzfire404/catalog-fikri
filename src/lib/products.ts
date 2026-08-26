@@ -3,6 +3,7 @@ export type ProductVariant = {
   color: string;
   image?: string;
   stock?: number;
+  isHidden?: boolean;
 };
 
 export type Product = {
@@ -108,7 +109,10 @@ export type CustomerInfo = {
 
 export function getProductGallery(product: Product) {
   if (product.variants?.length) {
-    return product.variants;
+    const visibleVariants = product.variants.filter((v) => !v.isHidden);
+    if (visibleVariants.length > 0) {
+      return visibleVariants;
+    }
   }
 
   return [
