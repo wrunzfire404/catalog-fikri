@@ -38,14 +38,18 @@ export default function Checkout() {
   const [errors, setErrors] = useState<Partial<Record<keyof CustomerInfo, string>>>({});
   const [submitted, setSubmitted] = useState(false);
 
-  // Redirect if cart empty
-  if (cart.length === 0 && !submitted) {
+  // Redirect if cart empty or less than minimum order
+  if (totalItems < 12 && !submitted) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center space-y-4">
           <ShoppingCart className="w-16 h-16 mx-auto text-muted-foreground opacity-40" />
-          <h2 className="text-xl font-bold font-serif text-foreground">Keranjang Kosong</h2>
-          <p className="text-muted-foreground text-sm">Yuk, pilih produk dulu sebelum checkout.</p>
+          <h2 className="text-xl font-bold font-serif text-foreground">
+            {cart.length === 0 ? "Keranjang Kosong" : "Minimal Order"}
+          </h2>
+          <p className="text-muted-foreground text-sm">
+            {cart.length === 0 ? "Yuk, pilih produk dulu sebelum checkout." : "Minimal pesanan adalah 12 pcs. Yuk tambah lagi."}
+          </p>
           <Link
             to="/stock"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-[15px] font-bold text-white shadow-md transition hover:bg-primary/90"
