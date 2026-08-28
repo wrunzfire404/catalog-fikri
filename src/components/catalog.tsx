@@ -9,7 +9,7 @@ import {
 
 export function ProductCard({ product, onSelect }: { product: Product; onSelect: () => void }) {
   const gallery = getProductGallery(product);
-  const hasVariants = gallery.length > 1;
+  const hasVariants = (product.variants?.filter((v) => !v.isHidden).length ?? 0) > 0;
 
   return (
     <div className="group flex flex-col overflow-hidden bg-white rounded-2xl shadow-sm border border-border/40">
@@ -73,7 +73,8 @@ export function ProductModal({
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const activeVariant = gallery[activeIndex] ?? null;
-  const hasVariants = gallery.length > 1;
+  const hasVariants = (product.variants?.filter((v) => !v.isHidden).length ?? 0) > 0;
+  const hasMultipleImages = gallery.length > 1;
 
   const scrollToIndex = (index: number) => {
     const container = carouselRef.current;
@@ -137,7 +138,7 @@ export function ProductModal({
             ))}
           </div>
 
-          {hasVariants && (
+          {hasMultipleImages && (
             <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5 z-10 pointer-events-none">
               {gallery.map((variant, index) => (
                 <button
