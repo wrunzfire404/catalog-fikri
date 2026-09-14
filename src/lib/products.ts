@@ -132,6 +132,26 @@ export function slugify(text: string) {
     .replace(/^-+|-+$/g, "");
 }
 
+export function calculateCartTotals(cart: CartItem[]) {
+  const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+  
+  let discountPerItem = 0;
+  if (totalItems >= 1000) {
+    discountPerItem = 3000;
+  } else if (totalItems >= 600) { // 50 lusin
+    discountPerItem = 2500;
+  } else if (totalItems >= 240) { // 20 lusin
+    discountPerItem = 1500;
+  }
+
+  const totalPrice = cart.reduce((acc, item) => {
+    const discountedPrice = Math.max(0, item.product.price - discountPerItem);
+    return acc + discountedPrice * item.quantity;
+  }, 0);
+
+  return { totalItems, totalPrice, discountPerItem };
+}
+
 function getWhatsAppLink(phone: string, text: string) {
   let cleanPhone = phone.replace(/\D/g, "");
   
@@ -149,7 +169,7 @@ function getWhatsAppLink(phone: string, text: string) {
 }
 
 export function waCheckoutLink(cart: CartItem[], customer: CustomerInfo, settings: Settings) {
-  const total = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
+  const { totalItems, totalPrice, discountPerItem } = calculateCartTotals(cart);
 
   let text = `🛍️ *ORDER BARU — ${settings.shopName}*\n\n`;
 
@@ -164,7 +184,11 @@ export function waCheckoutLink(cart: CartItem[], customer: CustomerInfo, setting
     text += `   ${item.quantity} x ${formatRupiah(item.product.price)} = ${formatRupiah(subtotal)}\n`;
   });
   text += `──────────────────\n`;
-  text += `💰 *Total: ${formatRupiah(total)}*\n\n`;
+  text += `🛒 *Subtotal (${totalItems} Pcs): ${formatRupiah(cart.reduce((a, b) => a + b.product.price * b.quantity, 0))}*\n`;
+  if (discountPerItem > 0) {
+    text += `🔥 *Diskon Grosir (${formatRupiah(discountPerItem)}/pc): -${formatRupiah(discountPerItem * totalItems)}*\n`;
+  }
+  text += `💰 *TOTAL BAYAR: ${formatRupiah(totalPrice)}*\n\n`;
 
   text += `👤 *Data Customer:*\n`;
   text += `Nama        : ${customer.nama}\n`;

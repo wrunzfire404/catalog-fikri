@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { CheckCircle2, Download, MessageCircle, FileText, ArrowLeft, Loader2, Printer } from "lucide-react";
-import { formatRupiah, type CartItem, type CustomerInfo, waCheckoutLink } from "@/lib/products";
+import { formatRupiah, calculateCartTotals, type CartItem, type CustomerInfo, waCheckoutLink } from "@/lib/products";
 import { useStore } from "@/context/StoreContext";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas-pro";
@@ -32,8 +32,7 @@ export default function Invoice() {
 
   if (!cart || !customer) return null;
 
-  const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
-  const totalPrice = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
+  const { totalItems, totalPrice, discountPerItem } = calculateCartTotals(cart);
 
   const handlePrintAdmin = () => {
     // Mode admin: pecah ke ukuran A4 secara fisik dengan rapi
@@ -225,6 +224,12 @@ export default function Invoice() {
                     <span className="text-xs sm:text-sm font-semibold" style={{ color: "#4b5563" }}>Total Item</span>
                     <span className="text-xs sm:text-sm font-bold" style={{ color: "#1f2937" }}>{totalItems} Pcs</span>
                   </div>
+                  {discountPerItem > 0 && (
+                    <div className="flex justify-between px-4 py-3" style={{ backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb" }}>
+                      <span className="text-xs sm:text-sm font-semibold" style={{ color: "#059669" }}>Diskon Grosir ({formatRupiah(discountPerItem)}/item)</span>
+                      <span className="text-xs sm:text-sm font-bold" style={{ color: "#059669" }}>-{formatRupiah(discountPerItem * totalItems)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between px-4 py-4" style={{ backgroundColor: "#1f2937", color: "#ffffff" }}>
                     <span className="text-sm sm:text-base font-bold">Total Belanja</span>
                     <span className="text-sm sm:text-base font-bold">{formatRupiah(totalPrice)}</span>

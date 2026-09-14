@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ShoppingCart, X, Plus, Minus, Trash2, ArrowRight, ArrowLeft } from "lucide-react";
-import { formatRupiah, type CartItem } from "@/lib/products";
+import { formatRupiah, calculateCartTotals, type CartItem } from "@/lib/products";
 import { PlaceholderArt } from "./catalog";
 
 export function CartDrawer({
@@ -14,8 +14,7 @@ export function CartDrawer({
   onUpdateQty: (index: number, qty: number) => void;
   onRemoveItem: (index: number) => void;
 }) {
-  const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
-  const totalPrice = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
+  const { totalItems, totalPrice } = calculateCartTotals(cart);
 
   return (
     <div

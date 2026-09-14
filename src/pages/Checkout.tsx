@@ -32,7 +32,7 @@ const EMPTY_CUSTOMER: CustomerInfo = {
 
 export default function Checkout() {
   const navigate = useNavigate();
-  const { cart, totalItems, totalPrice, updateQty, removeItem, clearCart } = useCart();
+  const { cart, totalItems, totalPrice, discountPerItem, updateQty, removeItem, clearCart } = useCart();
   const { settings } = useStore();
   const [customer, setCustomer] = useState<CustomerInfo>(EMPTY_CUSTOMER);
   const [errors, setErrors] = useState<Partial<Record<keyof CustomerInfo, string>>>({});
@@ -207,8 +207,14 @@ export default function Checkout() {
               <div className="p-5 border-t border-border bg-secondary/20 space-y-2">
                 <div className="flex justify-between text-[14px]">
                   <span className="text-muted-foreground">Subtotal ({totalItems} item)</span>
-                  <span className="font-semibold">{formatRupiah(totalPrice)}</span>
+                  <span className="font-semibold">{formatRupiah(cart.reduce((a, b) => a + b.product.price * b.quantity, 0))}</span>
                 </div>
+                {discountPerItem > 0 && (
+                  <div className="flex justify-between text-[14px] text-green-600">
+                    <span>Diskon Grosir ({formatRupiah(discountPerItem)}/item)</span>
+                    <span className="font-semibold">-{formatRupiah(discountPerItem * totalItems)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-[17px] font-bold pt-2 border-t border-border">
                   <span>Total</span>
                   <span className="text-primary">{formatRupiah(totalPrice)}</span>
