@@ -39,7 +39,7 @@ export default function Checkout() {
   const [submitted, setSubmitted] = useState(false);
 
   // Redirect if cart empty or less than minimum order
-  if (totalItems < 12 && !submitted) {
+  if (totalItems < 6 && !submitted) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center space-y-4">
@@ -48,7 +48,7 @@ export default function Checkout() {
             {cart.length === 0 ? "Keranjang Kosong" : "Minimal Order"}
           </h2>
           <p className="text-muted-foreground text-sm">
-            {cart.length === 0 ? "Yuk, pilih produk dulu sebelum checkout." : "Minimal pesanan adalah 12 pcs. Yuk tambah lagi."}
+            {cart.length === 0 ? "Yuk, pilih produk dulu sebelum checkout." : "Minimal pesanan adalah 6 pcs. Yuk tambah lagi."}
           </p>
           <Link
             to="/stock"

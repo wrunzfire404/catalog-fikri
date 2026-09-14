@@ -118,12 +118,12 @@ export default function Cart() {
                   <span className="text-primary">{formatRupiah(totalPrice)}</span>
                 </div>
               </div>
-              {totalItems < 12 ? (
+              {totalItems < 6 ? (
                 <button
                   disabled
                   className="w-full flex items-center justify-center gap-2 rounded-xl bg-secondary px-4 py-3.5 text-[16px] font-bold text-muted-foreground shadow-sm cursor-not-allowed"
                 >
-                  Minimal order 12 pcs
+                  Minimal order 6 pcs
                 </button>
               ) : (
                 <Link
