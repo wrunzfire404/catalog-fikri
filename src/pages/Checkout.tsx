@@ -74,7 +74,7 @@ export default function Checkout() {
     if (!customer.kabupaten.trim()) errs.kabupaten = "Kabupaten wajib diisi";
     if (!customer.kecamatan.trim()) errs.kecamatan = "Kecamatan wajib diisi";
     if (!customer.noWa.trim()) errs.noWa = "No WA wajib diisi";
-    else if (!/^[0-9]+$/.test(customer.noWa.trim())) errs.noWa = "No WA harus angka";
+    else if (!/^\+?[0-9\s\-]+$/.test(customer.noWa.trim())) errs.noWa = "No WA tidak valid (gunakan angka atau +)";
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -282,7 +282,7 @@ export default function Checkout() {
                   label="No WhatsApp"
                   required
                   error={errors.noWa}
-                  placeholder="Contoh: 08123456789"
+                  placeholder="Contoh: 0812... atau +62812..."
                   value={customer.noWa}
                   onChange={set("noWa")}
                 />
