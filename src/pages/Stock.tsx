@@ -8,6 +8,7 @@ import { useCart } from "@/context/CartContext";
 import { useStore } from "@/context/StoreContext";
 import { usePopup } from "@/context/ToastContext";
 import { supabase } from "@/lib/supabase";
+import { mapProductRow } from "@/lib/store";
 
 export default function Stock() {
   const { cart, totalItems, addToCart, updateQty, removeItem } = useCart();
@@ -26,20 +27,7 @@ export default function Stock() {
       .order("created_at", { ascending: false })
       .then(({ data, error }) => {
         if (!error && data) {
-          return data.map((row: Record<string, unknown>) => ({
-            slug: row.slug as string,
-            code: row.code as string,
-            name: row.name as string,
-            ld: (row.ld as string) || "",
-            pj: (row.pj as string) || "",
-            price: row.price as number,
-            note: (row.note as string) || undefined,
-            image: (row.image as string) || undefined,
-            variants: Array.isArray(row.variants) ? (row.variants as Product["variants"]) : undefined,
-            featured: (row.featured as boolean) || false,
-            isHidden: (row.is_hidden as boolean) || false,
-            minOrder: typeof row.min_order === "number" ? row.min_order : undefined,
-          })) as Product[];
+          return data.map((row: Record<string, unknown>) => mapProductRow(row));
         }
         return [] as Product[];
       }).then(products => products.filter(p => !p.isHidden));
@@ -119,16 +107,17 @@ export default function Stock() {
         <ProductModal
           product={selectedProduct}
           onClose={() => setSelectedProduct(null)}
-          onAddToCart={(variant, qty) => {
-            addToCart(selectedProduct, variant, qty);
+          onAddToCart={(variant, size, qty) => {
+            addToCart(selectedProduct, variant, size, qty);
             const currentProduct = selectedProduct;
             const name = selectedProduct.name;
+            const sizeLabel = size ? ` - Ukuran ${size.name}` : "";
             setSelectedProduct(null);
             // Fetch featured & show popup with rekomendasi
             fetchFeatured().then((featuredProducts) => {
               // Exclude product yg barusan ditambahin
               const recs = featuredProducts.filter((p) => p.slug !== selectedProduct.slug);
-              showPopup(`${name} berhasil ditambahkan (${qty} pcs)`, {
+              showPopup(`${name}${sizeLabel} berhasil ditambahkan (${qty} pcs)`, {
                 action: { label: "Lanjut Belanja", onClick: () => setTimeout(() => setSelectedProduct(currentProduct), 300) },
                 secondary: { label: "Lihat Keranjang", onClick: () => setIsCartOpen(true) },
                 featured: recs,

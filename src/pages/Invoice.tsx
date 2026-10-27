@@ -198,22 +198,31 @@ export default function Invoice() {
                     </tr>
                   </thead>
                   <tbody>
-                    {cart.map((item, idx) => (
-                      <tr key={idx} className="break-inside-avoid" style={{ borderBottom: "1px solid #e5e7eb" }}>
-                        <td className="py-2 px-2 text-xs sm:text-sm" style={{ color: "#4b5563" }}>{idx + 1}</td>
-                        <td className="py-2 px-2 text-xs sm:text-sm font-medium" style={{ color: "#1f2937" }}>
-                          {item.product.name}
-                          {item.variant?.color && item.variant.color !== item.product.name && (
-                            <span className="font-normal inline-block ml-1" style={{ color: "#6b7280" }}>
-                              (Warna: {item.variant.color})
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-2 px-2 text-xs sm:text-sm text-center" style={{ color: "#4b5563" }}>{item.quantity}</td>
-                        <td className="py-2 px-2 text-xs sm:text-sm text-right" style={{ color: "#4b5563" }}>{formatRupiah(item.product.price)}</td>
-                        <td className="py-2 px-2 text-xs sm:text-sm font-semibold text-right" style={{ color: "#1f2937" }}>{formatRupiah(item.product.price * item.quantity)}</td>
-                      </tr>
-                    ))}
+                    {cart.map((item, idx) => {
+                      const itemPrice = item.size?.price || item.product.price;
+                      const hasDetail = (item.variant?.color && item.variant.color !== item.product.name) || item.size?.name;
+                      return (
+                        <tr key={idx} className="break-inside-avoid" style={{ borderBottom: "1px solid #e5e7eb" }}>
+                          <td className="py-2 px-2 text-xs sm:text-sm" style={{ color: "#4b5563" }}>{idx + 1}</td>
+                          <td className="py-2 px-2 text-xs sm:text-sm font-medium" style={{ color: "#1f2937" }}>
+                            {item.product.name}
+                            {hasDetail && (
+                              <span className="font-normal inline-block ml-1" style={{ color: "#6b7280" }}>
+                                (
+                                {[
+                                  item.variant?.color && item.variant.color !== item.product.name ? `Warna: ${item.variant.color}` : null,
+                                  item.size?.name ? `Ukuran: ${item.size.name}` : null,
+                                ].filter(Boolean).join(", ")}
+                                )
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-2 px-2 text-xs sm:text-sm text-center" style={{ color: "#4b5563" }}>{item.quantity}</td>
+                          <td className="py-2 px-2 text-xs sm:text-sm text-right" style={{ color: "#4b5563" }}>{formatRupiah(itemPrice)}</td>
+                          <td className="py-2 px-2 text-xs sm:text-sm font-semibold text-right" style={{ color: "#1f2937" }}>{formatRupiah(itemPrice * item.quantity)}</td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

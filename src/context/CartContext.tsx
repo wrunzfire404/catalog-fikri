@@ -1,12 +1,12 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { calculateCartTotals, type CartItem, type Product, type ProductVariant } from "@/lib/products";
+import { calculateCartTotals, type CartItem, type Product, type ProductVariant, type ProductSize } from "@/lib/products";
 
 type CartContextValue = {
   cart: CartItem[];
   totalItems: number;
   totalPrice: number;
   discountPerItem: number;
-  addToCart: (product: Product, variant: ProductVariant | null, quantity: number) => void;
+  addToCart: (product: Product, variant: ProductVariant | null, size: ProductSize | null, quantity: number) => void;
   updateQty: (index: number, qty: number) => void;
   removeItem: (index: number) => void;
   clearCart: () => void;
@@ -37,17 +37,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [cart]);
 
-  const addToCart = (product: Product, variant: ProductVariant | null, quantity: number) => {
+  const addToCart = (product: Product, variant: ProductVariant | null, size: ProductSize | null, quantity: number) => {
     setCart((prev) => {
       const existingIndex = prev.findIndex(
-        (item) => item.product.slug === product.slug && item.variant?.slug === variant?.slug
+        (item) =>
+          item.product.slug === product.slug &&
+          item.variant?.slug === variant?.slug &&
+          item.size?.name === size?.name
       );
       if (existingIndex >= 0) {
         const next = [...prev];
         next[existingIndex] = { ...next[existingIndex], quantity: next[existingIndex].quantity + quantity };
         return next;
       }
-      return [...prev, { product, variant, quantity }];
+      return [...prev, { product, variant, size, quantity }];
     });
   };
 

@@ -62,8 +62,13 @@ export default function Cart() {
                         <h4 className="text-[15px] font-semibold text-foreground">
                           {item.product.code}. {item.product.name}
                         </h4>
-                        {item.variant?.color && item.variant.color !== item.product.name && (
-                          <p className="text-[12px] text-muted-foreground mt-0.5">Warna: {item.variant.color}</p>
+                        {((item.variant?.color && item.variant.color !== item.product.name) || item.size?.name) && (
+                          <p className="text-[12px] text-muted-foreground mt-0.5">
+                            {[
+                              item.variant?.color && item.variant.color !== item.product.name ? `Warna: ${item.variant.color}` : null,
+                              item.size?.name ? `Ukuran: ${item.size.name}` : null,
+                            ].filter(Boolean).join(" • ")}
+                          </p>
                         )}
                       </div>
                       <button
@@ -74,7 +79,7 @@ export default function Cart() {
                       </button>
                     </div>
                     <div className="flex items-center justify-between pt-2">
-                      <p className="text-[15px] font-bold text-primary">{formatRupiah(item.product.price)}</p>
+                      <p className="text-[15px] font-bold text-primary">{formatRupiah(item.size?.price || item.product.price)}</p>
                       <div className="flex items-center rounded-lg border border-border p-0.5 bg-secondary/30">
                         <button
                           onClick={() => updateQty(index, item.quantity - 1)}

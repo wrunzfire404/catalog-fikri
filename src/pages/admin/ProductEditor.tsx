@@ -5,6 +5,7 @@ import { supabase, uploadImage } from "@/lib/supabase";
 import { slugify, type Product, type ProductVariant } from "@/lib/products";
 
 type DraftVariant = { slug: string; color: string; image: string; stock: string; isHidden?: boolean };
+type DraftSize = { name: string; price: string; ld: string; pj: string; stock: string; isHidden?: boolean };
 
 type Draft = {
   slug: string;
@@ -18,11 +19,12 @@ type Draft = {
   stock: string;
   minOrder: string;
   variants: DraftVariant[];
+  sizes: DraftSize[];
 };
 
 function toDraft(product: Product | null): Draft {
   if (!product) {
-    return { slug: "", code: "", name: "", ld: "", pj: "", price: "", note: "", image: "", stock: "", minOrder: "", variants: [] };
+    return { slug: "", code: "", name: "", ld: "", pj: "", price: "", note: "", image: "", stock: "", minOrder: "", variants: [], sizes: [] };
   }
   return {
     slug: product.slug,
@@ -36,6 +38,16 @@ function toDraft(product: Product | null): Draft {
     stock: product.stock !== undefined ? String(product.stock) : "",
     minOrder: product.minOrder !== undefined ? String(product.minOrder) : "",
     variants: product.variants ? product.variants.map((v) => ({ ...v, stock: v.stock !== undefined ? String(v.stock) : "" })) : [],
+    sizes: product.sizes
+      ? product.sizes.map((s) => ({
+          name: s.name,
+          price: s.price !== undefined ? String(s.price) : "",
+          ld: s.ld ?? "",
+          pj: s.pj ?? "",
+          stock: s.stock !== undefined ? String(s.stock) : "",
+          isHidden: s.isHidden,
+        }))
+      : [],
   };
 }
 
@@ -96,6 +108,25 @@ export default function ProductEditor({ product, onClose }: { product: Product |
     setDraft((prev) => ({ ...prev, variants: prev.variants.filter((_, i) => i !== index) }));
   };
 
+  const addSize = () => {
+    setDraft((prev) => ({
+      ...prev,
+      sizes: [...prev.sizes, { name: "", price: "", ld: "", pj: "", stock: "" }],
+    }));
+  };
+
+  const updateSize = (index: number, patch: Partial<DraftSize>) => {
+    setDraft((prev) => {
+      const sizes = [...prev.sizes];
+      sizes[index] = { ...sizes[index], ...patch };
+      return { ...prev, sizes };
+    });
+  };
+
+  const removeSize = (index: number) => {
+    setDraft((prev) => ({ ...prev, sizes: prev.sizes.filter((_, i) => i !== index) }));
+  };
+
   const handleSave = async () => {
     setError("");
     if (!draft.name.trim()) return setError("Nama produk wajib diisi.");
@@ -119,6 +150,17 @@ export default function ProductEditor({ product, onClose }: { product: Product |
         isHidden: v.isHidden,
       }));
 
+    const cleanSizes = draft.sizes
+      .filter((s) => s.name.trim())
+      .map((s) => ({
+        name: s.name.trim(),
+        price: s.price.trim() ? parseInt(s.price.replace(/[^0-9]/g, ""), 10) : undefined,
+        ld: s.ld.trim() || undefined,
+        pj: s.pj.trim() || undefined,
+        stock: s.stock.trim() ? parseInt(s.stock.replace(/[^0-9]/g, ""), 10) : undefined,
+        isHidden: s.isHidden,
+      }));
+
     const finalProduct: Product = {
       slug,
       code: draft.code.trim().toUpperCase(),
@@ -131,6 +173,7 @@ export default function ProductEditor({ product, onClose }: { product: Product |
       stock: draft.stock.trim() && cleanVariants.length === 0 ? parseInt(draft.stock.replace(/[^0-9]/g, ""), 10) : undefined,
       minOrder: draft.minOrder.trim() ? parseInt(draft.minOrder.replace(/[^0-9]/g, ""), 10) : undefined,
       variants: cleanVariants.length ? cleanVariants : undefined,
+      sizes: cleanSizes.length ? cleanSizes : undefined,
     };
 
     setSaving(true);
@@ -274,6 +317,92 @@ export default function ProductEditor({ product, onClose }: { product: Product |
                     >
                       <Trash2 className="w-[18px] h-[18px]" />
                     </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Sizes */}
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <label className="text-[13px] font-semibold text-foreground block">Variasi Ukuran (opsional)</label>
+                <p className="text-[11px] text-muted-foreground">Contoh: S, M, L, XL atau All Size</p>
+              </div>
+              <button
+                type="button"
+                onClick={addSize}
+                className="inline-flex items-center gap-1 text-[13px] font-semibold text-primary hover:underline"
+              >
+                <Plus className="w-4 h-4" />
+                Tambah Ukuran
+              </button>
+            </div>
+
+            {draft.sizes.length === 0 ? (
+              <p className="text-[13px] text-muted-foreground bg-secondary/40 rounded-lg px-3 py-3 text-center">
+                Belum ada variasi ukuran. Produk akan menggunakan ukuran & harga utama di atas.
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {draft.sizes.map((size, index) => (
+                  <div key={index} className="flex flex-col sm:flex-row sm:items-center gap-2 rounded-lg border border-border p-2.5 bg-secondary/10">
+                    <div className="flex-1 min-w-0">
+                      <input
+                        value={size.name}
+                        onChange={(e) => updateSize(index, { name: e.target.value })}
+                        placeholder="Nama ukuran (misal: S / M / XL)"
+                        className="w-full rounded-lg border border-border bg-white px-3 py-1.5 text-[13px] font-semibold outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+                      />
+                    </div>
+                    <div className="grid grid-cols-3 sm:flex items-center gap-2">
+                      <div className="sm:w-28">
+                        <input
+                          value={size.price}
+                          onChange={(e) => updateSize(index, { price: e.target.value.replace(/[^0-9]/g, "") })}
+                          placeholder="Harga (Rp)"
+                          title="Harga khusus ukuran (kosongkan jika sama dgn harga produk)"
+                          className="w-full rounded-lg border border-border bg-white px-2 py-1.5 text-[13px] text-center outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+                        />
+                      </div>
+                      <div className="sm:w-16">
+                        <input
+                          value={size.ld}
+                          onChange={(e) => updateSize(index, { ld: e.target.value })}
+                          placeholder="LD"
+                          title="Lingkar Dada (opsional)"
+                          className="w-full rounded-lg border border-border bg-white px-2 py-1.5 text-[13px] text-center outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+                        />
+                      </div>
+                      <div className="sm:w-16">
+                        <input
+                          value={size.pj}
+                          onChange={(e) => updateSize(index, { pj: e.target.value })}
+                          placeholder="PJ"
+                          title="Panjang Baju (opsional)"
+                          className="w-full rounded-lg border border-border bg-white px-2 py-1.5 text-[13px] text-center outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+                        />
+                      </div>
+                      <div className="flex items-center gap-1 col-span-3 sm:col-span-1 justify-end sm:justify-start">
+                        <button
+                          type="button"
+                          onClick={() => updateSize(index, { isHidden: !size.isHidden })}
+                          className={`grid h-8 w-8 place-items-center rounded-lg transition shrink-0 ${size.isHidden ? 'text-amber-500 hover:bg-amber-500/10' : 'text-muted-foreground hover:bg-secondary'}`}
+                          title={size.isHidden ? "Ukuran disembunyikan" : "Ukuran terlihat"}
+                        >
+                          {size.isHidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => removeSize(index)}
+                          className="grid h-8 w-8 place-items-center rounded-lg text-muted-foreground hover:bg-destructive/5 hover:text-destructive transition shrink-0"
+                          title="Hapus ukuran"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>

@@ -5,11 +5,21 @@ import {
   getProductGallery,
   type Product,
   type ProductVariant,
+  type ProductSize,
 } from "@/lib/products";
 
 export function ProductCard({ product, onSelect }: { product: Product; onSelect: () => void }) {
   const gallery = getProductGallery(product);
   const hasVariants = (product.variants?.filter((v) => !v.isHidden).length ?? 0) > 0;
+  const visibleSizes = product.sizes?.filter((s) => !s.isHidden) ?? [];
+  const hasSizes = visibleSizes.length > 0;
+
+  const prices = hasSizes ? visibleSizes.map((s) => s.price || product.price) : [product.price];
+  const minPrice = Math.min(...prices);
+  const maxPrice = Math.max(...prices);
+  const priceDisplay = minPrice === maxPrice
+    ? formatRupiah(minPrice)
+    : `${formatRupiah(minPrice)} - ${formatRupiah(maxPrice)}`;
 
   return (
     <div className="group flex flex-col overflow-hidden bg-white rounded-2xl shadow-sm border border-border/40">
@@ -21,9 +31,12 @@ export function ProductCard({ product, onSelect }: { product: Product; onSelect:
           <PlaceholderArt name={product.name} />
         )}
 
-        {hasVariants && (
+        {(hasVariants || hasSizes) && (
           <span className="absolute top-3 left-3 rounded-full bg-white/90 backdrop-blur-md px-3 py-1 text-[11px] font-semibold text-primary shadow-sm border border-border/30">
-            {gallery.length} Warna
+            {[
+              hasVariants ? `${gallery.length} Warna` : null,
+              hasSizes ? `${visibleSizes.length} Ukuran` : null,
+            ].filter(Boolean).join(" • ")}
           </span>
         )}
 
@@ -43,14 +56,14 @@ export function ProductCard({ product, onSelect }: { product: Product; onSelect:
         </div>
 
         <div className="mt-auto">
-          <p className="text-[16px] font-bold text-primary">{formatRupiah(product.price)}</p>
+          <p className="text-[16px] font-bold text-primary">{priceDisplay}</p>
         </div>
 
         <button
           onClick={onSelect}
           className="mt-3 w-full rounded-xl border border-border py-2.5 text-[13px] font-semibold text-foreground transition-all duration-300 hover:bg-primary hover:text-white hover:border-primary uppercase tracking-wider"
         >
-          {hasVariants ? "Pilih Varian" : "Beli Sekarang"}
+          {hasVariants || hasSizes ? "Pilih Varian" : "Beli Sekarang"}
         </button>
       </div>
     </div>
@@ -64,16 +77,21 @@ export function ProductModal({
 }: {
   product: Product;
   onClose: () => void;
-  onAddToCart: (variant: ProductVariant | null, qty: number) => void;
+  onAddToCart: (variant: ProductVariant | null, size: ProductSize | null, qty: number) => void;
 }) {
   const gallery = getProductGallery(product);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [activeSizeIndex, setActiveSizeIndex] = useState(0);
   const minQty = product.minOrder ?? 2;
   const [quantity, setQuantity] = useState(minQty);
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const activeVariant = gallery[activeIndex] ?? null;
   const hasVariants = (product.variants?.filter((v) => !v.isHidden).length ?? 0) > 0;
+  const visibleSizes = product.sizes?.filter((s) => !s.isHidden) ?? [];
+  const hasSizes = visibleSizes.length > 0;
+  const activeSize = hasSizes ? visibleSizes[activeSizeIndex] ?? null : null;
+  const currentPrice = activeSize?.price || product.price;
   const hasMultipleImages = gallery.length > 1;
 
   const scrollToIndex = (index: number) => {
@@ -155,7 +173,7 @@ export function ProductModal({
           <div className="mb-4">
             <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">Kode {product.code}</p>
             <h2 className="text-xl font-bold text-foreground font-serif leading-tight">{product.name}</h2>
-            <p className="mt-2 text-2xl font-bold text-primary">{formatRupiah(product.price)}</p>
+            <p className="mt-2 text-2xl font-bold text-primary">{formatRupiah(currentPrice)}</p>
           </div>
 
           {hasVariants && (
@@ -177,6 +195,37 @@ export function ProductModal({
                       }`}
                     >
                       {variant.color}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {hasSizes && (
+            <div className="mb-6">
+              <p className="text-sm font-semibold text-foreground mb-3">
+                Pilih Ukuran: <span className="text-muted-foreground font-normal ml-1">{activeSize?.name}</span>
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {visibleSizes.map((size, index) => {
+                  const isActive = index === activeSizeIndex;
+                  return (
+                    <button
+                      key={size.name}
+                      onClick={() => setActiveSizeIndex(index)}
+                      className={`rounded-lg border px-4 py-2 text-[13px] font-medium transition-all ${
+                        isActive
+                          ? "border-primary bg-primary/5 text-primary ring-1 ring-primary"
+                          : "border-border bg-white text-muted-foreground hover:border-primary/50"
+                      }`}
+                    >
+                      <span>{size.name}</span>
+                      {size.price && size.price !== product.price ? (
+                        <span className="text-[11px] font-normal block opacity-80 mt-0.5">
+                          {formatRupiah(size.price)}
+                        </span>
+                      ) : null}
                     </button>
                   );
                 })}
@@ -219,20 +268,22 @@ export function ProductModal({
           </div>
 
           <div className="mb-2 rounded-xl bg-secondary/50 p-4 border border-border/50">
-            <h3 className="text-[13px] font-bold text-foreground mb-2">Detail Ukuran</h3>
+            <h3 className="text-[13px] font-bold text-foreground mb-2">
+              Detail Ukuran {activeSize ? `(${activeSize.name})` : ""}
+            </h3>
             <ul className="text-[13px] text-muted-foreground space-y-1">
-              <li>Lingkar Dada (LD): <span className="font-medium text-foreground">{product.ld} cm</span></li>
-              <li>Panjang Baju (PJ): <span className="font-medium text-foreground">{product.pj} cm</span></li>
+              <li>Lingkar Dada (LD): <span className="font-medium text-foreground">{activeSize?.ld || product.ld} cm</span></li>
+              <li>Panjang Baju (PJ): <span className="font-medium text-foreground">{activeSize?.pj || product.pj} cm</span></li>
             </ul>
             {product.note && <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground border-t border-border/50 pt-3">{product.note}</p>}
           </div>
           <div className="mt-4">
             <button
-              onClick={() => onAddToCart(activeVariant, quantity)}
+              onClick={() => onAddToCart(activeVariant, activeSize, quantity)}
               className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3.5 text-[15px] font-bold text-white shadow-md transition hover:bg-primary/90 active:scale-[0.98]"
             >
               <ShoppingCart className="w-5 h-5" />
-              Tambah ke Keranjang — {formatRupiah(product.price * quantity)}
+              Tambah ke Keranjang — {formatRupiah(currentPrice * quantity)}
             </button>
           </div>
         </div>

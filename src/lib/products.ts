@@ -6,6 +6,15 @@ export type ProductVariant = {
   isHidden?: boolean;
 };
 
+export type ProductSize = {
+  name: string;
+  price?: number;
+  ld?: string;
+  pj?: string;
+  stock?: number;
+  isHidden?: boolean;
+};
+
 export type Product = {
   slug: string;
   code: string;
@@ -16,6 +25,7 @@ export type Product = {
   note?: string;
   image?: string;
   variants?: ProductVariant[];
+  sizes?: ProductSize[];
   featured?: boolean;
   isHidden?: boolean;
   stock?: number;
@@ -94,6 +104,7 @@ export function formatRupiah(n: number) {
 export type CartItem = {
   product: Product;
   variant: ProductVariant | null;
+  size?: ProductSize | null;
   quantity: number;
 };
 
@@ -145,7 +156,8 @@ export function calculateCartTotals(cart: CartItem[]) {
   }
 
   const totalPrice = cart.reduce((acc, item) => {
-    const discountedPrice = Math.max(0, item.product.price - discountPerItem);
+    const itemPrice = item.size?.price || item.product.price;
+    const discountedPrice = Math.max(0, itemPrice - discountPerItem);
     return acc + discountedPrice * item.quantity;
   }, 0);
 
@@ -176,15 +188,21 @@ export function waCheckoutLink(cart: CartItem[], customer: CustomerInfo, setting
   text += `📦 *Detail Pesanan:*\n`;
   text += `──────────────────\n`;
   cart.forEach((item, index) => {
-    const variantText = item.variant && item.variant.color !== item.product.name
-      ? ` — Warna *${item.variant.color}*`
-      : "";
-    const subtotal = item.product.price * item.quantity;
+    const details: string[] = [];
+    if (item.variant && item.variant.color !== item.product.name) {
+      details.push(`Warna *${item.variant.color}*`);
+    }
+    if (item.size?.name) {
+      details.push(`Ukuran *${item.size.name}*`);
+    }
+    const variantText = details.length > 0 ? ` — ${details.join(", ")}` : "";
+    const itemPrice = item.size?.price || item.product.price;
+    const subtotal = itemPrice * item.quantity;
     text += `${index + 1}. ${item.product.code}. *${item.product.name}*${variantText}\n`;
-    text += `   ${item.quantity} x ${formatRupiah(item.product.price)} = ${formatRupiah(subtotal)}\n`;
+    text += `   ${item.quantity} x ${formatRupiah(itemPrice)} = ${formatRupiah(subtotal)}\n`;
   });
   text += `──────────────────\n`;
-  text += `🛒 *Subtotal (${totalItems} Pcs): ${formatRupiah(cart.reduce((a, b) => a + b.product.price * b.quantity, 0))}*\n`;
+  text += `🛒 *Subtotal (${totalItems} Pcs): ${formatRupiah(cart.reduce((a, b) => a + (b.size?.price || b.product.price) * b.quantity, 0))}*\n`;
   if (discountPerItem > 0) {
     text += `🔥 *Diskon Grosir (${formatRupiah(discountPerItem)}/pc): -${formatRupiah(discountPerItem * totalItems)}*\n`;
   }

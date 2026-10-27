@@ -8,6 +8,39 @@ import {
   type CartItem,
 } from "./products";
 
+export function mapProductRow(row: Record<string, unknown>): Product {
+  const rawNote = (row.note as string) || "";
+  let cleanNote: string | undefined = rawNote || undefined;
+  let sizes: Product["sizes"] = Array.isArray(row.sizes) ? (row.sizes as Product["sizes"]) : undefined;
+
+  if (!sizes && rawNote.includes("__SIZES__:")) {
+    const parts = rawNote.split("__SIZES__:");
+    cleanNote = parts[0].trim() || undefined;
+    try {
+      sizes = JSON.parse(parts[1].trim());
+    } catch (e) {
+      console.error("Failed to parse sizes", e);
+    }
+  }
+
+  return {
+    slug: row.slug as string,
+    code: row.code as string,
+    name: row.name as string,
+    ld: (row.ld as string) || "",
+    pj: (row.pj as string) || "",
+    price: row.price as number,
+    note: cleanNote,
+    image: (row.image as string) || undefined,
+    variants: Array.isArray(row.variants) ? (row.variants as Product["variants"]) : undefined,
+    sizes: sizes && sizes.length > 0 ? sizes : undefined,
+    featured: (row.featured as boolean) || false,
+    isHidden: (row.is_hidden as boolean) || false,
+    stock: typeof row.stock === "number" ? row.stock : undefined,
+    minOrder: typeof row.min_order === "number" ? row.min_order : undefined,
+  };
+}
+
 // ---- Products ----
 export async function getAllProducts(): Promise<Product[]> {
   const { data, error } = await supabase
@@ -17,21 +50,7 @@ export async function getAllProducts(): Promise<Product[]> {
 
   if (error || !data || data.length === 0) return defaultProducts;
 
-  return data.map((row: Record<string, unknown>) => ({
-    slug: row.slug as string,
-    code: row.code as string,
-    name: row.name as string,
-    ld: (row.ld as string) || "",
-    pj: (row.pj as string) || "",
-    price: row.price as number,
-    note: (row.note as string) || undefined,
-    image: (row.image as string) || undefined,
-    variants: Array.isArray(row.variants) ? (row.variants as Product["variants"]) : undefined,
-    featured: (row.featured as boolean) || false,
-    isHidden: (row.is_hidden as boolean) || false,
-    stock: typeof row.stock === "number" ? row.stock : undefined,
-    minOrder: typeof row.min_order === "number" ? row.min_order : undefined,
-  }));
+  return data.map((row: Record<string, unknown>) => mapProductRow(row));
 }
 
 export async function saveProduct(product: Product) {
@@ -41,14 +60,20 @@ export async function saveProduct(product: Product) {
     .eq("slug", product.slug)
     .maybeSingle();
 
-  const payload = {
+  let noteToSave = product.note || null;
+  if (product.sizes && product.sizes.length > 0) {
+    const cleanNote = product.note ? product.note.trim() : "";
+    noteToSave = `${cleanNote}\n__SIZES__:${JSON.stringify(product.sizes)}`.trim();
+  }
+
+  const payload: Record<string, unknown> = {
     slug: product.slug,
     code: product.code,
     name: product.name,
     ld: product.ld,
     pj: product.pj,
     price: product.price,
-    note: product.note || null,
+    note: noteToSave,
     image: product.image || null,
     variants: product.variants || [],
     featured: product.featured || false,

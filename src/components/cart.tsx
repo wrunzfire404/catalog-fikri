@@ -58,7 +58,7 @@ export function CartDrawer({
             <div className="space-y-4">
               {cart.map((item, index) => (
                 <div
-                  key={`${item.product.slug}-${item.variant?.slug}-${index}`}
+                  key={`${item.product.slug}-${item.variant?.slug || "def"}-${item.size?.name || "def"}-${index}`}
                   className="flex gap-4 bg-white p-3 rounded-xl shadow-sm border border-border/50"
                 >
                   <div className="w-20 h-24 shrink-0 rounded-lg overflow-hidden bg-secondary">
@@ -78,9 +78,12 @@ export function CartDrawer({
                         <h4 className="text-[14px] font-semibold text-foreground line-clamp-1">
                           {item.product.name}
                         </h4>
-                        {item.variant?.color && item.variant.color !== item.product.name && (
+                        {((item.variant?.color && item.variant.color !== item.product.name) || item.size?.name) && (
                           <p className="text-[12px] text-muted-foreground mt-0.5">
-                            Warna: {item.variant.color}
+                            {[
+                              item.variant?.color && item.variant.color !== item.product.name ? `Warna: ${item.variant.color}` : null,
+                              item.size?.name ? `Ukuran: ${item.size.name}` : null,
+                            ].filter(Boolean).join(" • ")}
                           </p>
                         )}
                       </div>
@@ -93,7 +96,7 @@ export function CartDrawer({
                     </div>
                     <div className="mt-auto flex items-center justify-between pt-2">
                       <p className="text-[14px] font-bold text-primary">
-                        {formatRupiah(item.product.price)}
+                        {formatRupiah(item.size?.price || item.product.price)}
                       </p>
                       <div className="flex items-center rounded-lg border border-border p-0.5 bg-secondary/30">
                         <button

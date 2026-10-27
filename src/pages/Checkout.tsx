@@ -156,13 +156,18 @@ export default function Checkout() {
                         <p className="text-[13px] font-semibold text-foreground line-clamp-1">
                           {item.product.code}. {item.product.name}
                         </p>
-                        {item.variant?.color && item.variant.color !== item.product.name && (
-                          <p className="text-[11px] text-muted-foreground">Warna: {item.variant.color}</p>
+                        {((item.variant?.color && item.variant.color !== item.product.name) || item.size?.name) && (
+                          <p className="text-[11px] text-muted-foreground">
+                            {[
+                              item.variant?.color && item.variant.color !== item.product.name ? `Warna: ${item.variant.color}` : null,
+                              item.size?.name ? `Ukuran: ${item.size.name}` : null,
+                            ].filter(Boolean).join(" • ")}
+                          </p>
                         )}
                       </div>
                       <div className="flex items-center justify-between">
                         <p className="text-[13px] font-bold text-primary">
-                          {formatRupiah(item.product.price)}
+                          {formatRupiah(item.size?.price || item.product.price)}
                         </p>
                         <div className="flex items-center gap-1">
                           <button
@@ -207,7 +212,7 @@ export default function Checkout() {
               <div className="p-5 border-t border-border bg-secondary/20 space-y-2">
                 <div className="flex justify-between text-[14px]">
                   <span className="text-muted-foreground">Subtotal ({totalItems} item)</span>
-                  <span className="font-semibold">{formatRupiah(cart.reduce((a, b) => a + b.product.price * b.quantity, 0))}</span>
+                  <span className="font-semibold">{formatRupiah(cart.reduce((a, b) => a + (b.size?.price || b.product.price) * b.quantity, 0))}</span>
                 </div>
                 {discountPerItem > 0 && (
                   <div className="flex justify-between text-[14px] text-green-600">
