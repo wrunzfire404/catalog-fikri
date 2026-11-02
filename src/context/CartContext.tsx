@@ -5,7 +5,9 @@ type CartContextValue = {
   cart: CartItem[];
   totalItems: number;
   totalPrice: number;
+  baseTotalPrice: number;
   discountPerItem: number;
+  surchargePerItem: number;
   addToCart: (product: Product, variant: ProductVariant | null, size: ProductSize | null, quantity: number) => void;
   updateQty: (index: number, qty: number) => void;
   removeItem: (index: number) => void;
@@ -73,10 +75,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = () => setCart([]);
 
-  const { totalItems, totalPrice, discountPerItem } = calculateCartTotals(cart);
+  const { totalItems, totalPrice, baseTotalPrice, discountPerItem, surchargePerItem } = calculateCartTotals(cart);
 
   return (
-    <CartContext.Provider value={{ cart, totalItems, totalPrice, discountPerItem, addToCart, updateQty, removeItem, clearCart }}>
+    <CartContext.Provider value={{ cart, totalItems, totalPrice, baseTotalPrice, discountPerItem, surchargePerItem, addToCart, updateQty, removeItem, clearCart }}>
       {children}
     </CartContext.Provider>
   );

@@ -146,8 +146,12 @@ export function slugify(text: string) {
 export function calculateCartTotals(cart: CartItem[]) {
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
   
+  let surchargePerItem = 0;
   let discountPerItem = 0;
-  if (totalItems >= 1000) {
+
+  if (totalItems > 0 && totalItems < 12) {
+    surchargePerItem = 5000;
+  } else if (totalItems >= 1000) {
     discountPerItem = 3000;
   } else if (totalItems >= 600) { // 50 lusin
     discountPerItem = 2500;
@@ -155,13 +159,18 @@ export function calculateCartTotals(cart: CartItem[]) {
     discountPerItem = 1500;
   }
 
-  const totalPrice = cart.reduce((acc, item) => {
+  const baseTotalPrice = cart.reduce((acc, item) => {
     const itemPrice = item.size?.price || item.product.price;
-    const discountedPrice = Math.max(0, itemPrice - discountPerItem);
-    return acc + discountedPrice * item.quantity;
+    return acc + itemPrice * item.quantity;
   }, 0);
 
-  return { totalItems, totalPrice, discountPerItem };
+  const totalPrice = cart.reduce((acc, item) => {
+    const itemPrice = item.size?.price || item.product.price;
+    const finalPrice = Math.max(0, itemPrice + surchargePerItem - discountPerItem);
+    return acc + finalPrice * item.quantity;
+  }, 0);
+
+  return { totalItems, totalPrice, baseTotalPrice, discountPerItem, surchargePerItem };
 }
 
 function getWhatsAppLink(phone: string, text: string) {
@@ -181,7 +190,7 @@ function getWhatsAppLink(phone: string, text: string) {
 }
 
 export function waCheckoutLink(cart: CartItem[], customer: CustomerInfo, settings: Settings) {
-  const { totalItems, totalPrice, discountPerItem } = calculateCartTotals(cart);
+  const { totalItems, totalPrice, baseTotalPrice, discountPerItem, surchargePerItem } = calculateCartTotals(cart);
 
   let text = `🛍️ *ORDER BARU — ${settings.shopName}*\n\n`;
 
@@ -196,13 +205,17 @@ export function waCheckoutLink(cart: CartItem[], customer: CustomerInfo, setting
       details.push(`Ukuran *${item.size.name}*`);
     }
     const variantText = details.length > 0 ? ` — ${details.join(", ")}` : "";
-    const itemPrice = item.size?.price || item.product.price;
-    const subtotal = itemPrice * item.quantity;
+    const basePrice = item.size?.price || item.product.price;
+    const finalItemPrice = basePrice + surchargePerItem - discountPerItem;
+    const subtotal = finalItemPrice * item.quantity;
     text += `${index + 1}. ${item.product.code}. *${item.product.name}*${variantText}\n`;
-    text += `   ${item.quantity} x ${formatRupiah(itemPrice)} = ${formatRupiah(subtotal)}\n`;
+    text += `   ${item.quantity} x ${formatRupiah(finalItemPrice)} = ${formatRupiah(subtotal)}\n`;
   });
   text += `──────────────────\n`;
-  text += `🛒 *Subtotal (${totalItems} Pcs): ${formatRupiah(cart.reduce((a, b) => a + (b.size?.price || b.product.price) * b.quantity, 0))}*\n`;
+  text += `🛒 *Subtotal (${totalItems} Pcs): ${formatRupiah(baseTotalPrice)}*\n`;
+  if (surchargePerItem > 0) {
+    text += `⚠️ *Tambahan Order < 12 pcs (+${formatRupiah(surchargePerItem)}/pc): +${formatRupiah(surchargePerItem * totalItems)}*\n`;
+  }
   if (discountPerItem > 0) {
     text += `🔥 *Diskon Grosir (${formatRupiah(discountPerItem)}/pc): -${formatRupiah(discountPerItem * totalItems)}*\n`;
   }

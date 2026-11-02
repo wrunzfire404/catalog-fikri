@@ -32,7 +32,7 @@ export default function Invoice() {
 
   if (!cart || !customer) return null;
 
-  const { totalItems, totalPrice, discountPerItem } = calculateCartTotals(cart);
+  const { totalItems, totalPrice, baseTotalPrice, discountPerItem, surchargePerItem } = calculateCartTotals(cart);
 
   const handlePrintAdmin = () => {
     // Mode admin: pecah ke ukuran A4 secara fisik dengan rapi
@@ -199,7 +199,7 @@ export default function Invoice() {
                   </thead>
                   <tbody>
                     {cart.map((item, idx) => {
-                      const itemPrice = item.size?.price || item.product.price;
+                      const itemPrice = (item.size?.price || item.product.price) + surchargePerItem;
                       const hasDetail = (item.variant?.color && item.variant.color !== item.product.name) || item.size?.name;
                       return (
                         <tr key={idx} className="break-inside-avoid" style={{ borderBottom: "1px solid #e5e7eb" }}>
@@ -228,13 +228,23 @@ export default function Invoice() {
               </div>
 
               <div className="flex sm:justify-end mb-8 sm:mb-10 break-inside-avoid">
-                <div className="w-full sm:w-[300px] rounded-lg overflow-hidden print:overflow-visible" style={{ border: "1px solid #e5e7eb" }}>
+                <div className="w-full sm:w-[320px] rounded-lg overflow-hidden print:overflow-visible" style={{ border: "1px solid #e5e7eb" }}>
                   <div className="flex justify-between px-4 py-3" style={{ backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb" }}>
                     <span className="text-xs sm:text-sm font-semibold" style={{ color: "#4b5563" }}>Total Item</span>
                     <span className="text-xs sm:text-sm font-bold" style={{ color: "#1f2937" }}>{totalItems} Pcs</span>
                   </div>
+                  <div className="flex justify-between px-4 py-3" style={{ backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb" }}>
+                    <span className="text-xs sm:text-sm font-semibold" style={{ color: "#4b5563" }}>Subtotal</span>
+                    <span className="text-xs sm:text-sm font-bold" style={{ color: "#1f2937" }}>{formatRupiah(baseTotalPrice)}</span>
+                  </div>
+                  {surchargePerItem > 0 && (
+                    <div className="flex justify-between px-4 py-3" style={{ backgroundColor: "#fef3c7", borderBottom: "1px solid #e5e7eb" }}>
+                      <span className="text-xs sm:text-sm font-semibold" style={{ color: "#b45309" }}>Tambahan &lt; 12 pcs (+{formatRupiah(surchargePerItem)}/item)</span>
+                      <span className="text-xs sm:text-sm font-bold" style={{ color: "#b45309" }}>+{formatRupiah(surchargePerItem * totalItems)}</span>
+                    </div>
+                  )}
                   {discountPerItem > 0 && (
-                    <div className="flex justify-between px-4 py-3" style={{ backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb" }}>
+                    <div className="flex justify-between px-4 py-3" style={{ backgroundColor: "#ecfdf5", borderBottom: "1px solid #e5e7eb" }}>
                       <span className="text-xs sm:text-sm font-semibold" style={{ color: "#059669" }}>Diskon Grosir ({formatRupiah(discountPerItem)}/item)</span>
                       <span className="text-xs sm:text-sm font-bold" style={{ color: "#059669" }}>-{formatRupiah(discountPerItem * totalItems)}</span>
                     </div>

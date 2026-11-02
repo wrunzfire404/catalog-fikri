@@ -6,7 +6,7 @@ import { useStore } from "@/context/StoreContext";
 import { PlaceholderArt } from "@/components/catalog";
 
 export default function Cart() {
-  const { cart, totalItems, totalPrice, updateQty, removeItem } = useCart();
+  const { cart, totalItems, totalPrice, surchargePerItem, updateQty, removeItem } = useCart();
   const { settings } = useStore();
 
   return (
@@ -79,7 +79,16 @@ export default function Cart() {
                       </button>
                     </div>
                     <div className="flex items-center justify-between pt-2">
-                      <p className="text-[15px] font-bold text-primary">{formatRupiah(item.size?.price || item.product.price)}</p>
+                      <div>
+                        <p className="text-[15px] font-bold text-primary">
+                          {formatRupiah((item.size?.price || item.product.price) + surchargePerItem)}
+                        </p>
+                        {surchargePerItem > 0 && (
+                          <span className="text-[10px] text-amber-600 font-medium block">
+                            (+Rp 5.000 / &lt;12 pcs)
+                          </span>
+                        )}
+                      </div>
                       <div className="flex items-center rounded-lg border border-border p-0.5 bg-secondary/30">
                         <button
                           onClick={() => updateQty(index, item.quantity - 1)}
@@ -123,6 +132,11 @@ export default function Cart() {
                   <span className="text-primary">{formatRupiah(totalPrice)}</span>
                 </div>
               </div>
+              {totalItems >= 6 && totalItems < 12 && (
+                <div className="rounded-xl bg-amber-50 border border-amber-200/80 p-3 text-[12px] text-amber-800 leading-tight">
+                  <span className="font-semibold">Order di bawah 12 pcs:</span> Dikenakan +Rp 5.000/item (+{formatRupiah(surchargePerItem * totalItems)}). Tambah {12 - totalItems} pcs lagi untuk harga grosir normal!
+                </div>
+              )}
               {totalItems < 6 ? (
                 <button
                   disabled

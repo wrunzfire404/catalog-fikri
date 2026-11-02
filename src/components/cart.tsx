@@ -14,7 +14,7 @@ export function CartDrawer({
   onUpdateQty: (index: number, qty: number) => void;
   onRemoveItem: (index: number) => void;
 }) {
-  const { totalItems, totalPrice } = calculateCartTotals(cart);
+  const { totalItems, totalPrice, surchargePerItem } = calculateCartTotals(cart);
 
   return (
     <div
@@ -95,9 +95,16 @@ export function CartDrawer({
                       </button>
                     </div>
                     <div className="mt-auto flex items-center justify-between pt-2">
-                      <p className="text-[14px] font-bold text-primary">
-                        {formatRupiah(item.size?.price || item.product.price)}
-                      </p>
+                      <div>
+                        <p className="text-[14px] font-bold text-primary">
+                          {formatRupiah((item.size?.price || item.product.price) + surchargePerItem)}
+                        </p>
+                        {surchargePerItem > 0 && (
+                          <span className="text-[10px] text-amber-600 font-medium block">
+                            (+Rp 5.000 / &lt;12 pcs)
+                          </span>
+                        )}
+                      </div>
                       <div className="flex items-center rounded-lg border border-border p-0.5 bg-secondary/30">
                         <button
                           onClick={() => onUpdateQty(index, item.quantity - 1)}
@@ -146,6 +153,11 @@ export function CartDrawer({
                 <span className="text-primary">{formatRupiah(totalPrice)}</span>
               </div>
             </div>
+            {totalItems >= 6 && totalItems < 12 && (
+              <div className="rounded-xl bg-amber-50 border border-amber-200/80 p-2.5 text-[11px] text-amber-800 leading-tight">
+                <span className="font-semibold">Order &lt; 12 pcs:</span> +Rp 5.000/item (+{formatRupiah(surchargePerItem * totalItems)}). Tambah {12 - totalItems} pcs lagi untuk harga grosir normal!
+              </div>
+            )}
             {totalItems < 6 ? (
               <button
                 disabled

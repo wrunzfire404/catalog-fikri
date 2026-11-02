@@ -32,7 +32,7 @@ const EMPTY_CUSTOMER: CustomerInfo = {
 
 export default function Checkout() {
   const navigate = useNavigate();
-  const { cart, totalItems, totalPrice, discountPerItem, updateQty, removeItem, clearCart } = useCart();
+  const { cart, totalItems, totalPrice, baseTotalPrice, surchargePerItem, discountPerItem, updateQty, removeItem, clearCart } = useCart();
   const { settings } = useStore();
   const [customer, setCustomer] = useState<CustomerInfo>(EMPTY_CUSTOMER);
   const [errors, setErrors] = useState<Partial<Record<keyof CustomerInfo, string>>>({});
@@ -166,9 +166,16 @@ export default function Checkout() {
                         )}
                       </div>
                       <div className="flex items-center justify-between">
-                        <p className="text-[13px] font-bold text-primary">
-                          {formatRupiah(item.size?.price || item.product.price)}
-                        </p>
+                        <div>
+                          <p className="text-[13px] font-bold text-primary">
+                            {formatRupiah((item.size?.price || item.product.price) + surchargePerItem)}
+                          </p>
+                          {surchargePerItem > 0 && (
+                            <span className="text-[10px] text-amber-600 font-medium block">
+                              (+Rp 5.000 / &lt;12 pcs)
+                            </span>
+                          )}
+                        </div>
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => updateQty(index, item.quantity - 1)}
@@ -212,8 +219,14 @@ export default function Checkout() {
               <div className="p-5 border-t border-border bg-secondary/20 space-y-2">
                 <div className="flex justify-between text-[14px]">
                   <span className="text-muted-foreground">Subtotal ({totalItems} item)</span>
-                  <span className="font-semibold">{formatRupiah(cart.reduce((a, b) => a + (b.size?.price || b.product.price) * b.quantity, 0))}</span>
+                  <span className="font-semibold">{formatRupiah(baseTotalPrice)}</span>
                 </div>
+                {surchargePerItem > 0 && (
+                  <div className="flex justify-between text-[14px] text-amber-600 font-medium">
+                    <span>Tambahan Order &lt; 12 pcs (+{formatRupiah(surchargePerItem)}/item)</span>
+                    <span className="font-semibold">+{formatRupiah(surchargePerItem * totalItems)}</span>
+                  </div>
+                )}
                 {discountPerItem > 0 && (
                   <div className="flex justify-between text-[14px] text-green-600">
                     <span>Diskon Grosir ({formatRupiah(discountPerItem)}/item)</span>
@@ -226,6 +239,12 @@ export default function Checkout() {
                 </div>
               </div>
             </div>
+
+            {totalItems >= 6 && totalItems < 12 && (
+              <div className="mt-3 rounded-xl bg-amber-50 border border-amber-200/80 p-3 text-[12px] text-amber-800 leading-tight">
+                <span className="font-semibold">Info Harga Eceran:</span> Pembelian di bawah 12 pcs dikenakan tambahan <strong>+Rp 5.000/pcs</strong>. Tambah <strong>{12 - totalItems} pcs lagi</strong> agar mendapatkan harga grosir normal!
+              </div>
+            )}
 
             {/* Trust badge */}
             <div className="mt-4 rounded-xl bg-white border border-border/40 p-4 flex items-center gap-3 text-[12px] text-muted-foreground">
